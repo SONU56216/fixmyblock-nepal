@@ -1,0 +1,89 @@
+/* ================================================================
+   FIXMYBLOCK NEPAL - ADMIN STYLES (UPDATED)
+   ================================================================ */
+
+/* ===== COMMUNITY STATS ===== */
+.community-stats {
+    display: flex;
+    gap: 16px;
+    font-size: 13px;
+    color: #5f6b7a;
+    margin-top: 4px;
+}
+
+.stat-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.stat-item i {
+    font-size: 14px;
+}
+
+/* ===== PRIORITY FILTERS ===== */
+.priority-filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.filter-priority-btn {
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 2px solid #e8ecf2;
+    background: transparent;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.filter-priority-btn:hover {
+    border-color: #1a73e8;
+}
+
+.filter-priority-btn.active {
+    border-color: #1a73e8;
+    background: #e8f0fe;
+}
+
+.filter-priority-btn.priority-low { border-color: #34a853; color: #34a853; }
+.filter-priority-btn.priority-low.active { background: #e8f5e9; }
+
+.filter-priority-btn.priority-medium { border-color: #fbbc04; color: #fbbc04; }
+.filter-priority-btn.priority-medium.active { background: #fff8e1; }
+
+.filter-priority-btn.priority-high { border-color: #ff6b00; color: #ff6b00; }
+.filter-priority-btn.priority-high.active { background: #fff3e0; }
+
+.filter-priority-btn.priority-critical { border-color: #ea4335; color: #ea4335; }
+.filter-priority-btn.priority-critical.active { background: #fce4ec; }
+
+/* ===== SORT DROPDOWN ===== */
+.sort-select {
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 2px solid #e8ecf2;
+    font-size: 13px;
+    background: #fff;
+    cursor: pointer;
+}
+
+.sort-select:focus {
+    outline: none;
+    border-color: #1a73e8;
+}
+
+/* ===== ADMIN STATS (UPDATED) ===== */
+.admin-stats .admin-stat .num {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.admin-stats .admin-stat .sub-label {
+    font-size: 10px;
+    color: #888;
+    margin-top: 1px;
+}

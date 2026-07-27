@@ -1,0 +1,22 @@
+{
+  "name": "fixmyblock-nepal",
+  "version": "1.0.0",
+  "description": "FixMyBlock Nepal - Civic Issue Reporting App",
+  "main": "index.html",
+  "scripts": {
+    "dev": "firebase serve",
+    "build": "echo 'Build step'",
+    "deploy": "firebase deploy --only hosting,firestore,storage",
+    "deploy:hosting": "firebase deploy --only hosting",
+    "deploy:firestore": "firebase deploy --only firestore"
+  },
+  "dependencies": {
+    "firebase": "^10.7.0"
+  },
+  "devDependencies": {
+    "firebase-tools": "^12.0.0"
+  },
+  "keywords": ["civic", "reporting", "nepal"],
+  "author": "Your Name",
+  "license": "MIT"
+}

@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FixMyBlock Nepal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: #f0f2f5;
+            color: #1a1a2e;
+            padding-bottom: 80px;
+            min-height: 100vh;
+        }
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            background: #fff;
+            min-height: 100vh;
+            box-shadow: 0 0 30px rgba(0,0,0,0.08);
+        }
+        .app-header {
+            background: linear-gradient(135deg, #1a73e8, #0d47a1);
+            color: #fff;
+            padding: 18px 20px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .app-header .logo { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 700; }
+        .app-header .logo i { font-size: 26px; }
+        .app-header .badge { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 11px; }
+        .header-right { display: flex; align-items: center; gap: 10px; }
+        .admin-toggle { background: none; border: none; color: #fff; font-size: 18px; cursor: pointer; }
+        .screen { display: none; padding: 16px 18px 30px; animation: fadeIn 0.25s ease; }
+        .screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 16px; }
+        .stat-card { background: #f8f9fc; border-radius: 12px; padding: 14px 8px; text-align: center; border: 1px solid #e8ecf2; }
+        .stat-card .number { font-size: 26px; font-weight: 700; color: #1a73e8; }
+        .stat-card .label { font-size: 11px; color: #5f6b7a; margin-top: 4px; }
+        .stat-card.resolved .number { color: #34a853; }
+        .stat-card.pending .number { color: #ea4335; }
+        .category-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; margin-bottom: 16px; }
+        .category-btn { background: #f8f9fc; border: 2px solid transparent; border-radius: 14px; padding: 14px 4px; text-align: center; cursor: pointer; font-size: 12px; font-weight: 500; color: #1a1a2e; transition: all 0.2s; }
+        .category-btn i { font-size: 26px; display: block; margin-bottom: 4px; }
+        .category-btn:hover { background: #e8f0fe; border-color: #1a73e8; }
+        .category-btn.selected { background: #e8f0fe; border-color: #1a73e8; color: #1a73e8; }
+        .section-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; display: flex; justify-content: space-between; }
+        .report-card { background: #fff; border: 1px solid #e8ecf2; border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+        .report-card .top-row { display: flex; justify-content: space-between; align-items: flex-start; }
+        .report-card .title { font-weight: 600; font-size: 15px; }
+        .report-card .location { font-size: 13px; color: #5f6b7a; margin: 2px 0 6px; }
+        .status-badge { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+        .status-submitted { background: #e3f2fd; color: #0d47a1; }
+        .status-reviewing { background: #fff3e0; color: #e65100; }
+        .status-progress { background: #fce4ec; color: #b71c1c; }
+        .status-resolved { background: #e8f5e9; color: #1b5e20; }
+        .status-rejected { background: #fafafa; color: #616161; }
+        .report-card .footer { display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; color: #888; }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 6px; }
+        .form-group textarea, .form-group input[type="text"] { width: 100%; padding: 12px 14px; border: 2px solid #e0e4ea; border-radius: 12px; font-size: 15px; font-family: inherit; background: #fafbfc; }
+        .form-group textarea:focus, .form-group input[type="text"]:focus { outline: none; border-color: #1a73e8; }
+        .form-group textarea { min-height: 80px; resize: vertical; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border: none; border-radius: 14px; font-weight: 600; font-size: 16px; cursor: pointer; width: 100%; transition: all 0.2s; }
+        .btn-primary { background: #1a73e8; color: #fff; }
+        .btn-primary:hover { background: #1557b0; }
+        .btn-success { background: #34a853; color: #fff; }
+        .btn-success:hover { background: #2d9248; }
+        .btn-outline { background: transparent; color: #1a73e8; border: 2px solid #1a73e8; }
+        .btn-outline:hover { background: #e8f0fe; }
+        .btn-sm { padding: 8px 16px; font-size: 13px; width: auto; }
+        .btn-location { margin-bottom: 8px; }
+        .logo-subtitle { font-size: 11px; font-weight: 400; opacity: 0.8; }
+        .report-count { font-size: 13px; font-weight: 400; color: #888; }
+        .report-action-title { font-weight: 600; font-size: 17px; }
+        .spacer-sm { width: 40px; display: inline-block; }
+        .required-indicator { color: red; }
+        .form-category-error { color: red; font-size: 13px; display: none; }
+        .location-info { font-size: 12px; color: #888; margin-top: 4px; }
+        .icon-gap { margin-right: 10px; }
+        .icon-blue { color: #1a73e8; }
+        .report-description { font-size: 13px; color: #555; margin: 4px 0 6px; }
+        .chevron-icon { font-size: 12px; }
+        .error-help-text { font-size: 13px; margin-top: 8px; color: #888; }
+        .btn-error-retry { margin-top: 10px; }
+        .btn-danger { background: #ea4335; color: #fff; }
+        .btn-danger:hover { background: #c62828; }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 480px;
+            margin: 0 auto;
+            background: #fff;
+            border-top: 1px solid #e8ecf2;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0 env(safe-area-inset-bottom,8px) 0;
+            z-index: 200;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 11px; color: #888; cursor: pointer; padding: 4px 16px; background: none; border: none; font-family: inherit; }
+        .nav-item i { font-size: 22px; }
+        .nav-item.active { color: #1a73e8; font-weight: 600; }
+        .nav-item .fab-wrapper { position: relative; top: -12px; }
+        .nav-item .fab { background: #1a73e8; color: #fff; width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; box-shadow: 0 4px 16px rgba(26,115,232,0.35); }
+        .nav-item .fab:active { transform: scale(0.92); }
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 400px;
+            width: 90%;
+            background: #1a1a2e;
+            color: #fff;
+            padding: 14px 20px;
+            border-radius: 14px;
+            text-align: center;
+            font-weight: 500;
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.30);
+        }
+        .toast.show { opacity: 1; }
+        .toast.success { background: #1b5e20; }
+        .toast.error { background: #b71c1c; }
+        .toast.info { background: #0d47a1; }
+        .back-btn { background: none; border: none; color: #1a1a2e; font-size: 18px; cursor: pointer; padding: 4px 8px; }
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        .mb-16 { margin-bottom: 16px; }
+        .mt-16 { margin-top: 16px; }
+        .text-center { text-align: center; }
+        .spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid #f3f3f3; border-top: 3px solid #1a73e8; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .empty-state, .loading-state, .error-state { text-align: center; padding: 40px 20px; color: #888; }
+        .empty-state i, .error-state i { font-size: 48px; color: #ddd; display: block; margin-bottom: 12px; }
+        .error-state { color: #ea4335; }
+        .error-state i { color: #ea4335; }
+        .loading-state i { font-size: 32px; color: #1a73e8; display: block; margin-bottom: 12px; }
+        @media (max-width: 480px) {
+            .app-container { box-shadow: none; }
+            .stats-grid { grid-template-columns: repeat(3,1fr); gap: 6px; }
+            .category-grid { grid-template-columns: repeat(5,1fr); gap: 6px; }
+            .category-btn { font-size: 10px; padding: 10px 2px; }
+            .category-btn i { font-size: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="toast" class="toast"></div>
+
+    <div class="app-container">
+
+        <header class="app-header">
+            <div class="logo">
+                <i class="fas fa-road"></i>
+                <span>FixMyBlock</span>
+                <span class="logo-subtitle">Nepal</span>
+            </div>
+            <div class="header-right">
+                <span class="badge">LIVE</span>
+                <button class="admin-toggle" onclick="window.location.href='login.html'" aria-label="Admin login" title="Admin login">
+                    <i class="fas fa-user-shield"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- HOME -->
+        <div class="screen active" id="screen-home">
+            <div class="stats-grid">
+                <div class="stat-card"><div class="number" id="statTotal">0</div><div class="label">Total Reports</div></div>
+                <div class="stat-card resolved"><div class="number" id="statResolved">0</div><div class="label">Resolved</div></div>
+                <div class="stat-card pending"><div class="number" id="statPending">0</div><div class="label">Pending</div></div>
+            </div>
+
+            <div class="category-grid">
+                <button class="category-btn" data-category="pothole" onclick="quickReport('pothole')">
+                    <i class="fas fa-circle-exclamation"></i> Pothole
+                </button>
+                <button class="category-btn" data-category="streetlight" onclick="quickReport('streetlight')">
+                    <i class="fas fa-lightbulb"></i> Streetlight
+                </button>
+                <button class="category-btn" data-category="drainage" onclick="quickReport('drainage')">
+                    <i class="fas fa-water"></i> Drainage
+                </button>
+                <button class="category-btn" data-category="garbage" onclick="quickReport('garbage')">
+                    <i class="fas fa-trash"></i> Garbage
+                </button>
+                <button class="category-btn" data-category="landslide" onclick="quickReport('landslide')">
+                    <i class="fas fa-mountain"></i> Landslide
+                </button>
+            </div>
+
+            <div class="section-title">
+                <span>📋 Recent Reports</span>
+                <span class="report-count" id="reportCount">0 reports</span>
+            </div>
+            <div id="reportList">
+                <div class="loading-state"><i class="fas fa-spinner fa-spin"></i> Loading reports...</div>
+            </div>
+
+            <div class="text-center mt-16">
+                <button class="btn btn-primary" onclick="showScreen('report')">
+                    <i class="fas fa-plus-circle"></i> Report an Issue
+                </button>
+            </div>
+        </div>
+
+        <!-- REPORT FORM -->
+        <div class="screen" id="screen-report">
+            <div class="flex-between mb-16">
+                <button class="back-btn" onclick="showScreen('home')"><i class="fas fa-arrow-left"></i> Back</button>
+                <span class="report-action-title">Report an Issue</span>
+                <span class="spacer-sm" aria-hidden="true"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Select Category <span class="required-indicator">*</span></label>
+                <div class="category-grid" id="formCategoryGrid">
+                    <button class="category-btn" data-category="pothole" onclick="selectFormCategory(this)">
+                        <i class="fas fa-circle-exclamation"></i> Pothole
+                    </button>
+                    <button class="category-btn" data-category="streetlight" onclick="selectFormCategory(this)">
+                        <i class="fas fa-lightbulb"></i> Streetlight
+                    </button>
+                    <button class="category-btn" data-category="drainage" onclick="selectFormCategory(this)">
+                        <i class="fas fa-water"></i> Drainage
+                    </button>
+                    <button class="category-btn" data-category="garbage" onclick="selectFormCategory(this)">
+                        <i class="fas fa-trash"></i> Garbage
+                    </button>
+                    <button class="category-btn" data-category="landslide" onclick="selectFormCategory(this)">
+                        <i class="fas fa-mountain"></i> Landslide
+                    </button>
+                </div>
+                <div id="formCategoryError" class="form-category-error">Please select a category</div>
+            </div>
+
+            <div class="form-group">
+                <label>Location</label>
+                <button class="btn btn-outline btn-sm btn-location" onclick="getLocation()">
+                    <i class="fas fa-location-dot"></i> Use My Location
+                </button>
+                <input type="text" id="locationInput" placeholder="e.g. New Road, Kathmandu" />
+                <div class="location-info" id="locationStatus">📍 Waiting for location...</div>
+            </div>
+
+            <div class="form-group">
+                <label>Description (optional)</label>
+                <textarea id="descriptionInput" placeholder="Describe the issue in detail..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Your Name (optional)</label>
+                <input type="text" id="nameInput" placeholder="e.g. Ram Sharma" />
+            </div>
+
+            <button class="btn btn-success" id="submitReportBtn">
+                <i class="fas fa-paper-plane"></i> Submit Report
+            </button>
+        </div>
+
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-screen="home" onclick="showScreen('home')">
+                <i class="fas fa-home"></i> <span>Home</span>
+            </button>
+            <button class="nav-item" data-screen="report" onclick="showScreen('report')">
+                <div class="fab-wrapper"><div class="fab"><i class="fas fa-plus"></i></div></div>
+                <span>Report</span>
+            </button>
+        </nav>
+    </div>
+    <!-- ===== DUPLICATE MODAL CONTAINER ===== -->
+<div id="duplicateModalContainer"></div>
+
+    <script type="module">
+        // ================================================================
+        // 🔴🔴🔴 STEP 1: PASTE YOUR FIREBASE CONFIG HERE 🔴🔴🔴
+        // ================================================================
+
+        const firebaseConfig = {
+  apiKey: "AIzaSyBVvWlYUCOfALhtWdR53_ZcP5spTYhDyu8",
+  authDomain: "fixmyblock-nepal.firebaseapp.com",
+  projectId: "fixmyblock-nepal",
+  storageBucket: "fixmyblock-nepal.firebasestorage.app",
+  messagingSenderId: "742804276117",
+  appId: "1:742804276117:web:ddab9eeff9a357c1112c9c",
+  measurementId: "G-C3RQER0PC1"
+};
+
+
+        // ================================================================
+        // 🔴 STEP 2: DO NOT CHANGE ANYTHING BELOW THIS LINE
+        // ================================================================
+
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+        import {
+            getFirestore,
+            collection,
+            query,
+            orderBy,
+            limit,
+            getDocs,
+            addDoc,
+            serverTimestamp,
+            onSnapshot,
+            doc,
+            updateDoc,
+            deleteDoc
+        } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        console.log('✅ Firebase initialized!');
+
+        // ================================================================
+        //  CATEGORIES & STATUSES
+        // ================================================================
+
+        const CATEGORIES = {
+            pothole: { label: 'Pothole', icon: 'fa-circle-exclamation' },
+            streetlight: { label: 'Streetlight', icon: 'fa-lightbulb' },
+            drainage: { label: 'Drainage', icon: 'fa-water' },
+            garbage: { label: 'Garbage', icon: 'fa-trash' },
+            landslide: { label: 'Landslide', icon: 'fa-mountain' }
+        };
+
+        const STATUSES = {
+            submitted: { label: 'Submitted', class: 'status-submitted' },
+            reviewing: { label: 'Under Review', class: 'status-reviewing' },
+            in_progress: { label: 'In Progress', class: 'status-progress' },
+            resolved: { label: 'Resolved', class: 'status-resolved' },
+            rejected: { label: 'Rejected', class: 'status-rejected' }
+        };
+
+        function getCategoryLabel(cat) { return CATEGORIES[cat]?.label || cat; }
+        function getCategoryIcon(cat) { return CATEGORIES[cat]?.icon || 'fa-question'; }
+        function getStatusLabel(status) { return STATUSES[status]?.label || status; }
+        function getStatusClass(status) { return STATUSES[status]?.class || ''; }
+
+        function formatTimestamp(ts) {
+            if (!ts) return 'Recently';
+            try {
+                const diff = Date.now() - ts.toMillis();
+                if (diff < 60000) return 'Just now';
+                if (diff < 3600000) return Math.floor(diff / 60000) + ' min ago';
+                if (diff < 86400000) return Math.floor(diff / 3600000) + ' hours ago';
+                return Math.floor(diff / 86400000) + ' days ago';
+            } catch { return 'Recently'; }
+        }
+
+        function showToast(msg, type = '') {
+            const el = document.getElementById('toast');
+            el.textContent = msg;
+            el.className = 'toast ' + type;
+            void el.offsetWidth;
+            el.classList.add('show');
+            clearTimeout(el._timer);
+            el._timer = setTimeout(() => el.classList.remove('show'), 3000);
+        }
+
+        // ================================================================
+        //  SCREEN NAVIGATION
+        // ================================================================
+
+        window.showScreen = function(screenId) {
+            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+            const target = document.getElementById('screen-' + screenId);
+            if (target) target.classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            const navBtn = document.querySelector(`.nav-item[data-screen="${screenId}"]`);
+            if (navBtn) navBtn.classList.add('active');
+            if (screenId === 'report') {
+                document.getElementById('formCategoryError').style.display = 'none';
+            }
+        };
+
+        // ================================================================
+        //  LISTEN TO REPORTS (REAL-TIME)
+        // ================================================================
+
+        function listenToReports() {
+            console.log('📡 Setting up Firestore listener...');
+
+            const q = query(collection(db, 'reports'), orderBy('createdAt', 'desc'), limit(50));
+
+            onSnapshot(q, (snapshot) => {
+                console.log('✅ Snapshot received! Size:', snapshot.size);
+                const reports = [];
+                snapshot.forEach((doc) => {
+                    reports.push({ id: doc.id, ...doc.data() });
+                });
+                renderReports(reports);
+                updateStats(reports);
+            }, (error) => {
+                console.error('❌ Listener error:', error);
+                document.getElementById('reportList').innerHTML = `
+                        <div class="error-state">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <h3>Error Loading Reports</h3>
+                            <p>${error.message}</p>
+                            <button class="btn btn-primary btn-sm btn-error-retry" onclick="location.reload()">Retry</button>
+                        </div>
+                    `;
+            });
+        }
+
+        function renderReports(reports) {
+            const container = document.getElementById('reportList');
+            document.getElementById('reportCount').textContent = reports.length + ' reports';
+
+            if (reports.length === 0) {
+                container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <h3>No reports yet</h3>
+                            <p>Be the first to report an issue!</p>
+                        </div>
+                    `;
+                return;
+            }
+
+            container.innerHTML = reports.map(r => `
+                    <div class="report-card">
+                        <div class="top-row">
+                            <div>
+                                <span class="icon-gap"><i class="fas ${getCategoryIcon(r.category)} icon-blue"></i></span>
+                                <span class="title">${getCategoryLabel(r.category)}</span>
+                            </div>
+                            <span class="status-badge ${getStatusClass(r.status || 'submitted')}">${getStatusLabel(r.status || 'submitted')}</span>
+                        </div>
+                        <div class="location"><i class="fas fa-location-dot"></i> ${r.location || 'Unknown location'}</div>
+                        <div class="report-description">${r.description ? r.description.substring(0, 80) + (r.description.length > 80 ? '...' : '') : 'No description'}</div>
+                        <div class="footer">
+                            <span>${formatTimestamp(r.createdAt)}</span>
+                            <span><i class="fas fa-chevron-right chevron-icon"></i></span>
+                        </div>
+                    </div>
+                `).join('');
+        }
+
+        function updateStats(reports) {
+            const total = reports.length;
+            const resolved = reports.filter(r => r.status === 'resolved').length;
+            const pending = reports.filter(r => r.status !== 'resolved' && r.status !== 'rejected').length;
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statResolved').textContent = resolved;
+            document.getElementById('statPending').textContent = pending;
+        }
+
+        // ================================================================
+        //  QUICK REPORT
+        // ================================================================
+
+        window.quickReport = function(category) {
+            showScreen('report');
+            document.querySelectorAll('#formCategoryGrid .category-btn').forEach(b => {
+                b.classList.remove('selected');
+                if (b.dataset.category === category) {
+                    b.classList.add('selected');
+                    selectedCategory = category;
+                }
+            });
+            document.getElementById('formCategoryError').style.display = 'none';
+            document.getElementById('locationInput').focus();
+        };
+
+        let selectedCategory = null;
+
+        window.selectFormCategory = function(el) {
+            document.querySelectorAll('#formCategoryGrid .category-btn').forEach(b => b.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedCategory = el.dataset.category;
+            document.getElementById('formCategoryError').style.display = 'none';
+        };
+
+        // ================================================================
+        //  LOCATION
+        // ================================================================
+
+        let currentLat = null;
+        let currentLng = null;
+        let currentLocationName = '';
+
+        window.getLocation = function() {
+            const status = document.getElementById('locationStatus');
+            status.textContent = '📍 Getting location...';
+            if (!navigator.geolocation) {
+                status.textContent = '❌ Geolocation not supported';
+                showToast('Geolocation not supported', 'error');
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    currentLat = pos.coords.latitude;
+                    currentLng = pos.coords.longitude;
+                    const locationName = getLocationName(currentLat, currentLng);
+                    status.textContent = `📍 Location captured: ${locationName}`;
+                    document.getElementById('locationInput').value = locationName;
+                    showToast('✅ Location captured!', 'success');
+                },
+                (err) => {
+                    status.textContent = '❌ Could not get location. Please enter manually.';
+                    showToast('Could not get location.', 'error');
+                }, { enableHighAccuracy: true, timeout: 10000 }
+            );
+        };
+
+        function getLocationName(lat, lng) {
+            const locations = [
+                { name: 'New Road, Kathmandu', lat: 27.7172, lng: 85.3240 },
+                { name: 'Thamel, Kathmandu', lat: 27.7167, lng: 85.3190 },
+                { name: 'Baneshwor, Kathmandu', lat: 27.6920, lng: 85.3350 },
+                { name: 'Sundhara, Kathmandu', lat: 27.7020, lng: 85.3180 },
+                { name: 'Swayambhu, Kathmandu', lat: 27.7100, lng: 85.2920 },
+            ];
+            const closest = locations.reduce((best, loc) => {
+                const d = Math.abs(loc.lat - lat) + Math.abs(loc.lng - lng);
+                return d < best.d ? { loc, d } : best;
+            }, { loc: locations[0], d: Infinity });
+            return closest.loc.name;
+        }
+
+        // ================================================================
+        //  SUBMIT REPORT (WITH FULL ERROR HANDLING)
+        // ================================================================
+
+        document.getElementById('submitReportBtn').addEventListener('click', async function() {
+            const btn = this;
+            if (btn.disabled) return;
+
+            // Validate category
+            if (!selectedCategory) {
+                document.getElementById('formCategoryError').style.display = 'block';
+                showToast('Please select a category', 'error');
+                return;
+            }
+
+            // Get form data
+            const location = document.getElementById('locationInput').value.trim() || currentLocationName || 'Kathmandu, Nepal';
+            const description = document.getElementById('descriptionInput').value.trim();
+            const name = document.getElementById('nameInput').value.trim() || 'Anonymous';
+
+            // Disable button
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Submitting...';
+
+            try {
+                console.log('📝 Submitting report...');
+                console.log('Category:', selectedCategory);
+                console.log('Location:', location);
+                console.log('Description:', description);
+                console.log('Name:', name);
+
+                // Prepare data
+                const reportData = {
+                    category: selectedCategory,
+                    description: description || 'No description provided',
+                    location: location,
+                    latitude: currentLat || null,
+                    longitude: currentLng || null,
+                    status: 'submitted',
+                    submittedBy: name,
+                    createdAt: serverTimestamp()
+                };
+
+                console.log('📤 Sending to Firestore:', reportData);
+
+                // Save to Firestore
+                const docRef = await addDoc(collection(db, 'reports'), reportData);
+                console.log('✅ Report saved! Document ID:', docRef.id);
+
+                showToast('✅ Report submitted successfully!', 'success');
+
+                // Reset form
+                document.querySelectorAll('#formCategoryGrid .category-btn').forEach(b => b.classList.remove('selected'));
+                document.getElementById('locationInput').value = '';
+                document.getElementById('descriptionInput').value = '';
+                document.getElementById('nameInput').value = '';
+                selectedCategory = null;
+                document.getElementById('formCategoryError').style.display = 'none';
+
+                // Go home
+                showScreen('home');
+
+            } catch (error) {
+                console.error('❌ Submit error:', error);
+                console.error('Error details:', {
+                    code: error.code,
+                    message: error.message,
+                    stack: error.stack
+                });
+                showToast('❌ Error: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Report';
+            }
+        });
+
+        // ================================================================
+        //  INIT
+        // ================================================================
+
+        async function testConnection() {
+            try {
+                console.log('📡 Testing Firestore connection...');
+                const q = collection(db, 'reports');
+                const snapshot = await getDocs(q);
+                console.log('✅ Firestore connection successful! Found', snapshot.size, 'reports');
+                listenToReports();
+            } catch (error) {
+                console.error('❌ Firestore connection failed:', error);
+                document.getElementById('reportList').innerHTML = `
+                        <div class="error-state">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <h3>Connection Error</h3>
+                            <p>${error.message}</p>
+                            <p class="error-help-text">
+                                Make sure you are using a local server (http://localhost) 
+                                and your Firebase config is correct.
+                            </p>
+                            <button class="btn btn-primary btn-sm btn-error-retry" onclick="location.reload()">Retry</button>
+                        </div>
+                    `;
+            }
+        }
+
+        testConnection();
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    currentLat = pos.coords.latitude;
+                    currentLng = pos.coords.longitude;
+                    currentLocationName = getLocationName(currentLat, currentLng);
+                    document.getElementById('locationStatus').textContent = `📍 Location ready: ${currentLocationName}`;
+                },
+                () => {}, { timeout: 5000 }
+            );
+        }
+
+        console.log('🏗️ FixMyBlock Nepal - Fixed Version Loaded!');
+    </script>
+
+</body>
+</html>
