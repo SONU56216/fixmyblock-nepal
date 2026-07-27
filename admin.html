@@ -1,33 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-YOUR_MEASUREMENT_ID"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-M8KYRCK604');
-</script>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
     <title>Admin Dashboard - FixMyBlock Nepal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
         /* ===== RESET & BASE ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
             background: #f0f2f5;
             color: #1a1a2e;
             min-height: 100vh;
         }
-
         .admin-container {
             max-width: 1100px;
             margin: 0 auto;
@@ -50,783 +36,165 @@
             flex-wrap: wrap;
             gap: 10px;
         }
+        .admin-header .logo { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 700; }
+        .admin-header .logo i { font-size: 26px; color: #1a73e8; }
+        .admin-header .logo .subtitle { font-size: 12px; font-weight: 400; opacity: 0.7; margin-left: -4px; }
+        .admin-header .badge { background: rgba(255,255,255,0.15); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.3px; }
+        .header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 
-        .admin-header .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 20px;
-            font-weight: 700;
-        }
-
-        .admin-header .logo i {
-            font-size: 26px;
-            color: #1a73e8;
-        }
-
-        .admin-header .logo .subtitle {
-            font-size: 12px;
-            font-weight: 400;
-            opacity: 0.7;
-            margin-left: -4px;
-        }
-
-        .admin-header .badge {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.3px;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s;
-            width: auto;
-        }
-
-        .btn-outline {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.25);
-        }
-
-        .btn-outline:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .btn-danger {
-            background: #ea4335;
-            color: #fff;
-        }
-
-        .btn-danger:hover {
-            background: #c62828;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(234, 67, 53, 0.3);
-        }
-
-        .btn-success {
-            background: #34a853;
-            color: #fff;
-        }
-
-        .btn-success:hover {
-            background: #2d9248;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(52, 168, 83, 0.3);
-        }
-
-        .btn-primary {
-            background: #1a73e8;
-            color: #fff;
-        }
-
-        .btn-primary:hover {
-            background: #1557b0;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3);
-        }
-
-        .btn-sm {
-            padding: 6px 14px;
-            font-size: 12px;
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none !important;
-        }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 16px; border: none; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.2s; width: auto; }
+        .btn-outline { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.25); }
+        .btn-outline:hover { background: rgba(255,255,255,0.2); }
+        .btn-danger { background: #ea4335; color: #fff; }
+        .btn-danger:hover { background: #c62828; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(234,67,53,0.3); }
+        .btn-success { background: #34a853; color: #fff; }
+        .btn-success:hover { background: #2d9248; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(52,168,83,0.3); }
+        .btn-primary { background: #1a73e8; color: #fff; }
+        .btn-primary:hover { background: #1557b0; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,115,232,0.3); }
+        .btn-sm { padding: 6px 14px; font-size: 12px; }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
 
         /* ===== STATS ===== */
-        .admin-stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 14px;
-            margin-bottom: 22px;
-        }
-
-        .admin-stat {
-            background: #f8f9fc;
-            border-radius: 12px;
-            padding: 16px 12px;
-            text-align: center;
-            border: 1px solid #e8ecf2;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .admin-stat:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
-        }
-
-        .admin-stat .num {
-            font-size: 30px;
-            font-weight: 700;
-            color: #1a1a2e;
-        }
-
-        .admin-stat .lbl {
-            font-size: 12px;
-            color: #5f6b7a;
-            margin-top: 2px;
-        }
-
-        .admin-stat .num.submitted {
-            color: #0d47a1;
-        }
-        .admin-stat .num.progress {
-            color: #e65100;
-        }
-        .admin-stat .num.resolved {
-            color: #1b5e20;
-        }
-        .admin-stat .num.total {
-            color: #1a73e8;
-        }
+        .admin-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 22px; }
+        .admin-stat { background: #f8f9fc; border-radius: 12px; padding: 16px 12px; text-align: center; border: 1px solid #e8ecf2; transition: transform 0.2s, box-shadow 0.2s; }
+        .admin-stat:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.06); }
+        .admin-stat .num { font-size: 30px; font-weight: 700; color: #1a1a2e; }
+        .admin-stat .lbl { font-size: 12px; color: #5f6b7a; margin-top: 2px; }
+        .admin-stat .num.submitted { color: #0d47a1; }
+        .admin-stat .num.progress { color: #e65100; }
+        .admin-stat .num.resolved { color: #1b5e20; }
+        .admin-stat .num.total { color: #1a73e8; }
 
         /* ===== ACTIONS ===== */
-        .admin-actions {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .admin-actions .btn {
-            flex: 0 1 auto;
-        }
-
-        .admin-actions .search-box {
-            flex: 2;
-            min-width: 200px;
-        }
-
+        .admin-actions { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+        .admin-actions .btn { flex: 0 1 auto; }
+        .admin-actions .search-box { flex: 2; min-width: 200px; }
         .admin-actions .search-box input {
-            width: 100%;
-            padding: 10px 16px;
-            border: 2px solid #e0e4ea;
-            border-radius: 10px;
-            font-size: 14px;
-            background: #fafbfc;
-            transition: border 0.2s, box-shadow 0.2s;
+            width: 100%; padding: 10px 16px; border: 2px solid #e0e4ea; border-radius: 10px; font-size: 14px; background: #fafbfc; transition: border 0.2s, box-shadow 0.2s;
         }
-
-        .admin-actions .search-box input:focus {
-            outline: none;
-            border-color: #1a73e8;
-            box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.1);
-            background: #fff;
-        }
-
-        .admin-actions .search-box input::placeholder {
-            color: #aaa;
-        }
+        .admin-actions .search-box input:focus { outline: none; border-color: #1a73e8; box-shadow: 0 0 0 4px rgba(26,115,232,0.1); background: #fff; }
+        .admin-actions .search-box input::placeholder { color: #aaa; }
 
         /* ===== PRIORITY FILTERS ===== */
-        .filters-row {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 12px;
-            padding: 12px 0;
-            border-bottom: 1px solid #f0f2f5;
-        }
-
-        .filters-row .label {
-            font-size: 13px;
-            font-weight: 600;
-            color: #5f6b7a;
-            margin-right: 4px;
-        }
-
+        .filters-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 12px; padding: 12px 0; border-bottom: 1px solid #f0f2f5; }
+        .filters-row .label { font-size: 13px; font-weight: 600; color: #5f6b7a; margin-right: 4px; }
         .filter-priority-btn {
-            padding: 6px 16px;
-            border-radius: 20px;
-            border: 2px solid #e8ecf2;
-            background: transparent;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: #555;
+            padding: 6px 16px; border-radius: 20px; border: 2px solid #e8ecf2; background: transparent; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; color: #555;
         }
+        .filter-priority-btn:hover { border-color: #1a73e8; color: #1a73e8; }
+        .filter-priority-btn.active { border-color: #1a73e8; background: #e8f0fe; color: #1a73e8; }
+        .filter-priority-btn.priority-low { border-color: #34a853; color: #34a853; }
+        .filter-priority-btn.priority-low.active { background: #e8f5e9; }
+        .filter-priority-btn.priority-medium { border-color: #fbbc04; color: #fbbc04; }
+        .filter-priority-btn.priority-medium.active { background: #fff8e1; }
+        .filter-priority-btn.priority-high { border-color: #ff6b00; color: #ff6b00; }
+        .filter-priority-btn.priority-high.active { background: #fff3e0; }
+        .filter-priority-btn.priority-critical { border-color: #ea4335; color: #ea4335; }
+        .filter-priority-btn.priority-critical.active { background: #fce4ec; }
 
-        .filter-priority-btn:hover {
-            border-color: #1a73e8;
-            color: #1a73e8;
-        }
-
-        .filter-priority-btn.active {
-            border-color: #1a73e8;
-            background: #e8f0fe;
-            color: #1a73e8;
-        }
-
-        .filter-priority-btn.priority-low {
-            border-color: #34a853;
-            color: #34a853;
-        }
-        .filter-priority-btn.priority-low.active {
-            background: #e8f5e9;
-        }
-
-        .filter-priority-btn.priority-medium {
-            border-color: #fbbc04;
-            color: #fbbc04;
-        }
-        .filter-priority-btn.priority-medium.active {
-            background: #fff8e1;
-        }
-
-        .filter-priority-btn.priority-high {
-            border-color: #ff6b00;
-            color: #ff6b00;
-        }
-        .filter-priority-btn.priority-high.active {
-            background: #fff3e0;
-        }
-
-        .filter-priority-btn.priority-critical {
-            border-color: #ea4335;
-            color: #ea4335;
-        }
-        .filter-priority-btn.priority-critical.active {
-            background: #fce4ec;
-        }
-
-        .sort-row {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-bottom: 16px;
-        }
-
-        .sort-row .sort-label {
-            font-size: 13px;
-            font-weight: 600;
-            color: #5f6b7a;
-        }
-
-        .sort-select {
-            padding: 6px 14px;
-            border-radius: 8px;
-            border: 2px solid #e8ecf2;
-            font-size: 13px;
-            background: #fff;
-            cursor: pointer;
-            color: #333;
-            transition: border 0.2s;
-        }
-
-        .sort-select:focus {
-            outline: none;
-            border-color: #1a73e8;
-        }
+        .sort-select { padding: 6px 14px; border-radius: 8px; border: 2px solid #e8ecf2; font-size: 13px; background: #fff; cursor: pointer; color: #333; transition: border 0.2s; }
+        .sort-select:focus { outline: none; border-color: #1a73e8; }
 
         /* ===== REPORT ITEM ===== */
         .admin-report-item {
-            background: #ffffff;
-            border: 1px solid #e8ecf2;
-            border-radius: 12px;
-            padding: 16px 18px;
-            margin-bottom: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            gap: 14px;
-            transition: all 0.2s;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+            background: #ffffff; border: 1px solid #e8ecf2; border-radius: 12px; padding: 16px 18px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 14px; transition: all 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.02);
         }
+        .admin-report-item:hover { border-color: #1a73e8; box-shadow: 0 4px 16px rgba(26,115,232,0.08); }
+        .admin-report-item .info { flex: 1; min-width: 220px; }
+        .admin-report-item .info .title { font-weight: 600; font-size: 15px; margin-bottom: 2px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+        .admin-report-item .info .title .report-id { color: #888; font-weight: 400; font-size: 13px; }
+        .admin-report-item .info .title .category-icon { margin: 0 2px; }
+        .admin-report-item .info .loc { font-size: 13px; color: #5f6b7a; margin: 2px 0; }
+        .admin-report-item .info .loc i { margin-right: 4px; font-size: 12px; }
+        .admin-report-item .info .meta { font-size: 12px; color: #888; margin-top: 2px; }
+        .admin-report-item .info .desc { font-size: 13px; color: #444; margin-top: 6px; padding: 8px 12px; background: #f8f9fc; border-radius: 8px; border-left: 3px solid #1a73e8; }
+        .admin-report-item .info .photo-link { font-size: 12px; margin-top: 4px; }
+        .admin-report-item .info .photo-link a { color: #1a73e8; text-decoration: none; }
+        .admin-report-item .info .photo-link a:hover { text-decoration: underline; }
 
-        .admin-report-item:hover {
-            border-color: #1a73e8;
-            box-shadow: 0 4px 16px rgba(26, 115, 232, 0.08);
-        }
+        .status-badge { display: inline-block; padding: 3px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+        .status-submitted { background: #e3f2fd; color: #0d47a1; }
+        .status-reviewing { background: #fff3e0; color: #e65100; }
+        .status-progress { background: #fce4ec; color: #b71c1c; }
+        .status-resolved { background: #e8f5e9; color: #1b5e20; }
+        .status-rejected { background: #fafafa; color: #616161; }
 
-        .admin-report-item .info {
-            flex: 1;
-            min-width: 220px;
-        }
+        .priority-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+        .priority-low { background: #e8f5e9; color: #34a853; }
+        .priority-medium { background: #fff8e1; color: #fbbc04; }
+        .priority-high { background: #fff3e0; color: #ff6b00; }
+        .priority-critical { background: #fce4ec; color: #ea4335; animation: pulseCritical 1.5s infinite; }
+        @keyframes pulseCritical { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
 
-        .admin-report-item .info .title {
-            font-weight: 600;
-            font-size: 15px;
-            margin-bottom: 2px;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 6px;
-        }
+        .community-stats { display: flex; gap: 18px; font-size: 13px; color: #5f6b7a; margin-top: 4px; flex-wrap: wrap; }
+        .stat-item { display: inline-flex; align-items: center; gap: 4px; }
+        .stat-item i { font-size: 14px; }
+        .stat-item .count { font-weight: 600; color: #1a1a2e; }
 
-        .admin-report-item .info .title .report-id {
-            color: #888;
-            font-weight: 400;
-            font-size: 13px;
-        }
+        .admin-report-item .actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .admin-report-item .actions select { padding: 6px 12px; border-radius: 8px; border: 2px solid #e0e4ea; font-size: 13px; background: #fff; cursor: pointer; transition: border 0.2s; color: #333; }
+        .admin-report-item .actions select:focus { outline: none; border-color: #1a73e8; }
+        .admin-report-item .actions .btn-sm { padding: 6px 10px; font-size: 13px; min-width: 36px; }
 
-        .admin-report-item .info .title .category-icon {
-            margin: 0 2px;
-        }
+        .empty-state, .loading-state, .error-state { text-align: center; padding: 50px 20px; color: #888; }
+        .empty-state i, .error-state i { font-size: 56px; color: #ddd; display: block; margin-bottom: 14px; }
+        .empty-state h3 { color: #555; margin-bottom: 4px; font-size: 18px; }
+        .empty-state p { font-size: 14px; }
+        .error-state { color: #ea4335; }
+        .error-state i { color: #ea4335; }
+        .error-state .btn { margin-top: 12px; }
+        .loading-state i { font-size: 36px; color: #1a73e8; display: block; margin-bottom: 14px; }
+        .loading-state p { font-size: 15px; color: #888; }
 
-        .admin-report-item .info .loc {
-            font-size: 13px;
-            color: #5f6b7a;
-            margin: 2px 0;
-        }
-
-        .admin-report-item .info .loc i {
-            margin-right: 4px;
-            font-size: 12px;
-        }
-
-        .admin-report-item .info .meta {
-            font-size: 12px;
-            color: #888;
-            margin-top: 2px;
-        }
-
-        .admin-report-item .info .desc {
-            font-size: 13px;
-            color: #444;
-            margin-top: 6px;
-            padding: 8px 12px;
-            background: #f8f9fc;
-            border-radius: 8px;
-            border-left: 3px solid #1a73e8;
-        }
-
-        .admin-report-item .info .photo-link {
-            font-size: 12px;
-            margin-top: 4px;
-        }
-
-        .admin-report-item .info .photo-link a {
-            color: #1a73e8;
-            text-decoration: none;
-        }
-
-        .admin-report-item .info .photo-link a:hover {
-            text-decoration: underline;
-        }
-
-        /* ===== STATUS BADGE ===== */
-        .status-badge {
-            display: inline-block;
-            padding: 3px 14px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-
-        .status-submitted {
-            background: #e3f2fd;
-            color: #0d47a1;
-        }
-
-        .status-reviewing {
-            background: #fff3e0;
-            color: #e65100;
-        }
-
-        .status-progress {
-            background: #fce4ec;
-            color: #b71c1c;
-        }
-
-        .status-resolved {
-            background: #e8f5e9;
-            color: #1b5e20;
-        }
-
-        .status-rejected {
-            background: #fafafa;
-            color: #616161;
-        }
-
-        /* ===== PRIORITY BADGE ===== */
-        .priority-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 3px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .priority-low {
-            background: #e8f5e9;
-            color: #34a853;
-        }
-
-        .priority-medium {
-            background: #fff8e1;
-            color: #fbbc04;
-        }
-
-        .priority-high {
-            background: #fff3e0;
-            color: #ff6b00;
-        }
-
-        .priority-critical {
-            background: #fce4ec;
-            color: #ea4335;
-            animation: pulseCritical 1.5s infinite;
-        }
-
-        @keyframes pulseCritical {
-            0%,
-            100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.04);
-            }
-        }
-
-        /* ===== COMMUNITY STATS ===== */
-        .community-stats {
-            display: flex;
-            gap: 18px;
-            font-size: 13px;
-            color: #5f6b7a;
-            margin-top: 4px;
-            flex-wrap: wrap;
-        }
-
-        .stat-item {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .stat-item i {
-            font-size: 14px;
-        }
-
-        .stat-item .count {
-            font-weight: 600;
-            color: #1a1a2e;
-        }
-
-        /* ===== ACTIONS ===== */
-        .admin-report-item .actions {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .admin-report-item .actions select {
-            padding: 6px 12px;
-            border-radius: 8px;
-            border: 2px solid #e0e4ea;
-            font-size: 13px;
-            background: #fff;
-            cursor: pointer;
-            transition: border 0.2s;
-            color: #333;
-        }
-
-        .admin-report-item .actions select:focus {
-            outline: none;
-            border-color: #1a73e8;
-        }
-
-        .admin-report-item .actions .btn-sm {
-            padding: 6px 10px;
-            font-size: 13px;
-            min-width: 36px;
-        }
-
-        /* ===== EMPTY / LOADING / ERROR ===== */
-        .empty-state,
-        .loading-state,
-        .error-state {
-            text-align: center;
-            padding: 50px 20px;
-            color: #888;
-        }
-
-        .empty-state i,
-        .error-state i {
-            font-size: 56px;
-            color: #ddd;
-            display: block;
-            margin-bottom: 14px;
-        }
-
-        .empty-state h3 {
-            color: #555;
-            margin-bottom: 4px;
-            font-size: 18px;
-        }
-
-        .empty-state p {
-            font-size: 14px;
-        }
-
-        .error-state {
-            color: #ea4335;
-        }
-
-        .error-state i {
-            color: #ea4335;
-        }
-
-        .error-state .btn {
-            margin-top: 12px;
-        }
-
-        .loading-state i {
-            font-size: 36px;
-            color: #1a73e8;
-            display: block;
-            margin-bottom: 14px;
-        }
-
-        .loading-state p {
-            font-size: 15px;
-            color: #888;
-        }
-
-        /* ===== TOAST ===== */
         .toast {
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            max-width: 420px;
-            width: 90%;
-            background: #1a1a2e;
-            color: #fff;
-            padding: 14px 22px;
-            border-radius: 14px;
-            text-align: center;
-            font-weight: 500;
-            z-index: 9999;
-            opacity: 0;
-            transition: opacity 0.35s ease, transform 0.35s ease;
-            pointer-events: none;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); max-width: 420px; width: 90%; background: #1a1a2e; color: #fff; padding: 14px 22px; border-radius: 14px; text-align: center; font-weight: 500; z-index: 9999; opacity: 0; transition: opacity 0.35s ease, transform 0.35s ease; pointer-events: none; box-shadow: 0 12px 40px rgba(0,0,0,0.3);
         }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast.success { background: #1b5e20; }
+        .toast.error { background: #b71c1c; }
+        .toast.info { background: #0d47a1; }
 
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
+        .spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.2); border-top: 3px solid #fff; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .toast.success {
-            background: #1b5e20;
-        }
-
-        .toast.error {
-            background: #b71c1c;
-        }
-
-        .toast.info {
-            background: #0d47a1;
-        }
-
-        /* ===== SPINNER ===== */
-        .spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.2);
-            border-top: 3px solid #fff;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
-            .admin-container {
-                padding: 0 14px 30px;
-            }
-
-            .admin-header {
-                padding: 14px 16px;
-                margin: 0 -14px 16px;
-                flex-direction: column;
-                align-items: stretch;
-                gap: 8px;
-            }
-
-            .admin-header .logo {
-                font-size: 18px;
-            }
-
-            .header-right {
-                justify-content: space-between;
-            }
-
-            .admin-stats {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
-            }
-
-            .admin-stat .num {
-                font-size: 24px;
-            }
-
-            .admin-actions {
-                flex-direction: column;
-            }
-
-            .admin-actions .btn {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .admin-actions .search-box {
-                min-width: 100%;
-            }
-
-            .filters-row {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 8px;
-            }
-
-            .filters-row .label {
-                margin-right: 0;
-            }
-
-            .filter-priority-btn {
-                padding: 5px 12px;
-                font-size: 11px;
-            }
-
-            .admin-report-item {
-                flex-direction: column;
-                align-items: stretch;
-                padding: 14px;
-            }
-
-            .admin-report-item .actions {
-                justify-content: flex-start;
-                padding-top: 10px;
-                border-top: 1px solid #f0f2f5;
-            }
-
-            .admin-report-item .actions select {
-                flex: 1;
-                min-width: 100px;
-            }
-
-            .sort-select {
-                width: 100%;
-            }
+            .admin-container { padding: 0 14px 30px; }
+            .admin-header { padding: 14px 16px; margin: 0 -14px 16px; flex-direction: column; align-items: stretch; gap: 8px; }
+            .admin-header .logo { font-size: 18px; }
+            .header-right { justify-content: space-between; }
+            .admin-stats { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .admin-stat .num { font-size: 24px; }
+            .admin-actions { flex-direction: column; }
+            .admin-actions .btn { width: 100%; justify-content: center; }
+            .admin-actions .search-box { min-width: 100%; }
+            .filters-row { flex-direction: column; align-items: stretch; gap: 8px; }
+            .filters-row .label { margin-right: 0; }
+            .filter-priority-btn { padding: 5px 12px; font-size: 11px; }
+            .admin-report-item { flex-direction: column; align-items: stretch; padding: 14px; }
+            .admin-report-item .actions { justify-content: flex-start; padding-top: 10px; border-top: 1px solid #f0f2f5; }
+            .admin-report-item .actions select { flex: 1; min-width: 100px; }
+            .sort-select { width: 100%; }
         }
-
         @media (max-width: 480px) {
-            .admin-stats {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 8px;
-            }
-
-            .admin-stat {
-                padding: 12px 8px;
-            }
-
-            .admin-stat .num {
-                font-size: 20px;
-            }
-
-            .admin-stat .lbl {
-                font-size: 10px;
-            }
-
-            .admin-report-item .info .title {
-                font-size: 14px;
-            }
-
-            .toast {
-                font-size: 14px;
-                padding: 12px 16px;
-                bottom: 80px;
-            }
+            .admin-stats { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .admin-stat { padding: 12px 8px; }
+            .admin-stat .num { font-size: 20px; }
+            .admin-stat .lbl { font-size: 10px; }
+            .admin-report-item .info .title { font-size: 14px; }
+            .toast { font-size: 14px; padding: 12px 16px; bottom: 80px; }
         }
 
-        /* ===== DELETE BUTTON CONFIRM ===== */
-        .btn-delete {
-            background: #ea4335;
-            color: #fff;
-        }
-
-        .btn-delete:hover {
-            background: #c62828;
-        }
-
-        .btn-delete:disabled {
-            background: #ffcdd2;
-            color: #888;
-            cursor: not-allowed;
-        }
-
-        /* ===== SCROLLBAR ===== */
-        .admin-container::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .admin-container::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .admin-container::-webkit-scrollbar-thumb {
-            background: #d0d5dd;
-            border-radius: 10px;
-        }
-
-        .admin-container::-webkit-scrollbar-thumb:hover {
-            background: #bbb;
-        }
+        .btn-delete { background: #ea4335; color: #fff; }
+        .btn-delete:hover { background: #c62828; }
+        .btn-delete:disabled { background: #ffcdd2; color: #888; cursor: not-allowed; }
     </style>
 </head>
 <body>
 
-    <!-- ===== TOAST ===== -->
     <div id="toast" class="toast"></div>
 
-    <!-- ===== ADMIN CONTAINER ===== -->
     <div class="admin-container">
 
-        <!-- ===== HEADER ===== -->
         <header class="admin-header">
             <div class="logo">
                 <i class="fas fa-road"></i>
@@ -844,30 +212,15 @@
             </div>
         </header>
 
-        <!-- ===== BODY ===== -->
         <div class="admin-body">
 
-            <!-- Stats -->
             <div class="admin-stats" id="adminStats">
-                <div class="admin-stat">
-                    <div class="num total" id="adminTotal">0</div>
-                    <div class="lbl">Total Reports</div>
-                </div>
-                <div class="admin-stat">
-                    <div class="num submitted" id="adminSubmitted">0</div>
-                    <div class="lbl">Submitted</div>
-                </div>
-                <div class="admin-stat">
-                    <div class="num progress" id="adminProgress">0</div>
-                    <div class="lbl">In Progress</div>
-                </div>
-                <div class="admin-stat">
-                    <div class="num resolved" id="adminResolved">0</div>
-                    <div class="lbl">Resolved</div>
-                </div>
+                <div class="admin-stat"><div class="num total" id="adminTotal">0</div><div class="lbl">Total Reports</div></div>
+                <div class="admin-stat"><div class="num submitted" id="adminSubmitted">0</div><div class="lbl">Submitted</div></div>
+                <div class="admin-stat"><div class="num progress" id="adminProgress">0</div><div class="lbl">In Progress</div></div>
+                <div class="admin-stat"><div class="num resolved" id="adminResolved">0</div><div class="lbl">Resolved</div></div>
             </div>
 
-            <!-- Actions -->
             <div class="admin-actions">
                 <button class="btn btn-success btn-sm" onclick="exportExcel()">
                     <i class="fas fa-file-excel"></i> Export Excel
@@ -880,7 +233,6 @@
                 </div>
             </div>
 
-            <!-- Filters & Sorting -->
             <div class="filters-row">
                 <span class="label">Priority:</span>
                 <button class="filter-priority-btn active" onclick="filterByPriority('all')">All</button>
@@ -890,9 +242,9 @@
                 <button class="filter-priority-btn priority-critical" onclick="filterByPriority('CRITICAL')">🔴 Critical</button>
             </div>
 
-            <div class="sort-row">
-                <label class="sort-label" for="adminSort">Sort by:</label>
-                <select id="adminSort" class="sort-select" onchange="sortReports(this.value)">
+            <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px;">
+                <span style="font-size:13px;font-weight:600;color:#5f6b7a;">Sort by:</span>
+                <select class="sort-select" onchange="sortReports(this.value)">
                     <option value="newest">Newest</option>
                     <option value="oldest">Oldest</option>
                     <option value="supported">Most Supported</option>
@@ -900,7 +252,6 @@
                 </select>
             </div>
 
-            <!-- Reports List -->
             <div id="adminReportList">
                 <div class="loading-state">
                     <i class="fas fa-spinner fa-spin"></i>
@@ -911,17 +262,13 @@
         </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- ===== JAVASCRIPT (FIREBASE + ADMIN LOGIC) ===== -->
-    <!-- ============================================================ -->
-
     <script type="module">
         // ================================================================
         // 🔴🔴🔴 STEP 1: PASTE YOUR FIREBASE CONFIG HERE 🔴🔴🔴
         // ================================================================
 
         const firebaseConfig = {
-            apiKey: "AIzaSyBVvWlYUCOfALhtWdR53_ZcP5spTYhDyu8",
+           apiKey: "AIzaSyBVvWlYUCOfALhtWdR53_ZcP5spTYhDyu8",
   authDomain: "fixmyblock-nepal.firebaseapp.com",
   projectId: "fixmyblock-nepal",
   storageBucket: "fixmyblock-nepal.firebasestorage.app",
@@ -952,10 +299,6 @@
             deleteDoc,
             onSnapshot
         } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
-
-        // ================================================================
-        //  INIT FIREBASE
-        // ================================================================
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -993,11 +336,8 @@
         const PRIORITY_ORDER = { CRITICAL: 0, HIGH: 1, MEDIUM: 2, LOW: 3 };
 
         function getCategoryLabel(cat) { return CATEGORIES[cat]?.label || cat; }
-
         function getCategoryIcon(cat) { return CATEGORIES[cat]?.icon || 'fa-question'; }
-
         function getStatusLabel(status) { return STATUSES[status]?.label || status; }
-
         function getStatusClass(status) { return STATUSES[status]?.class || ''; }
 
         function formatTimestamp(ts) {
@@ -1008,19 +348,13 @@
                 if (diff < 3600000) return Math.floor(diff / 60000) + ' min ago';
                 if (diff < 86400000) return Math.floor(diff / 3600000) + ' hours ago';
                 return Math.floor(diff / 86400000) + ' days ago';
-            } catch {
-                return 'Recently';
-            }
+            } catch { return 'Recently'; }
         }
 
         let allReports = [];
         let filteredReports = [];
         let currentPriorityFilter = 'all';
         let currentSort = 'newest';
-
-        // ================================================================
-        //  TOAST
-        // ================================================================
 
         function showToast(msg, type = '') {
             const el = document.getElementById('toast');
@@ -1147,13 +481,11 @@
         window.applyFiltersAndSort = function() {
             const search = document.getElementById('adminSearch')?.value.toLowerCase().trim() || '';
 
-            // Filter by priority
             let filtered = allReports;
             if (currentPriorityFilter !== 'all') {
                 filtered = filtered.filter(r => (r.priority || 'LOW') === currentPriorityFilter);
             }
 
-            // Filter by search
             if (search) {
                 filtered = filtered.filter(r =>
                     (r.location || '').toLowerCase().includes(search) ||
@@ -1164,7 +496,6 @@
                 );
             }
 
-            // Sort
             switch (currentSort) {
                 case 'priority':
                     filtered.sort((a, b) =>
@@ -1288,7 +619,7 @@
         };
 
         // ================================================================
-        //  DELETE REPORT (FIXED)
+        //  DELETE REPORT
         // ================================================================
 
         window.deleteReport = async function(reportId) {
@@ -1296,7 +627,6 @@
             if (!confirm('⚠️ This action cannot be undone. Are you sure?')) return;
 
             try {
-                // Find the button and show loading
                 const buttons = document.querySelectorAll(`.btn-delete`);
                 let targetBtn = null;
                 for (const btn of buttons) {
@@ -1312,8 +642,6 @@
 
                 await deleteDoc(doc(db, 'reports', reportId));
                 showToast('🗑️ Report deleted successfully!', 'success');
-
-                // Refresh the list
                 applyFiltersAndSort();
 
             } catch (error) {
@@ -1328,7 +656,6 @@
 
                 showToast('❌ ' + errorMessage, 'error');
             } finally {
-                // Re-enable all delete buttons
                 document.querySelectorAll('.btn-delete').forEach(btn => {
                     btn.disabled = false;
                     btn.innerHTML = '<i class="fas fa-trash"></i>';
@@ -1423,7 +750,6 @@
 
         console.log('👑 FixMyBlock Nepal - Admin Dashboard Loaded');
 
-        // Make functions globally accessible
         window.filterByPriority = filterByPriority;
         window.sortReports = sortReports;
         window.applyFiltersAndSort = applyFiltersAndSort;
@@ -1433,9 +759,6 @@
         window.exportExcel = exportExcel;
         window.clearAllReports = clearAllReports;
         window.logout = logout;
-
-        // If user is already logged in and admin, the listener will start
-        // If not, the auth guard will redirect to login
     </script>
 
 </body>
