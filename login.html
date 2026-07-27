@@ -1,16 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-     <!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-M8KYRCK604"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-M8KYRCK604');
-</script>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
     <title>Admin Login - FixMyBlock Nepal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
@@ -76,16 +68,6 @@
         }
         .btn:hover { background: #1557b0; }
         .btn:disabled { opacity: 0.7; cursor: not-allowed; }
-        .demo-cred {
-            font-size: 12px;
-            color: #888;
-            margin-top: 16px;
-            background: #f8f9fc;
-            padding: 10px 14px;
-            border-radius: 8px;
-            text-align: center;
-        }
-        .demo-cred strong { color: #1a1a2e; }
         .login-footer { margin-top: 16px; text-align: center; }
         .login-footer a { color: #1a73e8; text-decoration: none; font-size: 13px; }
         .login-footer a:hover { text-decoration: underline; }
@@ -114,12 +96,12 @@
             <div class="login-form">
                 <div class="form-group">
                     <label><i class="fas fa-envelope"></i> Email</label>
-                    <input type="email" id="loginEmail" placeholder="admin@fixmyblock.gov.np" />
+                    <input type="email" id="loginEmail" placeholder="Enter your email" />
                 </div>
 
                 <div class="form-group">
                     <label><i class="fas fa-lock"></i> Password</label>
-                    <input type="password" id="loginPassword" placeholder="Enter password" />
+                    <input type="password" id="loginPassword" placeholder="Enter your password" />
                 </div>
 
                 <div class="error-msg" id="loginError">
@@ -129,12 +111,6 @@
                 <button class="btn" id="loginBtn">
                     <i class="fas fa-arrow-right-to-bracket"></i> Login
                 </button>
-
-                <div class="demo-cred">
-                    <strong>Demo Credentials:</strong><br />
-                    Email: admin@fixmyblock.gov.np<br />
-                    Password: admin123
-                </div>
 
                 <div class="login-footer">
                     <a href="index.html"><i class="fas fa-arrow-left"></i> Back to App</a>
@@ -149,13 +125,12 @@
         // ================================================================
 
         const firebaseConfig = {
-            apiKey: "AIzaSyBVvWlYUCOfALhtWdR53_ZcP5spTYhDyu8",
-  authDomain: "fixmyblock-nepal.firebaseapp.com",
-  projectId: "fixmyblock-nepal",
-  storageBucket: "fixmyblock-nepal.firebasestorage.app",
-  messagingSenderId: "742804276117",
-  appId: "1:742804276117:web:ddab9eeff9a357c1112c9c",
-  measurementId: "G-C3RQER0PC1"
+            apiKey: "AIzaSy...",          // ⚠️ REPLACE WITH YOUR ACTUAL CONFIG
+            authDomain: "your-project.firebaseapp.com",
+            projectId: "your-project-id",
+            storageBucket: "your-project.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef"
         };
 
         // ================================================================
@@ -187,16 +162,25 @@
         const errorMsg = document.getElementById('loginError');
 
         // ================================================================
+        //  AUTO-FILL (FOR TESTING – HIDDEN FROM UI)
+        // ================================================================
+
+        // Pre-fill credentials for quick testing (no visible text)
+        emailInput.value = 'admin@fixmyblock.gov.np';
+        passwordInput.value = 'admin123';
+
+        // ================================================================
         //  CHECK IF ALREADY LOGGED IN
         // ================================================================
 
         onAuthStateChanged(auth, async (user) => {
+            console.log('🔐 Auth state changed:', user ? 'Logged in as ' + user.email : 'Logged out');
+
             if (user) {
-                console.log('🔐 User already logged in:', user.email);
                 try {
                     const adminDoc = await getDoc(doc(db, 'admins', user.uid));
                     if (adminDoc.exists() && adminDoc.data().role === 'admin') {
-                        console.log('✅ User is admin, redirecting to admin.html');
+                        console.log('✅ Admin already logged in, redirecting...');
                         window.location.href = 'admin.html';
                     } else {
                         console.log('❌ User is not admin, logging out...');
@@ -207,9 +191,6 @@
                 }
             } else {
                 console.log('🔐 No user logged in, showing login form');
-                // Auto-fill demo credentials
-                emailInput.value = 'admin@fixmyblock.gov.np';
-                passwordInput.value = 'admin123';
             }
         });
 
@@ -220,6 +201,8 @@
         async function handleLogin() {
             const email = emailInput.value.trim();
             const password = passwordInput.value.trim();
+
+            console.log('🔐 Login attempt for:', email);
 
             if (!email || !password) {
                 errorMsg.style.display = 'block';
@@ -236,7 +219,6 @@
                 const user = userCredential.user;
                 console.log('✅ Login successful:', user.email);
 
-                // Check if admin
                 const adminDoc = await getDoc(doc(db, 'admins', user.uid));
                 if (!adminDoc.exists() || adminDoc.data().role !== 'admin') {
                     errorMsg.style.display = 'block';
@@ -247,14 +229,25 @@
                     return;
                 }
 
-                // Success - redirect to admin
-                console.log('✅ Admin verified, redirecting...');
-                window.location.href = 'admin.html';
+                console.log('✅ Admin verified! Redirecting...');
+                setTimeout(() => {
+                    window.location.href = 'admin.html';
+                }, 500);
 
             } catch (error) {
-                console.error('Login error:', error);
+                console.error('❌ Login error:', error);
+                let userMessage = error.message;
+                if (error.code === 'auth/user-not-found') {
+                    userMessage = 'No account found with this email. Please check and try again.';
+                } else if (error.code === 'auth/wrong-password') {
+                    userMessage = 'Incorrect password. Please try again.';
+                } else if (error.code === 'auth/too-many-requests') {
+                    userMessage = 'Too many failed attempts. Please wait a few minutes.';
+                } else if (error.code === 'auth/network-request-failed') {
+                    userMessage = 'Network error. Please check your internet connection.';
+                }
                 errorMsg.style.display = 'block';
-                errorMsg.textContent = error.message || 'Invalid credentials. Please try again.';
+                errorMsg.textContent = userMessage;
                 loginBtn.disabled = false;
                 loginBtn.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i> Login';
             }
@@ -265,16 +258,15 @@
         // ================================================================
 
         loginBtn.addEventListener('click', handleLogin);
-
         passwordInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') handleLogin();
         });
-
         emailInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') handleLogin();
         });
 
         console.log('🔐 FixMyBlock Nepal - Admin Login Page Loaded');
+        console.log('💡 Credentials are pre-filled for testing (not visible on page)');
     </script>
 
 </body>
