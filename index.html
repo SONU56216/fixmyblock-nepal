@@ -1,19 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-     <!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-M8KYRCK604"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-M8KYRCK604');
-</script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FixMyBlock Nepal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
+        /* ===== RESET & BASE ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
@@ -42,6 +35,21 @@
         }
         .app-header .logo { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 700; }
         .app-header .logo i { font-size: 26px; }
+        .logo-subtitle { font-size: 11px; font-weight: 400; opacity: 0.8; }
+        .report-count { font-size: 13px; font-weight: 400; color: #888; }
+        .screen-title-heading { font-weight: 600; font-size: 17px; }
+        .spacer { width: 40px; }
+        .required { color: red; }
+        .form-error { color: red; font-size: 13px; display: none; margin-top: 6px; }
+        .hidden-input { display: none; }
+        .button-row { display: flex; gap: 8px; flex-wrap: wrap; }
+        .btn-auto { width: auto; }
+        .mb-8 { margin-bottom: 8px; }
+        .location-status { font-size: 12px; color: #888; margin-top: 4px; }
+        .retry-button { margin-top: 10px; padding: 8px 20px; background: #1a73e8; color: #fff; border: none; border-radius: 8px; cursor: pointer; }
+        .report-icon { margin-right: 10px; }
+        .report-description { font-size: 13px; color: #555; margin: 4px 0 6px; }
+        .chevron-icon { font-size: 12px; }
         .app-header .badge { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 11px; }
         .header-right { display: flex; align-items: center; gap: 10px; }
         .admin-toggle { background: none; border: none; color: #fff; font-size: 18px; cursor: pointer; }
@@ -76,6 +84,10 @@
         .form-group textarea, .form-group input[type="text"] { width: 100%; padding: 12px 14px; border: 2px solid #e0e4ea; border-radius: 12px; font-size: 15px; font-family: inherit; background: #fafbfc; }
         .form-group textarea:focus, .form-group input[type="text"]:focus { outline: none; border-color: #1a73e8; }
         .form-group textarea { min-height: 80px; resize: vertical; }
+        .photo-preview { width: 100%; height: 160px; background: #f0f2f5; border-radius: 12px; border: 2px dashed #d0d5dd; display: flex; align-items: center; justify-content: center; color: #888; overflow: hidden; margin-top: 6px; }
+        .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
+        .photo-preview .placeholder-text { text-align: center; }
+        .photo-preview .placeholder-text i { font-size: 36px; display: block; margin-bottom: 6px; color: #bbb; }
         .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border: none; border-radius: 14px; font-weight: 600; font-size: 16px; cursor: pointer; width: 100%; transition: all 0.2s; }
         .btn-primary { background: #1a73e8; color: #fff; }
         .btn-primary:hover { background: #1557b0; }
@@ -84,35 +96,10 @@
         .btn-outline { background: transparent; color: #1a73e8; border: 2px solid #1a73e8; }
         .btn-outline:hover { background: #e8f0fe; }
         .btn-sm { padding: 8px 16px; font-size: 13px; width: auto; }
-        .btn-location { margin-bottom: 8px; }
-        .logo-subtitle { font-size: 11px; font-weight: 400; opacity: 0.8; }
-        .report-count { font-size: 13px; font-weight: 400; color: #888; }
-        .report-action-title { font-weight: 600; font-size: 17px; }
-        .spacer-sm { width: 40px; display: inline-block; }
-        .required-indicator { color: red; }
-        .form-category-error { color: red; font-size: 13px; display: none; }
-        .location-info { font-size: 12px; color: #888; margin-top: 4px; }
-        .icon-gap { margin-right: 10px; }
-        .icon-blue { color: #1a73e8; }
-        .report-description { font-size: 13px; color: #555; margin: 4px 0 6px; }
-        .chevron-icon { font-size: 12px; }
-        .error-help-text { font-size: 13px; margin-top: 8px; color: #888; }
-        .btn-error-retry { margin-top: 10px; }
-        .btn-danger { background: #ea4335; color: #fff; }
-        .btn-danger:hover { background: #c62828; }
         .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            max-width: 480px;
-            margin: 0 auto;
-            background: #fff;
-            border-top: 1px solid #e8ecf2;
-            display: flex;
-            justify-content: space-around;
-            padding: 8px 0 env(safe-area-inset-bottom,8px) 0;
-            z-index: 200;
+            position: fixed; bottom: 0; left: 0; right: 0; max-width: 480px; margin: 0 auto;
+            background: #fff; border-top: 1px solid #e8ecf2;
+            display: flex; justify-content: space-around; padding: 8px 0 env(safe-area-inset-bottom,8px) 0; z-index: 200;
             box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
         }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 11px; color: #888; cursor: pointer; padding: 4px 16px; background: none; border: none; font-family: inherit; }
@@ -122,23 +109,10 @@
         .nav-item .fab { background: #1a73e8; color: #fff; width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; box-shadow: 0 4px 16px rgba(26,115,232,0.35); }
         .nav-item .fab:active { transform: scale(0.92); }
         .toast {
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            max-width: 400px;
-            width: 90%;
-            background: #1a1a2e;
-            color: #fff;
-            padding: 14px 20px;
-            border-radius: 14px;
-            text-align: center;
-            font-weight: 500;
-            z-index: 999;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.30);
+            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+            max-width: 400px; width: 90%; background: #1a1a2e; color: #fff; padding: 14px 20px; border-radius: 14px;
+            text-align: center; font-weight: 500; z-index: 999; opacity: 0; transition: opacity 0.3s;
+            pointer-events: none; box-shadow: 0 8px 30px rgba(0,0,0,0.30);
         }
         .toast.show { opacity: 1; }
         .toast.success { background: #1b5e20; }
@@ -230,12 +204,12 @@
         <div class="screen" id="screen-report">
             <div class="flex-between mb-16">
                 <button class="back-btn" onclick="showScreen('home')"><i class="fas fa-arrow-left"></i> Back</button>
-                <span class="report-action-title">Report an Issue</span>
-                <span class="spacer-sm" aria-hidden="true"></span>
+                <span class="screen-title-heading">Report an Issue</span>
+                <span class="spacer"></span>
             </div>
 
             <div class="form-group">
-                <label>Select Category <span class="required-indicator">*</span></label>
+                <label>Select Category <span class="required">*</span></label>
                 <div class="category-grid" id="formCategoryGrid">
                     <button class="category-btn" data-category="pothole" onclick="selectFormCategory(this)">
                         <i class="fas fa-circle-exclamation"></i> Pothole
@@ -253,16 +227,36 @@
                         <i class="fas fa-mountain"></i> Landslide
                     </button>
                 </div>
-                <div id="formCategoryError" class="form-category-error">Please select a category</div>
+                <div id="formCategoryError" class="form-error">Please select a category</div>
+            </div>
+
+            <!-- ===== PHOTO UPLOAD ===== -->
+            <div class="form-group">
+                <label>Photo</label>
+                <input type="file" id="photoInput" accept="image/*" class="hidden-input" />
+                <div class="button-row">
+                    <button class="btn btn-outline btn-sm btn-auto" onclick="document.getElementById('photoInput').click();">
+                        <i class="fas fa-camera"></i> Take Photo
+                    </button>
+                    <button class="btn btn-outline btn-sm btn-auto" onclick="document.getElementById('photoInput').click();">
+                        <i class="fas fa-image"></i> Gallery
+                    </button>
+                </div>
+                <div class="photo-preview" id="photoPreview">
+                    <div class="placeholder-text">
+                        <i class="fas fa-camera"></i>
+                        <span>No photo selected</span>
+                    </div>
+                </div>
             </div>
 
             <div class="form-group">
                 <label>Location</label>
-                <button class="btn btn-outline btn-sm btn-location" onclick="getLocation()">
+                <button class="btn btn-outline btn-sm btn-auto mb-8" onclick="getLocation()">
                     <i class="fas fa-location-dot"></i> Use My Location
                 </button>
                 <input type="text" id="locationInput" placeholder="e.g. New Road, Kathmandu" />
-                <div class="location-info" id="locationStatus">📍 Waiting for location...</div>
+                <div class="location-status" id="locationStatus">📍 Waiting for location...</div>
             </div>
 
             <div class="form-group">
@@ -290,8 +284,10 @@
             </button>
         </nav>
     </div>
-    <!-- ===== DUPLICATE MODAL CONTAINER ===== -->
-<div id="duplicateModalContainer"></div>
+
+    <!-- ============================================================ -->
+    <!-- ===== JAVASCRIPT (FIREBASE + IMGBB UPLOAD) ===== -->
+    <!-- ============================================================ -->
 
     <script type="module">
         // ================================================================
@@ -299,18 +295,23 @@
         // ================================================================
 
         const firebaseConfig = {
-  apiKey: "AIzaSyBVvWlYUCOfALhtWdR53_ZcP5spTYhDyu8",
+           apiKey: "AIzaSyBVvWlYUCOfALhtWdR53_ZcP5spTYhDyu8",
   authDomain: "fixmyblock-nepal.firebaseapp.com",
   projectId: "fixmyblock-nepal",
   storageBucket: "fixmyblock-nepal.firebasestorage.app",
   messagingSenderId: "742804276117",
   appId: "1:742804276117:web:ddab9eeff9a357c1112c9c",
   measurementId: "G-C3RQER0PC1"
-};
-
+        };
 
         // ================================================================
-        // 🔴 STEP 2: DO NOT CHANGE ANYTHING BELOW THIS LINE
+        // 🔴🔴🔴 STEP 2: PASTE YOUR IMGBB API KEY HERE 🔴🔴🔴
+        // ================================================================
+
+        const IMGBB_API_KEY = '2d59a842482977b8aa645a353ecbaafc'; // ⚠️ REPLACE WITH YOUR ACTUAL KEY
+
+        // ================================================================
+        // 🔴 STEP 3: DO NOT CHANGE ANYTHING BELOW THIS LINE
         // ================================================================
 
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -381,6 +382,33 @@
         }
 
         // ================================================================
+        //  IMGBB UPLOAD FUNCTION (FREE)
+        // ================================================================
+
+        async function uploadToImgBB(file) {
+            const formData = new FormData();
+            formData.append('key', IMGBB_API_KEY);
+            formData.append('image', file);
+
+            try {
+                const response = await fetch('https://api.imgbb.com/1/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                if (data.success) {
+                    return data.data.url;
+                } else {
+                    console.error('ImgBB error:', data.error);
+                    return '';
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                return '';
+            }
+        }
+
+        // ================================================================
         //  SCREEN NAVIGATION
         // ================================================================
 
@@ -420,7 +448,7 @@
                             <i class="fas fa-exclamation-circle"></i>
                             <h3>Error Loading Reports</h3>
                             <p>${error.message}</p>
-                            <button class="btn btn-primary btn-sm btn-error-retry" onclick="location.reload()">Retry</button>
+                            <button class="retry-button" onclick="location.reload()">Retry</button>
                         </div>
                     `;
             });
@@ -445,7 +473,7 @@
                     <div class="report-card">
                         <div class="top-row">
                             <div>
-                                <span class="icon-gap"><i class="fas ${getCategoryIcon(r.category)} icon-blue"></i></span>
+                                <span class="report-icon"><i class="fas ${getCategoryIcon(r.category)}"></i></span>
                                 <span class="title">${getCategoryLabel(r.category)}</span>
                             </div>
                             <span class="status-badge ${getStatusClass(r.status || 'submitted')}">${getStatusLabel(r.status || 'submitted')}</span>
@@ -454,6 +482,7 @@
                         <div class="report-description">${r.description ? r.description.substring(0, 80) + (r.description.length > 80 ? '...' : '') : 'No description'}</div>
                         <div class="footer">
                             <span>${formatTimestamp(r.createdAt)}</span>
+                            ${r.photoUrl ? '<span><i class="fas fa-image"></i> Photo</span>' : ''}
                             <span><i class="fas fa-chevron-right chevron-icon"></i></span>
                         </div>
                     </div>
@@ -496,12 +525,22 @@
         };
 
         // ================================================================
-        //  LOCATION
+        //  PHOTO & LOCATION
         // ================================================================
 
         let currentLat = null;
         let currentLng = null;
         let currentLocationName = '';
+
+        document.getElementById('photoInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                document.getElementById('photoPreview').innerHTML = `<img src="${ev.target.result}" alt="Photo" />`;
+            };
+            reader.readAsDataURL(file);
+        });
 
         window.getLocation = function() {
             const status = document.getElementById('locationStatus');
@@ -543,74 +582,68 @@
         }
 
         // ================================================================
-        //  SUBMIT REPORT (WITH FULL ERROR HANDLING)
+        //  SUBMIT REPORT (WITH IMGBB PHOTO UPLOAD)
         // ================================================================
 
         document.getElementById('submitReportBtn').addEventListener('click', async function() {
             const btn = this;
             if (btn.disabled) return;
 
-            // Validate category
             if (!selectedCategory) {
                 document.getElementById('formCategoryError').style.display = 'block';
                 showToast('Please select a category', 'error');
                 return;
             }
 
-            // Get form data
             const location = document.getElementById('locationInput').value.trim() || currentLocationName || 'Kathmandu, Nepal';
             const description = document.getElementById('descriptionInput').value.trim();
             const name = document.getElementById('nameInput').value.trim() || 'Anonymous';
 
-            // Disable button
             btn.disabled = true;
             btn.innerHTML = '<span class="spinner"></span> Submitting...';
 
             try {
-                console.log('📝 Submitting report...');
-                console.log('Category:', selectedCategory);
-                console.log('Location:', location);
-                console.log('Description:', description);
-                console.log('Name:', name);
+                // Upload photo using ImgBB (FREE)
+                let photoUrl = '';
+                const photoInput = document.getElementById('photoInput');
+                if (photoInput.files.length > 0) {
+                    const file = photoInput.files[0];
+                    photoUrl = await uploadToImgBB(file);
+                    if (photoUrl) {
+                        console.log('✅ Photo uploaded to ImgBB:', photoUrl);
+                    } else {
+                        console.warn('⚠️ Photo upload failed, continuing without photo');
+                    }
+                }
 
-                // Prepare data
-                const reportData = {
+                // Save to Firestore
+                await addDoc(collection(db, 'reports'), {
                     category: selectedCategory,
                     description: description || 'No description provided',
                     location: location,
                     latitude: currentLat || null,
                     longitude: currentLng || null,
+                    photoUrl: photoUrl || '',
                     status: 'submitted',
                     submittedBy: name,
                     createdAt: serverTimestamp()
-                };
-
-                console.log('📤 Sending to Firestore:', reportData);
-
-                // Save to Firestore
-                const docRef = await addDoc(collection(db, 'reports'), reportData);
-                console.log('✅ Report saved! Document ID:', docRef.id);
+                });
 
                 showToast('✅ Report submitted successfully!', 'success');
 
                 // Reset form
                 document.querySelectorAll('#formCategoryGrid .category-btn').forEach(b => b.classList.remove('selected'));
+                document.getElementById('photoPreview').innerHTML =
+                    `<div class="placeholder-text"><i class="fas fa-camera"></i><span>No photo selected</span></div>`;
                 document.getElementById('locationInput').value = '';
                 document.getElementById('descriptionInput').value = '';
                 document.getElementById('nameInput').value = '';
+                document.getElementById('photoInput').value = '';
                 selectedCategory = null;
-                document.getElementById('formCategoryError').style.display = 'none';
-
-                // Go home
                 showScreen('home');
 
             } catch (error) {
-                console.error('❌ Submit error:', error);
-                console.error('Error details:', {
-                    code: error.code,
-                    message: error.message,
-                    stack: error.stack
-                });
+                console.error('Submit error:', error);
                 showToast('❌ Error: ' + error.message, 'error');
             } finally {
                 btn.disabled = false;
@@ -626,8 +659,8 @@
             try {
                 console.log('📡 Testing Firestore connection...');
                 const q = collection(db, 'reports');
-                const snapshot = await getDocs(q);
-                console.log('✅ Firestore connection successful! Found', snapshot.size, 'reports');
+                await getDocs(q);
+                console.log('✅ Firestore connection successful!');
                 listenToReports();
             } catch (error) {
                 console.error('❌ Firestore connection failed:', error);
@@ -636,11 +669,7 @@
                             <i class="fas fa-exclamation-circle"></i>
                             <h3>Connection Error</h3>
                             <p>${error.message}</p>
-                            <p class="error-help-text">
-                                Make sure you are using a local server (http://localhost) 
-                                and your Firebase config is correct.
-                            </p>
-                            <button class="btn btn-primary btn-sm btn-error-retry" onclick="location.reload()">Retry</button>
+                            <button class="retry-button" onclick="location.reload()">Retry</button>
                         </div>
                     `;
             }
@@ -654,13 +683,15 @@
                     currentLat = pos.coords.latitude;
                     currentLng = pos.coords.longitude;
                     currentLocationName = getLocationName(currentLat, currentLng);
-                    document.getElementById('locationStatus').textContent = `📍 Location ready: ${currentLocationName}`;
+                    document.getElementById('locationStatus').textContent =
+                        `📍 Location ready: ${currentLocationName}`;
                 },
                 () => {}, { timeout: 5000 }
             );
         }
 
-        console.log('🏗️ FixMyBlock Nepal - Fixed Version Loaded!');
+        console.log('🏗️ FixMyBlock Nepal - ImgBB Version Loaded!');
+        console.log('📸 Photo upload via ImgBB (FREE)');
     </script>
 
 </body>
