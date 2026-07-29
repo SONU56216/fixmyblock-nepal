@@ -2,191 +2,90 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Dashboard - FixMyBlock Nepal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/admin.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
     <style>
-        /* ===== RESET & BASE ===== */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: #f0f2f5;
-            color: #1a1a2e;
-            min-height: 100vh;
+        /* Admin map styles */
+        .admin-report-item .mini-map {
+            width: 100%;
+            height: 150px;
+            border-radius: 8px;
+            margin-top: 8px;
+            border: 1px solid #e8ecf2;
+            overflow: hidden;
+            background: #f8f9fc;
         }
-        .admin-container {
-            max-width: 1100px;
-            margin: 0 auto;
-            background: #ffffff;
-            min-height: 100vh;
-            padding: 0 24px 40px;
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.04);
-        }
-
-        /* ===== HEADER ===== */
-        .admin-header {
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            color: #fff;
-            padding: 18px 24px;
+        .admin-report-item .mini-map .map-loading {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            border-radius: 0 0 20px 20px;
-            margin: 0 -24px 24px;
-            flex-wrap: wrap;
+            justify-content: center;
+            height: 100%;
+            color: #888;
+            font-size: 13px;
+        }
+        .admin-report-item .info {
+            flex: 1;
+            min-width: 220px;
+        }
+        .admin-report-item {
+            display: flex;
+            flex-direction: column;
             gap: 10px;
         }
-        .admin-header .logo { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 700; }
-        .admin-header .logo i { font-size: 26px; color: #1a73e8; }
-        .admin-header .logo .subtitle { font-size: 12px; font-weight: 400; opacity: 0.7; margin-left: -4px; }
-        .admin-header .badge { background: rgba(255,255,255,0.15); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.3px; }
-        .header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-
-        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 16px; border: none; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.2s; width: auto; }
-        .btn-outline { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.25); }
-        .btn-outline:hover { background: rgba(255,255,255,0.2); }
-        .btn-danger { background: #ea4335; color: #fff; }
-        .btn-danger:hover { background: #c62828; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(234,67,53,0.3); }
-        .btn-success { background: #34a853; color: #fff; }
-        .btn-success:hover { background: #2d9248; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(52,168,83,0.3); }
-        .btn-primary { background: #1a73e8; color: #fff; }
-        .btn-primary:hover { background: #1557b0; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,115,232,0.3); }
-        .btn-sm { padding: 6px 14px; font-size: 12px; }
-        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
-
-        /* ===== STATS ===== */
-        .admin-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 22px; }
-        .admin-stat { background: #f8f9fc; border-radius: 12px; padding: 16px 12px; text-align: center; border: 1px solid #e8ecf2; transition: transform 0.2s, box-shadow 0.2s; }
-        .admin-stat:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.06); }
-        .admin-stat .num { font-size: 30px; font-weight: 700; color: #1a1a2e; }
-        .admin-stat .lbl { font-size: 12px; color: #5f6b7a; margin-top: 2px; }
-        .admin-stat .num.submitted { color: #0d47a1; }
-        .admin-stat .num.progress { color: #e65100; }
-        .admin-stat .num.resolved { color: #1b5e20; }
-        .admin-stat .num.total { color: #1a73e8; }
-
-        /* ===== ACTIONS ===== */
-        .admin-actions { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
-        .admin-actions .btn { flex: 0 1 auto; }
-        .admin-actions .search-box { flex: 2; min-width: 200px; }
-        .admin-actions .search-box input {
-            width: 100%; padding: 10px 16px; border: 2px solid #e0e4ea; border-radius: 10px; font-size: 14px; background: #fafbfc; transition: border 0.2s, box-shadow 0.2s;
+        .admin-report-item .top-section {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
         }
-        .admin-actions .search-box input:focus { outline: none; border-color: #1a73e8; box-shadow: 0 0 0 4px rgba(26,115,232,0.1); background: #fff; }
-        .admin-actions .search-box input::placeholder { color: #aaa; }
-
-        /* ===== PRIORITY FILTERS ===== */
-        .filters-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 12px; padding: 12px 0; border-bottom: 1px solid #f0f2f5; }
-        .filters-row .label { font-size: 13px; font-weight: 600; color: #5f6b7a; margin-right: 4px; }
-        .filter-priority-btn {
-            padding: 6px 16px; border-radius: 20px; border: 2px solid #e8ecf2; background: transparent; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; color: #555;
+        .admin-report-item .bottom-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
         }
-        .filter-priority-btn:hover { border-color: #1a73e8; color: #1a73e8; }
-        .filter-priority-btn.active { border-color: #1a73e8; background: #e8f0fe; color: #1a73e8; }
-        .filter-priority-btn.priority-low { border-color: #34a853; color: #34a853; }
-        .filter-priority-btn.priority-low.active { background: #e8f5e9; }
-        .filter-priority-btn.priority-medium { border-color: #fbbc04; color: #fbbc04; }
-        .filter-priority-btn.priority-medium.active { background: #fff8e1; }
-        .filter-priority-btn.priority-high { border-color: #ff6b00; color: #ff6b00; }
-        .filter-priority-btn.priority-high.active { background: #fff3e0; }
-        .filter-priority-btn.priority-critical { border-color: #ea4335; color: #ea4335; }
-        .filter-priority-btn.priority-critical.active { background: #fce4ec; }
-
-        .sort-select { padding: 6px 14px; border-radius: 8px; border: 2px solid #e8ecf2; font-size: 13px; background: #fff; cursor: pointer; color: #333; transition: border 0.2s; }
-        .sort-select:focus { outline: none; border-color: #1a73e8; }
-
-        /* ===== REPORT ITEM ===== */
+        .admin-report-item .bottom-section .map-col {
+            flex: 1;
+            min-width: 200px;
+        }
+        .admin-report-item .bottom-section .info-col {
+            flex: 2;
+            min-width: 250px;
+        }
+        /* Modern glassmorphism for admin cards */
         .admin-report-item {
-            background: #ffffff; border: 1px solid #e8ecf2; border-radius: 12px; padding: 16px 18px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 14px; transition: all 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+            background: rgba(255, 255, 255, 0.7);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            padding: 18px;
+            margin-bottom: 14px;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-        .admin-report-item:hover { border-color: #1a73e8; box-shadow: 0 4px 16px rgba(26,115,232,0.08); }
-        .admin-report-item .info { flex: 1; min-width: 220px; }
-        .admin-report-item .info .title { font-weight: 600; font-size: 15px; margin-bottom: 2px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
-        .admin-report-item .info .title .report-id { color: #888; font-weight: 400; font-size: 13px; }
-        .admin-report-item .info .title .category-icon { margin: 0 2px; }
-        .admin-report-item .info .loc { font-size: 13px; color: #5f6b7a; margin: 2px 0; }
-        .admin-report-item .info .loc i { margin-right: 4px; font-size: 12px; }
-        .admin-report-item .info .meta { font-size: 12px; color: #888; margin-top: 2px; }
-        .admin-report-item .info .desc { font-size: 13px; color: #444; margin-top: 6px; padding: 8px 12px; background: #f8f9fc; border-radius: 8px; border-left: 3px solid #1a73e8; }
-        .admin-report-item .info .photo-link { font-size: 12px; margin-top: 4px; }
-        .admin-report-item .info .photo-link a { color: #1a73e8; text-decoration: none; }
-        .admin-report-item .info .photo-link a:hover { text-decoration: underline; }
-
-        .status-badge { display: inline-block; padding: 3px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
-        .status-submitted { background: #e3f2fd; color: #0d47a1; }
-        .status-reviewing { background: #fff3e0; color: #e65100; }
-        .status-progress { background: #fce4ec; color: #b71c1c; }
-        .status-resolved { background: #e8f5e9; color: #1b5e20; }
-        .status-rejected { background: #fafafa; color: #616161; }
-
-        .priority-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-        .priority-low { background: #e8f5e9; color: #34a853; }
-        .priority-medium { background: #fff8e1; color: #fbbc04; }
-        .priority-high { background: #fff3e0; color: #ff6b00; }
-        .priority-critical { background: #fce4ec; color: #ea4335; animation: pulseCritical 1.5s infinite; }
-        @keyframes pulseCritical { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
-
-        .community-stats { display: flex; gap: 18px; font-size: 13px; color: #5f6b7a; margin-top: 4px; flex-wrap: wrap; }
-        .stat-item { display: inline-flex; align-items: center; gap: 4px; }
-        .stat-item i { font-size: 14px; }
-        .stat-item .count { font-weight: 600; color: #1a1a2e; }
-
-        .admin-report-item .actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-        .admin-report-item .actions select { padding: 6px 12px; border-radius: 8px; border: 2px solid #e0e4ea; font-size: 13px; background: #fff; cursor: pointer; transition: border 0.2s; color: #333; }
-        .admin-report-item .actions select:focus { outline: none; border-color: #1a73e8; }
-        .admin-report-item .actions .btn-sm { padding: 6px 10px; font-size: 13px; min-width: 36px; }
-
-        .empty-state, .loading-state, .error-state { text-align: center; padding: 50px 20px; color: #888; }
-        .empty-state i, .error-state i { font-size: 56px; color: #ddd; display: block; margin-bottom: 14px; }
-        .empty-state h3 { color: #555; margin-bottom: 4px; font-size: 18px; }
-        .empty-state p { font-size: 14px; }
-        .error-state { color: #ea4335; }
-        .error-state i { color: #ea4335; }
-        .error-state .btn { margin-top: 12px; }
-        .loading-state i { font-size: 36px; color: #1a73e8; display: block; margin-bottom: 14px; }
-        .loading-state p { font-size: 15px; color: #888; }
-
-        .toast {
-            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); max-width: 420px; width: 90%; background: #1a1a2e; color: #fff; padding: 14px 22px; border-radius: 14px; text-align: center; font-weight: 500; z-index: 9999; opacity: 0; transition: opacity 0.35s ease, transform 0.35s ease; pointer-events: none; box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+        .admin-report-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
         }
-        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-        .toast.success { background: #1b5e20; }
-        .toast.error { background: #b71c1c; }
-        .toast.info { background: #0d47a1; }
-
-        .spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.2); border-top: 3px solid #fff; border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        @media (max-width: 768px) {
-            .admin-container { padding: 0 14px 30px; }
-            .admin-header { padding: 14px 16px; margin: 0 -14px 16px; flex-direction: column; align-items: stretch; gap: 8px; }
-            .admin-header .logo { font-size: 18px; }
-            .header-right { justify-content: space-between; }
-            .admin-stats { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-            .admin-stat .num { font-size: 24px; }
-            .admin-actions { flex-direction: column; }
-            .admin-actions .btn { width: 100%; justify-content: center; }
-            .admin-actions .search-box { min-width: 100%; }
-            .filters-row { flex-direction: column; align-items: stretch; gap: 8px; }
-            .filters-row .label { margin-right: 0; }
-            .filter-priority-btn { padding: 5px 12px; font-size: 11px; }
-            .admin-report-item { flex-direction: column; align-items: stretch; padding: 14px; }
-            .admin-report-item .actions { justify-content: flex-start; padding-top: 10px; border-top: 1px solid #f0f2f5; }
-            .admin-report-item .actions select { flex: 1; min-width: 100px; }
-            .sort-select { width: 100%; }
+        /* Language toggle in admin */
+        .lang-toggle-admin {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
         }
-        @media (max-width: 480px) {
-            .admin-stats { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-            .admin-stat { padding: 12px 8px; }
-            .admin-stat .num { font-size: 20px; }
-            .admin-stat .lbl { font-size: 10px; }
-            .admin-report-item .info .title { font-size: 14px; }
-            .toast { font-size: 14px; padding: 12px 16px; bottom: 80px; }
+        .lang-toggle-admin:hover {
+            background: rgba(255,255,255,0.25);
         }
-
-        .btn-delete { background: #ea4335; color: #fff; }
-        .btn-delete:hover { background: #c62828; }
-        .btn-delete:disabled { background: #ffcdd2; color: #888; cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -202,6 +101,7 @@
                 <span class="subtitle">Admin</span>
             </div>
             <div class="header-right">
+                <button class="lang-toggle-admin" id="langToggleAdmin">🇳🇵 नेपाली</button>
                 <span class="badge">● LIVE</span>
                 <button class="btn btn-outline btn-sm" onclick="refreshReports()">
                     <i class="fas fa-sync"></i> Refresh
@@ -215,40 +115,52 @@
         <div class="admin-body">
 
             <div class="admin-stats" id="adminStats">
-                <div class="admin-stat"><div class="num total" id="adminTotal">0</div><div class="lbl">Total Reports</div></div>
-                <div class="admin-stat"><div class="num submitted" id="adminSubmitted">0</div><div class="lbl">Submitted</div></div>
-                <div class="admin-stat"><div class="num progress" id="adminProgress">0</div><div class="lbl">In Progress</div></div>
-                <div class="admin-stat"><div class="num resolved" id="adminResolved">0</div><div class="lbl">Resolved</div></div>
+                <div class="admin-stat glass-card">
+                    <div class="num total" id="adminTotal">0</div>
+                    <div class="lbl" data-key="total">Total</div>
+                </div>
+                <div class="admin-stat glass-card">
+                    <div class="num submitted" id="adminSubmitted">0</div>
+                    <div class="lbl" data-key="submitted">Submitted</div>
+                </div>
+                <div class="admin-stat glass-card">
+                    <div class="num progress" id="adminProgress">0</div>
+                    <div class="lbl" data-key="inProgress">In Progress</div>
+                </div>
+                <div class="admin-stat glass-card">
+                    <div class="num resolved" id="adminResolved">0</div>
+                    <div class="lbl" data-key="resolved">Resolved</div>
+                </div>
             </div>
 
             <div class="admin-actions">
                 <button class="btn btn-success btn-sm" onclick="exportExcel()">
-                    <i class="fas fa-file-excel"></i> Export Excel
+                    <i class="fas fa-file-excel"></i> <span data-key="exportExcel">Export Excel</span>
                 </button>
                 <button class="btn btn-danger btn-sm" onclick="clearAllReports()">
-                    <i class="fas fa-trash"></i> Clear All
+                    <i class="fas fa-trash"></i> <span data-key="clearAll">Clear All</span>
                 </button>
                 <div class="search-box">
-                    <input type="text" id="adminSearch" placeholder="🔍 Search by ID, location, description..." oninput="applyFiltersAndSort()" />
+                    <input type="text" id="adminSearch" placeholder="🔍 Search reports..." oninput="applyFiltersAndSort()" />
                 </div>
             </div>
 
             <div class="filters-row">
-                <span class="label">Priority:</span>
-                <button class="filter-priority-btn active" onclick="filterByPriority('all')">All</button>
-                <button class="filter-priority-btn priority-low" onclick="filterByPriority('LOW')">🟢 Low</button>
-                <button class="filter-priority-btn priority-medium" onclick="filterByPriority('MEDIUM')">🟡 Medium</button>
-                <button class="filter-priority-btn priority-high" onclick="filterByPriority('HIGH')">🟠 High</button>
-                <button class="filter-priority-btn priority-critical" onclick="filterByPriority('CRITICAL')">🔴 Critical</button>
+                <span class="label" data-key="priority">Priority:</span>
+                <button class="filter-priority-btn active" onclick="filterByPriority('all')" data-key="all">All</button>
+                <button class="filter-priority-btn priority-low" onclick="filterByPriority('LOW')" data-key="low">🟢 Low</button>
+                <button class="filter-priority-btn priority-medium" onclick="filterByPriority('MEDIUM')" data-key="medium">🟡 Medium</button>
+                <button class="filter-priority-btn priority-high" onclick="filterByPriority('HIGH')" data-key="high">🟠 High</button>
+                <button class="filter-priority-btn priority-critical" onclick="filterByPriority('CRITICAL')" data-key="critical">🔴 Critical</button>
             </div>
 
-            <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px;">
-                <span style="font-size:13px;font-weight:600;color:#5f6b7a;">Sort by:</span>
-                <select class="sort-select" onchange="sortReports(this.value)">
-                    <option value="newest">Newest</option>
-                    <option value="oldest">Oldest</option>
-                    <option value="supported">Most Supported</option>
-                    <option value="priority">Highest Priority</option>
+            <div class="sort-row">
+                <label class="sort-label" for="adminSortSelect" data-key="sortBy">Sort by:</label>
+                <select id="adminSortSelect" class="sort-select" title="Sort reports" onchange="sortReports(this.value)">
+                    <option value="newest" data-key="newest">Newest</option>
+                    <option value="oldest" data-key="oldest">Oldest</option>
+                    <option value="supported" data-key="mostSupported">Most Supported</option>
+                    <option value="priority" data-key="highestPriority">Highest Priority</option>
                 </select>
             </div>
 
@@ -262,23 +174,26 @@
         </div>
     </div>
 
+    <!-- ============================================================ -->
+    <!-- ===== JAVASCRIPT (MODULE) ===== -->
+    <!-- ============================================================ -->
+
     <script type="module">
         // ================================================================
-        // 🔴🔴🔴 STEP 1: PASTE YOUR FIREBASE CONFIG HERE 🔴🔴🔴
+        // 🔴 CONFIG: PASTE YOUR FIREBASE CONFIG HERE
         // ================================================================
 
         const firebaseConfig = {
-           apiKey: "AIzaSyBVvWlYUCOfALhtWdR53_ZcP5spTYhDyu8",
-  authDomain: "fixmyblock-nepal.firebaseapp.com",
-  projectId: "fixmyblock-nepal",
-  storageBucket: "fixmyblock-nepal.firebasestorage.app",
-  messagingSenderId: "742804276117",
-  appId: "1:742804276117:web:ddab9eeff9a357c1112c9c",
-  measurementId: "G-C3RQER0PC1"
+            apiKey: "AIzaSy...",
+            authDomain: "your-project.firebaseapp.com",
+            projectId: "your-project-id",
+            storageBucket: "your-project.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef"
         };
 
         // ================================================================
-        // 🔴 STEP 2: DO NOT CHANGE ANYTHING BELOW THIS LINE
+        // IMPORTS
         // ================================================================
 
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -300,6 +215,13 @@
             onSnapshot
         } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 
+        import { translations, getTranslation, setLanguage, loadSavedLanguage } from './js/translations.js';
+        import { initStaticMap } from './js/map-utils.js';
+
+        // ================================================================
+        // INIT FIREBASE
+        // ================================================================
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
@@ -307,23 +229,55 @@
         console.log('✅ Firebase Admin initialized!');
 
         // ================================================================
-        //  HELPERS & CONSTANTS
+        // LANGUAGE SETUP
+        // ================================================================
+
+        let currentLang = loadSavedLanguage() || 'en';
+        const langToggleAdmin = document.getElementById('langToggleAdmin');
+
+        function applyTranslationsAdmin() {
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.dataset.key;
+                el.textContent = getTranslation(key);
+            });
+        }
+
+        function toggleLanguageAdmin() {
+            const newLang = currentLang === 'en' ? 'ne' : 'en';
+            setLanguage(newLang);
+            currentLang = newLang;
+            langToggleAdmin.textContent = newLang === 'en' ? '🇳🇵 नेपाली' : '🇬🇧 English';
+            applyTranslationsAdmin();
+            // Refresh reports to update status labels etc.
+            renderAdminReports();
+        }
+
+        langToggleAdmin.addEventListener('click', toggleLanguageAdmin);
+        if (currentLang === 'ne') {
+            langToggleAdmin.textContent = '🇬🇧 English';
+        } else {
+            langToggleAdmin.textContent = '🇳🇵 नेपाली';
+        }
+        applyTranslationsAdmin();
+
+        // ================================================================
+        // HELPERS (using translations)
         // ================================================================
 
         const CATEGORIES = {
-            pothole: { label: 'Pothole', icon: 'fa-circle-exclamation' },
-            streetlight: { label: 'Streetlight', icon: 'fa-lightbulb' },
-            drainage: { label: 'Drainage', icon: 'fa-water' },
-            garbage: { label: 'Garbage', icon: 'fa-trash' },
-            landslide: { label: 'Landslide', icon: 'fa-mountain' }
+            pothole: { label: getTranslation('pothole'), icon: 'fa-circle-exclamation' },
+            streetlight: { label: getTranslation('streetlight'), icon: 'fa-lightbulb' },
+            drainage: { label: getTranslation('drainage'), icon: 'fa-water' },
+            garbage: { label: getTranslation('garbage'), icon: 'fa-trash' },
+            landslide: { label: getTranslation('landslide'), icon: 'fa-mountain' }
         };
 
         const STATUSES = {
-            submitted: { label: 'Submitted', class: 'status-submitted' },
-            reviewing: { label: 'Under Review', class: 'status-reviewing' },
-            in_progress: { label: 'In Progress', class: 'status-progress' },
-            resolved: { label: 'Resolved', class: 'status-resolved' },
-            rejected: { label: 'Rejected', class: 'status-rejected' }
+            submitted: { label: getTranslation('statusSubmitted'), class: 'status-submitted' },
+            reviewing: { label: getTranslation('statusReviewing'), class: 'status-reviewing' },
+            in_progress: { label: getTranslation('statusProgress'), class: 'status-progress' },
+            resolved: { label: getTranslation('statusResolved'), class: 'status-resolved' },
+            rejected: { label: getTranslation('statusRejected'), class: 'status-rejected' }
         };
 
         const PRIORITY_ICONS = {
@@ -335,16 +289,25 @@
 
         const PRIORITY_ORDER = { CRITICAL: 0, HIGH: 1, MEDIUM: 2, LOW: 3 };
 
-        function getCategoryLabel(cat) { return CATEGORIES[cat]?.label || cat; }
+        function getCategoryLabel(cat) {
+            const key = CATEGORIES[cat]?.label || cat;
+            return getTranslation(key) || key;
+        }
+
         function getCategoryIcon(cat) { return CATEGORIES[cat]?.icon || 'fa-question'; }
-        function getStatusLabel(status) { return STATUSES[status]?.label || status; }
+
+        function getStatusLabel(status) {
+            const key = STATUSES[status]?.label || status;
+            return getTranslation(key) || key;
+        }
+
         function getStatusClass(status) { return STATUSES[status]?.class || ''; }
 
         function formatTimestamp(ts) {
             if (!ts) return 'Recently';
             try {
                 const diff = Date.now() - ts.toMillis();
-                if (diff < 60000) return 'Just now';
+                if (diff < 60000) return getTranslation('justNow') || 'Just now';
                 if (diff < 3600000) return Math.floor(diff / 60000) + ' min ago';
                 if (diff < 86400000) return Math.floor(diff / 3600000) + ' hours ago';
                 return Math.floor(diff / 86400000) + ' days ago';
@@ -368,55 +331,36 @@
         }
 
         // ================================================================
-        //  AUTH GUARD
+        // AUTH
         // ================================================================
 
         onAuthStateChanged(auth, async (user) => {
-            console.log('🔐 Auth state:', user ? 'Logged in as ' + user.email : 'Logged out');
-
             if (!user) {
-                console.log('🔐 No user, redirecting to login...');
-                if (!window.location.pathname.includes('login.html')) {
-                    window.location.href = 'login.html';
-                }
+                window.location.href = 'login.html';
                 return;
             }
-
             try {
-                console.log('🔍 Checking admin status for UID:', user.uid);
                 const adminDoc = await getDoc(doc(db, 'admins', user.uid));
-
                 if (!adminDoc.exists() || adminDoc.data().role !== 'admin') {
-                    console.error('❌ User is NOT admin!');
                     await signOut(auth);
                     window.location.href = 'login.html';
                     return;
                 }
-
                 console.log('✅ Admin verified! Loading reports...');
-                if (window._listenerUnsubscribe) {
-                    window._listenerUnsubscribe();
-                }
+                if (window._listenerUnsubscribe) window._listenerUnsubscribe();
                 listenToReports();
-
             } catch (error) {
-                console.error('❌ Error checking admin:', error);
+                console.error('Error checking admin:', error);
                 document.getElementById('adminReportList').innerHTML = `
                         <div class="error-state">
                             <i class="fas fa-exclamation-circle"></i>
                             <h3>Error checking admin status</h3>
                             <p>${error.message}</p>
-                            <button onclick="location.reload()" class="btn btn-primary btn-sm" style="margin-top:12px;">
-                                Retry
-                            </button>
+                            <button onclick="location.reload()" class="btn btn-primary btn-sm retry-btn">Retry</button>
                         </div>
                     `;
             }
         });
-
-        // ================================================================
-        //  LOGOUT
-        // ================================================================
 
         window.logout = async function() {
             await signOut(auth);
@@ -424,16 +368,14 @@
         };
 
         // ================================================================
-        //  LISTEN TO REPORTS (REAL-TIME)
+        // LISTEN TO REPORTS
         // ================================================================
 
         function listenToReports() {
-            console.log('📡 Setting up Firestore listener...');
-
             const q = query(collection(db, 'reports'), orderBy('createdAt', 'desc'));
 
             const unsubscribe = onSnapshot(q, (snapshot) => {
-                console.log('✅ Snapshot received! Size:', snapshot.size);
+                console.log('✅ Admin Snapshot size:', snapshot.size);
                 allReports = [];
                 snapshot.forEach((doc) => {
                     allReports.push({ id: doc.id, ...doc.data() });
@@ -441,15 +383,13 @@
                 applyFiltersAndSort();
                 updateStats();
             }, (error) => {
-                console.error('❌ Listener error:', error);
+                console.error('Listener error:', error);
                 document.getElementById('adminReportList').innerHTML = `
                         <div class="error-state">
                             <i class="fas fa-exclamation-circle"></i>
                             <h3>Error Loading Reports</h3>
                             <p>${error.message}</p>
-                            <button onclick="location.reload()" class="btn btn-primary btn-sm" style="margin-top:12px;">
-                                Retry
-                            </button>
+                            <button onclick="location.reload()" class="btn btn-primary btn-sm retry-btn">Retry</button>
                         </div>
                     `;
             });
@@ -458,7 +398,7 @@
         }
 
         // ================================================================
-        //  FILTERS & SORTING
+        // FILTERS & SORTING
         // ================================================================
 
         window.filterByPriority = function(priority) {
@@ -519,7 +459,7 @@
         };
 
         // ================================================================
-        //  RENDER ADMIN REPORTS
+        // RENDER ADMIN REPORTS (with map)
         // ================================================================
 
         function renderAdminReports() {
@@ -529,7 +469,7 @@
                 container.innerHTML = `
                         <div class="empty-state">
                             <i class="fas fa-inbox"></i>
-                            <h3>No reports found</h3>
+                            <h3>${getTranslation('noReports')}</h3>
                             <p>${allReports.length === 0 ? 'No reports submitted yet.' : 'Try adjusting your search or filters.'}</p>
                         </div>
                     `;
@@ -545,48 +485,66 @@
 
                 return `
                         <div class="admin-report-item">
-                            <div class="info">
-                                <div class="title">
-                                    <span class="report-id">#${r.id.substring(0, 8)}</span>
-                                    <i class="fas ${getCategoryIcon(r.category)} category-icon" style="color:#1a73e8;"></i>
-                                    ${getCategoryLabel(r.category)}
-                                    <span class="priority-badge priority-${priorityClass}">
-                                        <i class="fas ${priorityIcon}"></i> ${priority}
-                                    </span>
+                            <div class="top-section">
+                                <div class="info-col">
+                                    <div class="title">
+                                        <span class="report-id">#${r.id.substring(0, 8)}</span>
+                                        <i class="fas ${getCategoryIcon(r.category)} category-icon"></i>
+                                        ${getCategoryLabel(r.category)}
+                                        <span class="priority-badge priority-${priorityClass}">
+                                            <i class="fas ${priorityIcon}"></i> ${priority}
+                                        </span>
+                                    </div>
+                                    <div class="loc"><i class="fas fa-location-dot"></i> ${r.location || 'Unknown'}</div>
+                                    <div class="meta">
+                                        ${formatTimestamp(r.createdAt)} ·
+                                        ${r.submittedBy || 'Anonymous'} ·
+                                        ${r.latitude ? `${r.latitude.toFixed(4)}, ${r.longitude?.toFixed(4) || ''}` : ''}
+                                    </div>
+                                    <div class="community-stats">
+                                        <span class="stat-item"><i class="fas fa-users"></i> <span class="count">${affected}</span> affected</span>
+                                        <span class="stat-item"><i class="fas fa-hand-peace"></i> <span class="count">${supporters}</span> supporters</span>
+                                    </div>
+                                    ${r.description ? `<div class="desc">📝 ${r.description}</div>` : ''}
+                                    ${r.photoUrl ? `<div class="photo-link">📷 <a href="${r.photoUrl}" target="_blank">View Photo</a></div>` : ''}
                                 </div>
-                                <div class="loc"><i class="fas fa-location-dot"></i> ${r.location || 'Unknown'}</div>
-                                <div class="meta">
-                                    ${formatTimestamp(r.createdAt)} ·
-                                    ${r.submittedBy || 'Anonymous'} ·
-                                    ${r.latitude ? `${r.latitude.toFixed(4)}, ${r.longitude?.toFixed(4) || ''}` : ''}
+                                <div class="admin-report-actions">
+                                    <span class="status-badge ${getStatusClass(r.status || 'submitted')}">${getStatusLabel(r.status || 'submitted')}</span>
+                                    <select onchange="updateStatus('${r.id}', this.value)">
+                                        <option value="submitted" ${(r.status || 'submitted') === 'submitted' ? 'selected' : ''}>Submitted</option>
+                                        <option value="reviewing" ${(r.status || 'submitted') === 'reviewing' ? 'selected' : ''}>Under Review</option>
+                                        <option value="in_progress" ${(r.status || 'submitted') === 'in_progress' ? 'selected' : ''}>In Progress</option>
+                                        <option value="resolved" ${(r.status || 'submitted') === 'resolved' ? 'selected' : ''}>Resolved</option>
+                                        <option value="rejected" ${(r.status || 'submitted') === 'rejected' ? 'selected' : ''}>Rejected</option>
+                                    </select>
+                                    <button class="btn btn-danger btn-sm btn-delete" onclick="deleteReport('${r.id}')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
                                 </div>
-                                <div class="community-stats">
-                                    <span class="stat-item"><i class="fas fa-users"></i> <span class="count">${affected}</span> affected</span>
-                                    <span class="stat-item"><i class="fas fa-hand-peace"></i> <span class="count">${supporters}</span> supporters</span>
-                                </div>
-                                ${r.description ? `<div class="desc">📝 ${r.description}</div>` : ''}
-                                ${r.photoUrl ? `<div class="photo-link">📷 <a href="${r.photoUrl}" target="_blank">View Photo</a></div>` : ''}
                             </div>
-                            <div class="actions">
-                                <span class="status-badge ${getStatusClass(r.status || 'submitted')}">${getStatusLabel(r.status || 'submitted')}</span>
-                                <select onchange="updateStatus('${r.id}', this.value)">
-                                    <option value="submitted" ${(r.status || 'submitted') === 'submitted' ? 'selected' : ''}>Submitted</option>
-                                    <option value="reviewing" ${(r.status || 'submitted') === 'reviewing' ? 'selected' : ''}>Under Review</option>
-                                    <option value="in_progress" ${(r.status || 'submitted') === 'in_progress' ? 'selected' : ''}>In Progress</option>
-                                    <option value="resolved" ${(r.status || 'submitted') === 'resolved' ? 'selected' : ''}>Resolved</option>
-                                    <option value="rejected" ${(r.status || 'submitted') === 'rejected' ? 'selected' : ''}>Rejected</option>
-                                </select>
-                                <button class="btn btn-danger btn-sm btn-delete" onclick="deleteReport('${r.id}')">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                            <div class="bottom-section">
+                                <div class="map-col">
+                                    <div class="mini-map" id="map-${r.id}"></div>
+                                </div>
                             </div>
                         </div>
                     `;
             }).join('');
+
+            // Initialize maps for each report
+            filteredReports.forEach(r => {
+                if (r.latitude && r.longitude) {
+                    const mapId = `map-${r.id}`;
+                    const container = document.getElementById(mapId);
+                    if (container) {
+                        initStaticMap(mapId, r.latitude, r.longitude, `<b>${getCategoryLabel(r.category)}</b><br>${r.location}`);
+                    }
+                }
+            });
         }
 
         // ================================================================
-        //  UPDATE STATS
+        // UPDATE STATS
         // ================================================================
 
         function updateStats() {
@@ -602,7 +560,7 @@
         }
 
         // ================================================================
-        //  UPDATE STATUS
+        // ACTIONS
         // ================================================================
 
         window.updateStatus = async function(reportId, newStatus) {
@@ -613,82 +571,34 @@
                 });
                 showToast(`✅ Report updated to "${getStatusLabel(newStatus)}"`, 'success');
             } catch (error) {
-                console.error('Error updating status:', error);
                 showToast('❌ Error updating status: ' + error.message, 'error');
             }
         };
 
-        // ================================================================
-        //  DELETE REPORT
-        // ================================================================
-
         window.deleteReport = async function(reportId) {
-            if (!confirm('⚠️ Are you sure you want to delete this report?')) return;
-            if (!confirm('⚠️ This action cannot be undone. Are you sure?')) return;
-
+            if (!confirm('Are you sure? This cannot be undone.')) return;
             try {
-                const buttons = document.querySelectorAll(`.btn-delete`);
-                let targetBtn = null;
-                for (const btn of buttons) {
-                    if (btn.closest('.admin-report-item')?.querySelector(`[onclick*="deleteReport('${reportId}')"]`)) {
-                        targetBtn = btn;
-                        break;
-                    }
-                }
-                if (targetBtn) {
-                    targetBtn.disabled = true;
-                    targetBtn.innerHTML = '<span class="spinner" style="width:16px;height:16px;border-width:2px;"></span>';
-                }
-
                 await deleteDoc(doc(db, 'reports', reportId));
-                showToast('🗑️ Report deleted successfully!', 'success');
+                showToast('🗑️ Report deleted', 'info');
                 applyFiltersAndSort();
-
             } catch (error) {
-                console.error('Error deleting report:', error);
-                console.error('Error code:', error.code);
-                console.error('Error message:', error.message);
-
-                let errorMessage = error.message;
-                if (error.code === 'permission-denied') {
-                    errorMessage = 'You do not have permission to delete reports. Please check Firestore rules.';
-                }
-
-                showToast('❌ ' + errorMessage, 'error');
-            } finally {
-                document.querySelectorAll('.btn-delete').forEach(btn => {
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-trash"></i>';
-                });
+                showToast('❌ Error deleting report: ' + error.message, 'error');
             }
         };
-
-        // ================================================================
-        //  REFRESH
-        // ================================================================
 
         window.refreshReports = function() {
             showToast('🔄 Refreshing...', 'info');
             applyFiltersAndSort();
         };
 
-        // ================================================================
-        //  EXPORT EXCEL
-        // ================================================================
-
         window.exportExcel = function() {
             if (allReports.length === 0) {
                 showToast('📭 No reports to export', 'error');
                 return;
             }
-
-            const headers = [
-                'ID', 'Category', 'Description', 'Location',
-                'Latitude', 'Longitude', 'Photo URL', 'Status',
-                'Priority', 'Affected Count', 'Supporters',
-                'Submitted By', 'Date'
+            const headers = ['ID', 'Category', 'Description', 'Location', 'Latitude', 'Longitude', 'Photo URL', 'Status',
+                'Priority', 'Affected Count', 'Supporters', 'Submitted By', 'Date'
             ];
-
             const rows = allReports.map(r => [
                 r.id || '',
                 getCategoryLabel(r.category) || '',
@@ -704,10 +614,8 @@
                 r.submittedBy || 'Anonymous',
                 r.createdAt ? new Date(r.createdAt.toMillis()).toLocaleString() : ''
             ]);
-
             let csv = headers.join(',') + '\n';
             rows.forEach(row => csv += row.join(',') + '\n');
-
             const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -717,39 +625,31 @@
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-
             showToast('📊 Excel file downloaded!', 'success');
         };
 
-        // ================================================================
-        //  CLEAR ALL REPORTS
-        // ================================================================
-
         window.clearAllReports = async function() {
-            if (!confirm('⚠️ Delete ALL reports? This cannot be undone!')) return;
-            if (!confirm('⚠️ Are you absolutely sure?')) return;
-
+            if (!confirm('Delete ALL reports? This cannot be undone!')) return;
             try {
                 const q = query(collection(db, 'reports'));
                 const snapshot = await getDocs(q);
-                let count = 0;
                 for (const doc of snapshot.docs) {
                     await deleteDoc(doc.ref);
-                    count++;
                 }
-                showToast(`🗑️ Deleted ${count} reports`, 'info');
+                showToast('🗑️ All reports cleared', 'info');
             } catch (error) {
-                console.error('Error clearing reports:', error);
                 showToast('❌ Error clearing reports: ' + error.message, 'error');
             }
         };
 
         // ================================================================
-        //  INIT
+        // INIT
         // ================================================================
 
         console.log('👑 FixMyBlock Nepal - Admin Dashboard Loaded');
+        // Auth guard handles the listener
 
+        // Expose functions globally
         window.filterByPriority = filterByPriority;
         window.sortReports = sortReports;
         window.applyFiltersAndSort = applyFiltersAndSort;

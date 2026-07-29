@@ -4,198 +4,143 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FixMyBlock Nepal</title>
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <!-- Google Fonts for modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
     <style>
-        /* ===== RESET & BASE ===== */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: #f0f2f5;
-            color: #1a1a2e;
-            padding-bottom: 80px;
-            min-height: 100vh;
+        /* ===== ADDITIONAL STYLES FOR MAP ===== */
+        #mapPicker {
+            width: 100%;
+            height: 250px;
+            border-radius: 12px;
+            margin-top: 8px;
+            border: 2px solid #e0e4ea;
+            overflow: hidden;
+            position: relative;
         }
-        .app-container {
-            max-width: 480px;
-            margin: 0 auto;
-            background: #fff;
-            min-height: 100vh;
-            box-shadow: 0 0 30px rgba(0,0,0,0.08);
-        }
-        .app-header {
-            background: linear-gradient(135deg, #1a73e8, #0d47a1);
-            color: #fff;
-            padding: 18px 20px 14px;
+        .map-loading {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            justify-content: center;
+            height: 100%;
+            color: #888;
+            background: #f8f9fc;
         }
-        .app-header .logo { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 700; }
-        .app-header .logo i { font-size: 26px; }
-        .logo-subtitle { font-size: 11px; font-weight: 400; opacity: 0.8; }
-        .report-count { font-size: 13px; font-weight: 400; color: #888; }
-        .screen-title-heading { font-weight: 600; font-size: 17px; }
-        .spacer { width: 40px; }
-        .required { color: red; }
-        .form-error { color: red; font-size: 13px; display: none; margin-top: 6px; }
-        .hidden-input { display: none; }
-        .button-row { display: flex; gap: 8px; flex-wrap: wrap; }
-        .btn-auto { width: auto; }
-        .mb-8 { margin-bottom: 8px; }
-        .location-status { font-size: 12px; color: #888; margin-top: 4px; }
-        .retry-button { margin-top: 10px; padding: 8px 20px; background: #1a73e8; color: #fff; border: none; border-radius: 8px; cursor: pointer; }
-        .report-icon { margin-right: 10px; }
-        .report-description { font-size: 13px; color: #555; margin: 4px 0 6px; }
-        .chevron-icon { font-size: 12px; }
-        .app-header .badge { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 11px; }
-        .header-right { display: flex; align-items: center; gap: 10px; }
-        .admin-toggle { background: none; border: none; color: #fff; font-size: 18px; cursor: pointer; }
-        .screen { display: none; padding: 16px 18px 30px; animation: fadeIn 0.25s ease; }
-        .screen.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 16px; }
-        .stat-card { background: #f8f9fc; border-radius: 12px; padding: 14px 8px; text-align: center; border: 1px solid #e8ecf2; }
-        .stat-card .number { font-size: 26px; font-weight: 700; color: #1a73e8; }
-        .stat-card .label { font-size: 11px; color: #5f6b7a; margin-top: 4px; }
-        .stat-card.resolved .number { color: #34a853; }
-        .stat-card.pending .number { color: #ea4335; }
-        .category-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; margin-bottom: 16px; }
-        .category-btn { background: #f8f9fc; border: 2px solid transparent; border-radius: 14px; padding: 14px 4px; text-align: center; cursor: pointer; font-size: 12px; font-weight: 500; color: #1a1a2e; transition: all 0.2s; }
-        .category-btn i { font-size: 26px; display: block; margin-bottom: 4px; }
-        .category-btn:hover { background: #e8f0fe; border-color: #1a73e8; }
-        .category-btn.selected { background: #e8f0fe; border-color: #1a73e8; color: #1a73e8; }
-        .section-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; display: flex; justify-content: space-between; }
-        .report-card { background: #fff; border: 1px solid #e8ecf2; border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
-        .report-card .top-row { display: flex; justify-content: space-between; align-items: flex-start; }
-        .report-card .title { font-weight: 600; font-size: 15px; }
-        .report-card .location { font-size: 13px; color: #5f6b7a; margin: 2px 0 6px; }
-        .status-badge { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-        .status-submitted { background: #e3f2fd; color: #0d47a1; }
-        .status-reviewing { background: #fff3e0; color: #e65100; }
-        .status-progress { background: #fce4ec; color: #b71c1c; }
-        .status-resolved { background: #e8f5e9; color: #1b5e20; }
-        .status-rejected { background: #fafafa; color: #616161; }
-        .report-card .footer { display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; color: #888; }
-        .form-group { margin-bottom: 18px; }
-        .form-group label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 6px; }
-        .form-group textarea, .form-group input[type="text"] { width: 100%; padding: 12px 14px; border: 2px solid #e0e4ea; border-radius: 12px; font-size: 15px; font-family: inherit; background: #fafbfc; }
-        .form-group textarea:focus, .form-group input[type="text"]:focus { outline: none; border-color: #1a73e8; }
-        .form-group textarea { min-height: 80px; resize: vertical; }
-        .photo-preview { width: 100%; height: 160px; background: #f0f2f5; border-radius: 12px; border: 2px dashed #d0d5dd; display: flex; align-items: center; justify-content: center; color: #888; overflow: hidden; margin-top: 6px; }
-        .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
-        .photo-preview .placeholder-text { text-align: center; }
-        .photo-preview .placeholder-text i { font-size: 36px; display: block; margin-bottom: 6px; color: #bbb; }
-        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border: none; border-radius: 14px; font-weight: 600; font-size: 16px; cursor: pointer; width: 100%; transition: all 0.2s; }
-        .btn-primary { background: #1a73e8; color: #fff; }
-        .btn-primary:hover { background: #1557b0; }
-        .btn-success { background: #34a853; color: #fff; }
-        .btn-success:hover { background: #2d9248; }
-        .btn-outline { background: transparent; color: #1a73e8; border: 2px solid #1a73e8; }
-        .btn-outline:hover { background: #e8f0fe; }
-        .btn-sm { padding: 8px 16px; font-size: 13px; width: auto; }
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0; max-width: 480px; margin: 0 auto;
-            background: #fff; border-top: 1px solid #e8ecf2;
-            display: flex; justify-content: space-around; padding: 8px 0 env(safe-area-inset-bottom,8px) 0; z-index: 200;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+        .map-picker-label {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
         }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 11px; color: #888; cursor: pointer; padding: 4px 16px; background: none; border: none; font-family: inherit; }
-        .nav-item i { font-size: 22px; }
-        .nav-item.active { color: #1a73e8; font-weight: 600; }
-        .nav-item .fab-wrapper { position: relative; top: -12px; }
-        .nav-item .fab { background: #1a73e8; color: #fff; width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; box-shadow: 0 4px 16px rgba(26,115,232,0.35); }
-        .nav-item .fab:active { transform: scale(0.92); }
-        .toast {
-            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
-            max-width: 400px; width: 90%; background: #1a1a2e; color: #fff; padding: 14px 20px; border-radius: 14px;
-            text-align: center; font-weight: 500; z-index: 999; opacity: 0; transition: opacity 0.3s;
-            pointer-events: none; box-shadow: 0 8px 30px rgba(0,0,0,0.30);
+        .map-hint {
+            font-size: 12px;
+            color: #888;
+            margin-top: 4px;
         }
-        .toast.show { opacity: 1; }
-        .toast.success { background: #1b5e20; }
-        .toast.error { background: #b71c1c; }
-        .toast.info { background: #0d47a1; }
-        .back-btn { background: none; border: none; color: #1a1a2e; font-size: 18px; cursor: pointer; padding: 4px 8px; }
-        .flex-between { display: flex; justify-content: space-between; align-items: center; }
-        .mb-16 { margin-bottom: 16px; }
-        .mt-16 { margin-top: 16px; }
-        .text-center { text-align: center; }
-        .spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid #f3f3f3; border-top: 3px solid #1a73e8; border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .empty-state, .loading-state, .error-state { text-align: center; padding: 40px 20px; color: #888; }
-        .empty-state i, .error-state i { font-size: 48px; color: #ddd; display: block; margin-bottom: 12px; }
-        .error-state { color: #ea4335; }
-        .error-state i { color: #ea4335; }
-        .loading-state i { font-size: 32px; color: #1a73e8; display: block; margin-bottom: 12px; }
-        @media (max-width: 480px) {
-            .app-container { box-shadow: none; }
-            .stats-grid { grid-template-columns: repeat(3,1fr); gap: 6px; }
-            .category-grid { grid-template-columns: repeat(5,1fr); gap: 6px; }
-            .category-btn { font-size: 10px; padding: 10px 2px; }
-            .category-btn i { font-size: 20px; }
+        /* Language toggle */
+        .lang-toggle {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .lang-toggle:hover {
+            background: rgba(255,255,255,0.25);
+        }
+        /* Modern glassmorphism cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.08);
         }
     </style>
 </head>
 <body>
 
+    <!-- TOAST -->
     <div id="toast" class="toast"></div>
 
+    <!-- APP -->
     <div class="app-container">
 
+        <!-- HEADER -->
         <header class="app-header">
             <div class="logo">
                 <i class="fas fa-road"></i>
-                <span>FixMyBlock</span>
-                <span class="logo-subtitle">Nepal</span>
+                <span id="appName">FixMyBlock</span>
+                <span class="subtitle" id="appSubtitle">Nepal</span>
             </div>
             <div class="header-right">
+                <!-- Language Toggle -->
+                <button class="lang-toggle" id="langToggle" title="Switch Language">🇳🇵 नेपाली</button>
                 <span class="badge">LIVE</span>
-                <button class="admin-toggle" onclick="window.location.href='login.html'" aria-label="Admin login" title="Admin login">
+                <button class="admin-toggle" onclick="window.location.href='login.html'" title="Admin login">
                     <i class="fas fa-user-shield"></i>
                 </button>
             </div>
         </header>
 
-        <!-- HOME -->
+        <!-- HOME SCREEN -->
         <div class="screen active" id="screen-home">
             <div class="stats-grid">
-                <div class="stat-card"><div class="number" id="statTotal">0</div><div class="label">Total Reports</div></div>
-                <div class="stat-card resolved"><div class="number" id="statResolved">0</div><div class="label">Resolved</div></div>
-                <div class="stat-card pending"><div class="number" id="statPending">0</div><div class="label">Pending</div></div>
+                <div class="stat-card glass-card">
+                    <div class="number" id="statTotal">0</div>
+                    <div class="label" data-key="totalReports">Total Reports</div>
+                </div>
+                <div class="stat-card resolved glass-card">
+                    <div class="number" id="statResolved">0</div>
+                    <div class="label" data-key="resolved">Resolved</div>
+                </div>
+                <div class="stat-card pending glass-card">
+                    <div class="number" id="statPending">0</div>
+                    <div class="label" data-key="pending">Pending</div>
+                </div>
             </div>
 
             <div class="category-grid">
-                <button class="category-btn" data-category="pothole" onclick="quickReport('pothole')">
-                    <i class="fas fa-circle-exclamation"></i> Pothole
+                <button class="category-btn glass-card" data-category="pothole" onclick="quickReport('pothole')">
+                    <i class="fas fa-circle-exclamation"></i> <span data-key="pothole">Pothole</span>
                 </button>
-                <button class="category-btn" data-category="streetlight" onclick="quickReport('streetlight')">
-                    <i class="fas fa-lightbulb"></i> Streetlight
+                <button class="category-btn glass-card" data-category="streetlight" onclick="quickReport('streetlight')">
+                    <i class="fas fa-lightbulb"></i> <span data-key="streetlight">Streetlight</span>
                 </button>
-                <button class="category-btn" data-category="drainage" onclick="quickReport('drainage')">
-                    <i class="fas fa-water"></i> Drainage
+                <button class="category-btn glass-card" data-category="drainage" onclick="quickReport('drainage')">
+                    <i class="fas fa-water"></i> <span data-key="drainage">Drainage</span>
                 </button>
-                <button class="category-btn" data-category="garbage" onclick="quickReport('garbage')">
-                    <i class="fas fa-trash"></i> Garbage
+                <button class="category-btn glass-card" data-category="garbage" onclick="quickReport('garbage')">
+                    <i class="fas fa-trash"></i> <span data-key="garbage">Garbage</span>
                 </button>
-                <button class="category-btn" data-category="landslide" onclick="quickReport('landslide')">
-                    <i class="fas fa-mountain"></i> Landslide
+                <button class="category-btn glass-card" data-category="landslide" onclick="quickReport('landslide')">
+                    <i class="fas fa-mountain"></i> <span data-key="landslide">Landslide</span>
                 </button>
             </div>
 
             <div class="section-title">
-                <span>📋 Recent Reports</span>
+                <span>📋 <span data-key="recentReports">Recent Reports</span></span>
                 <span class="report-count" id="reportCount">0 reports</span>
             </div>
             <div id="reportList">
-                <div class="loading-state"><i class="fas fa-spinner fa-spin"></i> Loading reports...</div>
+                <div class="loading-state"><i class="fas fa-spinner fa-spin"></i> <span data-key="loading">Loading reports...</span></div>
             </div>
 
             <div class="text-center mt-16">
                 <button class="btn btn-primary" onclick="showScreen('report')">
-                    <i class="fas fa-plus-circle"></i> Report an Issue
+                    <i class="fas fa-plus-circle"></i> <span data-key="report">Report an Issue</span>
                 </button>
             </div>
         </div>
@@ -203,115 +148,112 @@
         <!-- REPORT FORM -->
         <div class="screen" id="screen-report">
             <div class="flex-between mb-16">
-                <button class="back-btn" onclick="showScreen('home')"><i class="fas fa-arrow-left"></i> Back</button>
-                <span class="screen-title-heading">Report an Issue</span>
+                <button class="back-btn" onclick="showScreen('home')"><i class="fas fa-arrow-left"></i> <span data-key="back">Back</span></button>
+                <span class="page-title" data-key="report">Report an Issue</span>
                 <span class="spacer"></span>
             </div>
 
             <div class="form-group">
-                <label>Select Category <span class="required">*</span></label>
+                <label data-key="selectCategory">Select Category <span class="required-star">*</span></label>
                 <div class="category-grid" id="formCategoryGrid">
-                    <button class="category-btn" data-category="pothole" onclick="selectFormCategory(this)">
-                        <i class="fas fa-circle-exclamation"></i> Pothole
+                    <button class="category-btn glass-card" data-category="pothole" onclick="selectFormCategory(this)">
+                        <i class="fas fa-circle-exclamation"></i> <span data-key="pothole">Pothole</span>
                     </button>
-                    <button class="category-btn" data-category="streetlight" onclick="selectFormCategory(this)">
-                        <i class="fas fa-lightbulb"></i> Streetlight
+                    <button class="category-btn glass-card" data-category="streetlight" onclick="selectFormCategory(this)">
+                        <i class="fas fa-lightbulb"></i> <span data-key="streetlight">Streetlight</span>
                     </button>
-                    <button class="category-btn" data-category="drainage" onclick="selectFormCategory(this)">
-                        <i class="fas fa-water"></i> Drainage
+                    <button class="category-btn glass-card" data-category="drainage" onclick="selectFormCategory(this)">
+                        <i class="fas fa-water"></i> <span data-key="drainage">Drainage</span>
                     </button>
-                    <button class="category-btn" data-category="garbage" onclick="selectFormCategory(this)">
-                        <i class="fas fa-trash"></i> Garbage
+                    <button class="category-btn glass-card" data-category="garbage" onclick="selectFormCategory(this)">
+                        <i class="fas fa-trash"></i> <span data-key="garbage">Garbage</span>
                     </button>
-                    <button class="category-btn" data-category="landslide" onclick="selectFormCategory(this)">
-                        <i class="fas fa-mountain"></i> Landslide
+                    <button class="category-btn glass-card" data-category="landslide" onclick="selectFormCategory(this)">
+                        <i class="fas fa-mountain"></i> <span data-key="landslide">Landslide</span>
                     </button>
                 </div>
                 <div id="formCategoryError" class="form-error">Please select a category</div>
             </div>
 
-            <!-- ===== PHOTO UPLOAD ===== -->
+            <!-- PHOTO UPLOAD -->
             <div class="form-group">
-                <label>Photo</label>
-                <input type="file" id="photoInput" accept="image/*" class="hidden-input" />
-                <div class="button-row">
-                    <button class="btn btn-outline btn-sm btn-auto" onclick="document.getElementById('photoInput').click();">
-                        <i class="fas fa-camera"></i> Take Photo
+                <label data-key="photo">Photo</label>
+                <input type="file" id="photoInput" accept="image/*" class="hidden-input" title="Upload photo" />
+                <div class="photo-buttons">
+                    <button class="btn btn-outline btn-sm photo-action-btn" onclick="document.getElementById('photoInput').click();">
+                        <i class="fas fa-camera"></i> <span data-key="takePhoto">Take Photo</span>
                     </button>
-                    <button class="btn btn-outline btn-sm btn-auto" onclick="document.getElementById('photoInput').click();">
-                        <i class="fas fa-image"></i> Gallery
+                    <button class="btn btn-outline btn-sm photo-action-btn" onclick="document.getElementById('photoInput').click();">
+                        <i class="fas fa-image"></i> <span data-key="gallery">Gallery</span>
                     </button>
                 </div>
                 <div class="photo-preview" id="photoPreview">
                     <div class="placeholder-text">
                         <i class="fas fa-camera"></i>
-                        <span>No photo selected</span>
+                        <span data-key="noPhoto">No photo selected</span>
                     </div>
                 </div>
             </div>
 
+            <!-- MAP LOCATION PICKER (REPLACES TEXT INPUT) -->
             <div class="form-group">
-                <label>Location</label>
-                <button class="btn btn-outline btn-sm btn-auto mb-8" onclick="getLocation()">
-                    <i class="fas fa-location-dot"></i> Use My Location
-                </button>
-                <input type="text" id="locationInput" placeholder="e.g. New Road, Kathmandu" />
-                <div class="location-status" id="locationStatus">📍 Waiting for location...</div>
+                <label data-key="selectLocation">Select Location on Map</label>
+                <div id="mapPicker" class="glass-card"></div>
+                <div class="map-hint" data-key="dragMarker">Drag the marker or click on the map</div>
+                <input type="hidden" id="selectedLat" value="27.7172" />
+                <input type="hidden" id="selectedLng" value="85.3240" />
+                <div class="location-status" id="locationStatus">📍 <span data-key="locationWaiting">Waiting for location...</span></div>
             </div>
 
             <div class="form-group">
-                <label>Description (optional)</label>
+                <label data-key="description">Description (optional)</label>
                 <textarea id="descriptionInput" placeholder="Describe the issue in detail..."></textarea>
             </div>
 
             <div class="form-group">
-                <label>Your Name (optional)</label>
+                <label data-key="yourName">Your Name (optional)</label>
                 <input type="text" id="nameInput" placeholder="e.g. Ram Sharma" />
             </div>
 
             <button class="btn btn-success" id="submitReportBtn">
-                <i class="fas fa-paper-plane"></i> Submit Report
+                <i class="fas fa-paper-plane"></i> <span data-key="submit">Submit Report</span>
             </button>
         </div>
 
+        <!-- BOTTOM NAV -->
         <nav class="bottom-nav">
             <button class="nav-item active" data-screen="home" onclick="showScreen('home')">
-                <i class="fas fa-home"></i> <span>Home</span>
+                <i class="fas fa-home"></i> <span data-key="home">Home</span>
             </button>
             <button class="nav-item" data-screen="report" onclick="showScreen('report')">
                 <div class="fab-wrapper"><div class="fab"><i class="fas fa-plus"></i></div></div>
-                <span>Report</span>
+                <span data-key="report">Report</span>
             </button>
         </nav>
     </div>
 
     <!-- ============================================================ -->
-    <!-- ===== JAVASCRIPT (FIREBASE + IMGBB UPLOAD) ===== -->
+    <!-- ===== JAVASCRIPT (MODULE) ===== -->
     <!-- ============================================================ -->
 
     <script type="module">
         // ================================================================
-        // 🔴🔴🔴 STEP 1: PASTE YOUR FIREBASE CONFIG HERE 🔴🔴🔴
+        // 🔴 CONFIG: PASTE YOUR FIREBASE CONFIG & IMGBB KEY HERE
         // ================================================================
 
         const firebaseConfig = {
-           apiKey: "AIzaSyBVvWlYUCOfALhtWdR53_ZcP5spTYhDyu8",
-  authDomain: "fixmyblock-nepal.firebaseapp.com",
-  projectId: "fixmyblock-nepal",
-  storageBucket: "fixmyblock-nepal.firebasestorage.app",
-  messagingSenderId: "742804276117",
-  appId: "1:742804276117:web:ddab9eeff9a357c1112c9c",
-  measurementId: "G-C3RQER0PC1"
+            apiKey: "AIzaSy...",
+            authDomain: "your-project.firebaseapp.com",
+            projectId: "your-project-id",
+            storageBucket: "your-project.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef"
         };
 
-        // ================================================================
-        // 🔴🔴🔴 STEP 2: PASTE YOUR IMGBB API KEY HERE 🔴🔴🔴
-        // ================================================================
-
-        const IMGBB_API_KEY = '2d59a842482977b8aa645a353ecbaafc'; // ⚠️ REPLACE WITH YOUR ACTUAL KEY
+        const IMGBB_API_KEY = 'YOUR_IMGBB_API_KEY';
 
         // ================================================================
-        // 🔴 STEP 3: DO NOT CHANGE ANYTHING BELOW THIS LINE
+        // IMPORTS
         // ================================================================
 
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -330,46 +272,115 @@
             deleteDoc
         } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 
+        // Translations
+        import {
+            translations,
+            getTranslation,
+            setLanguage,
+            getCurrentLanguage,
+            loadSavedLanguage
+        } from './js/translations.js';
+
+        // Map utilities
+        import { initMapPicker, getMapPosition, setMapPosition, destroyMap } from './js/map-utils.js';
+
+        // ================================================================
+        // INIT FIREBASE
+        // ================================================================
+
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
         console.log('✅ Firebase initialized!');
 
         // ================================================================
-        //  CATEGORIES & STATUSES
+        // LANGUAGE SETUP
+        // ================================================================
+
+        let currentLang = loadSavedLanguage() || 'en';
+        const langToggle = document.getElementById('langToggle');
+
+        function applyTranslations() {
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.dataset.key;
+                el.textContent = getTranslation(key);
+            });
+            // Also update placeholders, attributes etc.
+            document.getElementById('locationStatus').innerHTML = `📍 ${getTranslation('locationWaiting')}`;
+            // Update button texts etc.
+        }
+
+        function toggleLanguage() {
+            const newLang = currentLang === 'en' ? 'ne' : 'en';
+            setLanguage(newLang);
+            currentLang = newLang;
+            langToggle.textContent = newLang === 'en' ? '🇳🇵 नेपाली' : '🇬🇧 English';
+            applyTranslations();
+            // Refresh reports to reflect status translations
+            if (typeof renderReports === 'function') {
+                renderReports(reports);
+            }
+        }
+
+        langToggle.addEventListener('click', toggleLanguage);
+
+        // Initial language
+        if (currentLang === 'ne') {
+            langToggle.textContent = '🇬🇧 English';
+        } else {
+            langToggle.textContent = '🇳🇵 नेपाली';
+        }
+        applyTranslations();
+
+        // ================================================================
+        // CATEGORIES & STATUSES
         // ================================================================
 
         const CATEGORIES = {
-            pothole: { label: 'Pothole', icon: 'fa-circle-exclamation' },
-            streetlight: { label: 'Streetlight', icon: 'fa-lightbulb' },
-            drainage: { label: 'Drainage', icon: 'fa-water' },
-            garbage: { label: 'Garbage', icon: 'fa-trash' },
-            landslide: { label: 'Landslide', icon: 'fa-mountain' }
+            pothole: { label: getTranslation('pothole'), icon: 'fa-circle-exclamation' },
+            streetlight: { label: getTranslation('streetlight'), icon: 'fa-lightbulb' },
+            drainage: { label: getTranslation('drainage'), icon: 'fa-water' },
+            garbage: { label: getTranslation('garbage'), icon: 'fa-trash' },
+            landslide: { label: getTranslation('landslide'), icon: 'fa-mountain' }
         };
 
         const STATUSES = {
-            submitted: { label: 'Submitted', class: 'status-submitted' },
-            reviewing: { label: 'Under Review', class: 'status-reviewing' },
-            in_progress: { label: 'In Progress', class: 'status-progress' },
-            resolved: { label: 'Resolved', class: 'status-resolved' },
-            rejected: { label: 'Rejected', class: 'status-rejected' }
+            submitted: { label: getTranslation('statusSubmitted'), class: 'status-submitted' },
+            reviewing: { label: getTranslation('statusReviewing'), class: 'status-reviewing' },
+            in_progress: { label: getTranslation('statusProgress'), class: 'status-progress' },
+            resolved: { label: getTranslation('statusResolved'), class: 'status-resolved' },
+            rejected: { label: getTranslation('statusRejected'), class: 'status-rejected' }
         };
 
-        function getCategoryLabel(cat) { return CATEGORIES[cat]?.label || cat; }
+        // Helper functions (using translations)
+        function getCategoryLabel(cat) {
+            const key = CATEGORIES[cat]?.label || cat;
+            return getTranslation(key) || key;
+        }
+
         function getCategoryIcon(cat) { return CATEGORIES[cat]?.icon || 'fa-question'; }
-        function getStatusLabel(status) { return STATUSES[status]?.label || status; }
+
+        function getStatusLabel(status) {
+            const key = STATUSES[status]?.label || status;
+            return getTranslation(key) || key;
+        }
+
         function getStatusClass(status) { return STATUSES[status]?.class || ''; }
 
         function formatTimestamp(ts) {
             if (!ts) return 'Recently';
             try {
                 const diff = Date.now() - ts.toMillis();
-                if (diff < 60000) return 'Just now';
+                if (diff < 60000) return getTranslation('justNow') || 'Just now';
                 if (diff < 3600000) return Math.floor(diff / 60000) + ' min ago';
                 if (diff < 86400000) return Math.floor(diff / 3600000) + ' hours ago';
                 return Math.floor(diff / 86400000) + ' days ago';
             } catch { return 'Recently'; }
         }
+
+        // ================================================================
+        // TOAST
+        // ================================================================
 
         function showToast(msg, type = '') {
             const el = document.getElementById('toast');
@@ -382,34 +393,7 @@
         }
 
         // ================================================================
-        //  IMGBB UPLOAD FUNCTION (FREE)
-        // ================================================================
-
-        async function uploadToImgBB(file) {
-            const formData = new FormData();
-            formData.append('key', IMGBB_API_KEY);
-            formData.append('image', file);
-
-            try {
-                const response = await fetch('https://api.imgbb.com/1/upload', {
-                    method: 'POST',
-                    body: formData
-                });
-                const data = await response.json();
-                if (data.success) {
-                    return data.data.url;
-                } else {
-                    console.error('ImgBB error:', data.error);
-                    return '';
-                }
-            } catch (error) {
-                console.error('Upload error:', error);
-                return '';
-            }
-        }
-
-        // ================================================================
-        //  SCREEN NAVIGATION
+        // SCREEN NAVIGATION
         // ================================================================
 
         window.showScreen = function(screenId) {
@@ -419,23 +403,37 @@
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             const navBtn = document.querySelector(`.nav-item[data-screen="${screenId}"]`);
             if (navBtn) navBtn.classList.add('active');
+
             if (screenId === 'report') {
+                // Initialize map if not already
+                if (!window._mapInitialized) {
+                    initMapPicker('mapPicker', 27.7172, 85.3240, (lat, lng) => {
+                        document.getElementById('selectedLat').value = lat;
+                        document.getElementById('selectedLng').value = lng;
+                        document.getElementById('locationStatus').innerHTML =
+                            `📍 ${getTranslation('locationReady')} ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+                    });
+                    window._mapInitialized = true;
+                }
                 document.getElementById('formCategoryError').style.display = 'none';
             }
         };
 
         // ================================================================
-        //  LISTEN TO REPORTS (REAL-TIME)
+        // REPORT LISTENER (with performance caching)
         // ================================================================
 
+        let reports = [];
+
         function listenToReports() {
-            console.log('📡 Setting up Firestore listener...');
+            console.log('📡 Setting up Firestore listener (cached)...');
 
             const q = query(collection(db, 'reports'), orderBy('createdAt', 'desc'), limit(50));
 
+            // Use onSnapshot for real-time updates with cache
             onSnapshot(q, (snapshot) => {
                 console.log('✅ Snapshot received! Size:', snapshot.size);
-                const reports = [];
+                reports = [];
                 snapshot.forEach((doc) => {
                     reports.push({ id: doc.id, ...doc.data() });
                 });
@@ -448,7 +446,7 @@
                             <i class="fas fa-exclamation-circle"></i>
                             <h3>Error Loading Reports</h3>
                             <p>${error.message}</p>
-                            <button class="retry-button" onclick="location.reload()">Retry</button>
+                            <button onclick="location.reload()" class="btn btn-primary btn-sm retry-btn">Retry</button>
                         </div>
                     `;
             });
@@ -456,24 +454,24 @@
 
         function renderReports(reports) {
             const container = document.getElementById('reportList');
-            document.getElementById('reportCount').textContent = reports.length + ' reports';
+            document.getElementById('reportCount').textContent = reports.length + ' ' + getTranslation('reports');
 
             if (reports.length === 0) {
                 container.innerHTML = `
                         <div class="empty-state">
                             <i class="fas fa-inbox"></i>
-                            <h3>No reports yet</h3>
-                            <p>Be the first to report an issue!</p>
+                            <h3>${getTranslation('noReports')}</h3>
+                            <p>${getTranslation('beFirst')}</p>
                         </div>
                     `;
                 return;
             }
 
             container.innerHTML = reports.map(r => `
-                    <div class="report-card">
+                    <div class="report-card glass-card">
                         <div class="top-row">
                             <div>
-                                <span class="report-icon"><i class="fas ${getCategoryIcon(r.category)}"></i></span>
+                                <span class="icon-spacing"><i class="fas ${getCategoryIcon(r.category)}"></i></span>
                                 <span class="title">${getCategoryLabel(r.category)}</span>
                             </div>
                             <span class="status-badge ${getStatusClass(r.status || 'submitted')}">${getStatusLabel(r.status || 'submitted')}</span>
@@ -483,7 +481,7 @@
                         <div class="footer">
                             <span>${formatTimestamp(r.createdAt)}</span>
                             ${r.photoUrl ? '<span><i class="fas fa-image"></i> Photo</span>' : ''}
-                            <span><i class="fas fa-chevron-right chevron-icon"></i></span>
+                            <span><i class="fas fa-chevron-right small-icon"></i></span>
                         </div>
                     </div>
                 `).join('');
@@ -499,8 +497,17 @@
         }
 
         // ================================================================
-        //  QUICK REPORT
+        // REPORT FORM (with map integration)
         // ================================================================
+
+        let selectedCategory = null;
+
+        window.selectFormCategory = function(el) {
+            document.querySelectorAll('#formCategoryGrid .category-btn').forEach(b => b.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedCategory = el.dataset.category;
+            document.getElementById('formCategoryError').style.display = 'none';
+        };
 
         window.quickReport = function(category) {
             showScreen('report');
@@ -512,26 +519,9 @@
                 }
             });
             document.getElementById('formCategoryError').style.display = 'none';
-            document.getElementById('locationInput').focus();
         };
 
-        let selectedCategory = null;
-
-        window.selectFormCategory = function(el) {
-            document.querySelectorAll('#formCategoryGrid .category-btn').forEach(b => b.classList.remove('selected'));
-            el.classList.add('selected');
-            selectedCategory = el.dataset.category;
-            document.getElementById('formCategoryError').style.display = 'none';
-        };
-
-        // ================================================================
-        //  PHOTO & LOCATION
-        // ================================================================
-
-        let currentLat = null;
-        let currentLng = null;
-        let currentLocationName = '';
-
+        // Photo preview
         document.getElementById('photoInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -542,119 +532,95 @@
             reader.readAsDataURL(file);
         });
 
-        window.getLocation = function() {
-            const status = document.getElementById('locationStatus');
-            status.textContent = '📍 Getting location...';
-            if (!navigator.geolocation) {
-                status.textContent = '❌ Geolocation not supported';
-                showToast('Geolocation not supported', 'error');
-                return;
-            }
-            navigator.geolocation.getCurrentPosition(
-                (pos) => {
-                    currentLat = pos.coords.latitude;
-                    currentLng = pos.coords.longitude;
-                    const locationName = getLocationName(currentLat, currentLng);
-                    status.textContent = `📍 Location captured: ${locationName}`;
-                    document.getElementById('locationInput').value = locationName;
-                    showToast('✅ Location captured!', 'success');
-                },
-                (err) => {
-                    status.textContent = '❌ Could not get location. Please enter manually.';
-                    showToast('Could not get location.', 'error');
-                }, { enableHighAccuracy: true, timeout: 10000 }
-            );
-        };
-
-        function getLocationName(lat, lng) {
-            const locations = [
-                { name: 'New Road, Kathmandu', lat: 27.7172, lng: 85.3240 },
-                { name: 'Thamel, Kathmandu', lat: 27.7167, lng: 85.3190 },
-                { name: 'Baneshwor, Kathmandu', lat: 27.6920, lng: 85.3350 },
-                { name: 'Sundhara, Kathmandu', lat: 27.7020, lng: 85.3180 },
-                { name: 'Swayambhu, Kathmandu', lat: 27.7100, lng: 85.2920 },
-            ];
-            const closest = locations.reduce((best, loc) => {
-                const d = Math.abs(loc.lat - lat) + Math.abs(loc.lng - lng);
-                return d < best.d ? { loc, d } : best;
-            }, { loc: locations[0], d: Infinity });
-            return closest.loc.name;
+        // ImgBB upload
+        async function uploadToImgBB(file) {
+            const formData = new FormData();
+            formData.append('key', IMGBB_API_KEY);
+            formData.append('image', file);
+            try {
+                const response = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: formData });
+                const data = await response.json();
+                if (data.success) return data.data.url;
+                else return '';
+            } catch (error) { return ''; }
         }
 
-        // ================================================================
-        //  SUBMIT REPORT (WITH IMGBB PHOTO UPLOAD)
-        // ================================================================
-
+        // Submit report
         document.getElementById('submitReportBtn').addEventListener('click', async function() {
             const btn = this;
             if (btn.disabled) return;
 
             if (!selectedCategory) {
                 document.getElementById('formCategoryError').style.display = 'block';
-                showToast('Please select a category', 'error');
+                showToast(getTranslation('selectCategoryError'), 'error');
                 return;
             }
 
-            const location = document.getElementById('locationInput').value.trim() || currentLocationName || 'Kathmandu, Nepal';
+            // Get location from map
+            const pos = getMapPosition();
+            const lat = pos ? pos.lat : parseFloat(document.getElementById('selectedLat').value) || 27.7172;
+            const lng = pos ? pos.lng : parseFloat(document.getElementById('selectedLng').value) || 85.3240;
+
+            // Reverse geocode: we just save coordinates, not address (we can use a simple location name from coords, but we keep it simple)
+            // We'll store a placeholder address or let admin see coords on map.
+            const locationName = `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
+
             const description = document.getElementById('descriptionInput').value.trim();
             const name = document.getElementById('nameInput').value.trim() || 'Anonymous';
 
             btn.disabled = true;
-            btn.innerHTML = '<span class="spinner"></span> Submitting...';
+            btn.innerHTML = `<span class="spinner"></span> ${getTranslation('submitting')}`;
 
             try {
-                // Upload photo using ImgBB (FREE)
                 let photoUrl = '';
                 const photoInput = document.getElementById('photoInput');
                 if (photoInput.files.length > 0) {
-                    const file = photoInput.files[0];
-                    photoUrl = await uploadToImgBB(file);
-                    if (photoUrl) {
-                        console.log('✅ Photo uploaded to ImgBB:', photoUrl);
-                    } else {
-                        console.warn('⚠️ Photo upload failed, continuing without photo');
-                    }
+                    photoUrl = await uploadToImgBB(photoInput.files[0]);
                 }
 
-                // Save to Firestore
                 await addDoc(collection(db, 'reports'), {
                     category: selectedCategory,
                     description: description || 'No description provided',
-                    location: location,
-                    latitude: currentLat || null,
-                    longitude: currentLng || null,
+                    location: locationName,
+                    latitude: lat,
+                    longitude: lng,
                     photoUrl: photoUrl || '',
                     status: 'submitted',
                     submittedBy: name,
                     createdAt: serverTimestamp()
                 });
 
-                showToast('✅ Report submitted successfully!', 'success');
+                showToast(getTranslation('submitSuccess'), 'success');
 
                 // Reset form
                 document.querySelectorAll('#formCategoryGrid .category-btn').forEach(b => b.classList.remove('selected'));
                 document.getElementById('photoPreview').innerHTML =
-                    `<div class="placeholder-text"><i class="fas fa-camera"></i><span>No photo selected</span></div>`;
-                document.getElementById('locationInput').value = '';
+                    `<div class="placeholder-text"><i class="fas fa-camera"></i><span>${getTranslation('noPhoto')}</span></div>`;
                 document.getElementById('descriptionInput').value = '';
                 document.getElementById('nameInput').value = '';
                 document.getElementById('photoInput').value = '';
                 selectedCategory = null;
+                // Reset map to default position
+                setMapPosition(27.7172, 85.3240);
+                document.getElementById('selectedLat').value = '27.7172';
+                document.getElementById('selectedLng').value = '85.3240';
+                document.getElementById('locationStatus').innerHTML = `📍 ${getTranslation('locationWaiting')}`;
                 showScreen('home');
 
             } catch (error) {
                 console.error('Submit error:', error);
-                showToast('❌ Error: ' + error.message, 'error');
+                showToast(getTranslation('submitError') + ': ' + error.message, 'error');
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Report';
+                btn.innerHTML = `<i class="fas fa-paper-plane"></i> ${getTranslation('submit')}`;
             }
         });
 
         // ================================================================
-        //  INIT
+        // INIT
         // ================================================================
 
+        // Check connection
         async function testConnection() {
             try {
                 console.log('📡 Testing Firestore connection...');
@@ -669,7 +635,7 @@
                             <i class="fas fa-exclamation-circle"></i>
                             <h3>Connection Error</h3>
                             <p>${error.message}</p>
-                            <button class="retry-button" onclick="location.reload()">Retry</button>
+                            <button onclick="location.reload()" class="btn btn-primary btn-sm retry-btn">Retry</button>
                         </div>
                     `;
             }
@@ -677,21 +643,7 @@
 
         testConnection();
 
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (pos) => {
-                    currentLat = pos.coords.latitude;
-                    currentLng = pos.coords.longitude;
-                    currentLocationName = getLocationName(currentLat, currentLng);
-                    document.getElementById('locationStatus').textContent =
-                        `📍 Location ready: ${currentLocationName}`;
-                },
-                () => {}, { timeout: 5000 }
-            );
-        }
-
-        console.log('🏗️ FixMyBlock Nepal - ImgBB Version Loaded!');
-        console.log('📸 Photo upload via ImgBB (FREE)');
+        console.log('🏗️ FixMyBlock Nepal - Updated with Map & Translation!');
     </script>
 
 </body>
