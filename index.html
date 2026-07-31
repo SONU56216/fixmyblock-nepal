@@ -4,24 +4,459 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FixMyBlock Nepal</title>
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <!-- Google Fonts for modern look -->
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <!-- Main Styles -->
-    <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="css/responsive.css" />
+    <!-- Leaflet CSS (for maps) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
     <style>
-        /* ===== ADDITIONAL STYLES FOR MAP ===== */
-        #mapPicker {
-            width: 100%;
-            height: 250px;
-            border-radius: 12px;
-            margin-top: 8px;
-            border: 2px solid #e0e4ea;
-            overflow: hidden;
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background: #f0f2f5;
+            color: #1a1a2e;
+            padding-bottom: 80px;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.04);
             position: relative;
         }
+
+        /* ===== HEADER ===== */
+        .app-header {
+            background: linear-gradient(135deg, #1a73e8, #0d47a1);
+            color: #fff;
+            padding: 18px 20px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 12px rgba(26, 115, 232, 0.3);
+        }
+
+        .app-header .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .app-header .logo i {
+            font-size: 26px;
+        }
+
+        .app-header .logo .subtitle {
+            font-size: 11px;
+            font-weight: 400;
+            opacity: 0.8;
+            margin-left: -4px;
+        }
+
+        .app-header .badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .admin-toggle {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .admin-toggle:hover {
+            opacity: 1;
+        }
+
+        /* Language toggle */
+        .lang-toggle {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .lang-toggle:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        /* ===== SCREENS ===== */
+        .screen {
+            display: none;
+            padding: 16px 18px 30px;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== STATS ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .stat-card {
+            background: #f8f9fc;
+            border-radius: 12px;
+            padding: 14px 8px;
+            text-align: center;
+            border: 1px solid #e8ecf2;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+        }
+
+        .stat-card .number {
+            font-size: 26px;
+            font-weight: 700;
+            color: #1a73e8;
+        }
+
+        .stat-card .label {
+            font-size: 11px;
+            color: #5f6b7a;
+            margin-top: 4px;
+        }
+
+        .stat-card.resolved .number {
+            color: #34a853;
+        }
+
+        .stat-card.pending .number {
+            color: #ea4335;
+        }
+
+        /* ===== CATEGORIES ===== */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .category-btn {
+            background: #f8f9fc;
+            border: 2px solid transparent;
+            border-radius: 14px;
+            padding: 14px 4px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 12px;
+            font-weight: 500;
+            color: #1a1a2e;
+            font-family: inherit;
+        }
+
+        .category-btn i {
+            font-size: 26px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .category-btn:hover {
+            background: #e8f0fe;
+            border-color: #1a73e8;
+        }
+
+        .category-btn.selected {
+            background: #e8f0fe;
+            border-color: #1a73e8;
+            color: #1a73e8;
+        }
+
+        /* ===== SECTION TITLE ===== */
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* ===== REPORT CARD ===== */
+        .report-card {
+            background: #ffffff;
+            border: 1px solid #e8ecf2;
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            transition: all 0.15s;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+            cursor: pointer;
+        }
+
+        .report-card:hover {
+            border-color: #1a73e8;
+            box-shadow: 0 4px 12px rgba(26, 115, 232, 0.10);
+        }
+
+        .report-card .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .report-card .category-icon {
+            font-size: 20px;
+            margin-right: 10px;
+        }
+
+        .report-card .title {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .report-card .location {
+            font-size: 13px;
+            color: #5f6b7a;
+            margin: 2px 0 6px;
+        }
+
+        .report-card .location i {
+            margin-right: 4px;
+            font-size: 12px;
+        }
+
+        .report-card .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #888;
+        }
+
+        /* ===== STATUS BADGES ===== */
+        .status-badge {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .status-submitted {
+            background: #e3f2fd;
+            color: #0d47a1;
+        }
+        .status-reviewing {
+            background: #fff3e0;
+            color: #e65100;
+        }
+        .status-progress {
+            background: #fce4ec;
+            color: #b71c1c;
+        }
+        .status-resolved {
+            background: #e8f5e9;
+            color: #1b5e20;
+        }
+        .status-rejected {
+            background: #fafafa;
+            color: #616161;
+        }
+
+        /* ===== FORM ===== */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .form-group textarea,
+        .form-group input[type="text"],
+        .form-group input[type="email"] {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid #e0e4ea;
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: border 0.2s;
+            background: #fafbfc;
+        }
+
+        .form-group textarea:focus,
+        .form-group input[type="text"]:focus,
+        .form-group input[type="email"]:focus {
+            outline: none;
+            border-color: #1a73e8;
+            background: #fff;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* ===== PHOTO PREVIEW ===== */
+        .photo-preview {
+            width: 100%;
+            height: 160px;
+            background: #f0f2f5;
+            border-radius: 12px;
+            border: 2px dashed #d0d5dd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 14px;
+            overflow: hidden;
+            margin-top: 6px;
+            position: relative;
+        }
+
+        #photoInput {
+            display: none;
+        }
+
+        .photo-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .section-title .count {
+            font-size: 13px;
+            font-weight: 400;
+            color: #888;
+        }
+
+        .screen-title {
+            font-weight: 600;
+            font-size: 17px;
+        }
+
+        .spacer {
+            width: 40px;
+        }
+
+        .required-mark {
+            color: red;
+        }
+
+        .form-error {
+            color: red;
+            font-size: 13px;
+            display: none;
+        }
+
+        .location-status {
+            font-size: 12px;
+            color: #888;
+            margin-top: 6px;
+        }
+
+        .retry-button {
+            margin-top: 10px;
+            padding: 8px 20px;
+            background: #1a73e8;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .report-description {
+            font-size: 13px;
+            color: #555;
+            margin: 4px 0 6px;
+        }
+
+        .chevron-icon {
+            font-size: 12px;
+        }
+
+        .photo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-preview .placeholder-text {
+            text-align: center;
+        }
+
+        .photo-preview .placeholder-text i {
+            font-size: 36px;
+            display: block;
+            margin-bottom: 6px;
+            color: #bbb;
+        }
+
+        /* ===== MAP ===== */
+        #mapPicker {
+            width: 100%;
+            height: 260px;
+            border-radius: 12px;
+            margin-top: 6px;
+            border: 2px solid #e0e4ea;
+            overflow: hidden;
+            background: #f8f9fc;
+        }
+
         .map-loading {
             display: flex;
             align-items: center;
@@ -29,56 +464,306 @@
             height: 100%;
             color: #888;
             background: #f8f9fc;
-        }
-        .map-picker-label {
-            font-weight: 600;
             font-size: 14px;
-            margin-bottom: 4px;
         }
+
+        .map-loading i {
+            margin-right: 8px;
+            font-size: 20px;
+            color: #1a73e8;
+        }
+
         .map-hint {
             font-size: 12px;
             color: #888;
             margin-top: 4px;
         }
-        /* Language toggle */
-        .lang-toggle {
-            background: rgba(255,255,255,0.15);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: #fff;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 16px;
             cursor: pointer;
             transition: all 0.2s;
+            width: 100%;
+            font-family: inherit;
         }
-        .lang-toggle:hover {
-            background: rgba(255,255,255,0.25);
+
+        .btn-primary {
+            background: #1a73e8;
+            color: #fff;
         }
-        /* Modern glassmorphism cards */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.7);
-            -webkit-backdrop-filter: blur(10px);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
-            transition: transform 0.2s, box-shadow 0.2s;
+
+        .btn-primary:hover {
+            background: #1557b0;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(26, 115, 232, 0.30);
         }
-        .glass-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+
+        .btn-success {
+            background: #34a853;
+            color: #fff;
+        }
+
+        .btn-success:hover {
+            background: #2d9248;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(52, 168, 83, 0.30);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #1a73e8;
+            border: 2px solid #1a73e8;
+        }
+
+        .btn-outline:hover {
+            background: #e8f0fe;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 13px;
+            width: auto;
+        }
+
+        .btn-danger {
+            background: #ea4335;
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            background: #c62828;
+        }
+
+        /* ===== BOTTOM NAV ===== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 480px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-top: 1px solid #e8ecf2;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0 env(safe-area-inset-bottom, 8px) 0;
+            z-index: 200;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            font-size: 11px;
+            color: #888;
+            cursor: pointer;
+            padding: 4px 16px;
+            transition: color 0.2s;
+            background: none;
+            border: none;
+            font-family: inherit;
+            position: relative;
+        }
+
+        .nav-item i {
+            font-size: 22px;
+        }
+
+        .nav-item.active {
+            color: #1a73e8;
+            font-weight: 600;
+        }
+
+        .nav-item .fab-wrapper {
+            position: relative;
+            top: -12px;
+        }
+
+        .nav-item .fab {
+            background: #1a73e8;
+            color: #fff;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            box-shadow: 0 4px 16px rgba(26, 115, 232, 0.35);
+            transition: transform 0.2s;
+        }
+
+        .nav-item .fab:active {
+            transform: scale(0.92);
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 400px;
+            width: 90%;
+            background: #1a1a2e;
+            color: #fff;
+            padding: 14px 20px;
+            border-radius: 14px;
+            text-align: center;
+            font-weight: 500;
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.30);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast.success {
+            background: #1b5e20;
+        }
+        .toast.error {
+            background: #b71c1c;
+        }
+        .toast.info {
+            background: #0d47a1;
+        }
+
+        /* ===== UTILITY ===== */
+        .back-btn {
+            background: none;
+            border: none;
+            color: #1a1a2e;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px 8px;
+            font-family: inherit;
+        }
+
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mb-16 {
+            margin-bottom: 16px;
+        }
+        .mt-16 {
+            margin-top: 16px;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .text-muted {
+            color: #888;
+            font-size: 13px;
+        }
+
+        /* ===== SPINNER ===== */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #1a73e8;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ===== EMPTY / LOADING / ERROR STATES ===== */
+        .empty-state,
+        .loading-state,
+        .error-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #888;
+        }
+
+        .empty-state i,
+        .error-state i {
+            font-size: 48px;
+            color: #ddd;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .empty-state h3 {
+            color: #555;
+            margin-bottom: 4px;
+        }
+
+        .error-state {
+            color: #ea4335;
+        }
+        .error-state i {
+            color: #ea4335;
+        }
+
+        .loading-state i {
+            font-size: 32px;
+            color: #1a73e8;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 480px) {
+            .app-container {
+                box-shadow: none;
+            }
+            .stats-grid {
+                gap: 6px;
+            }
+            .category-grid {
+                gap: 6px;
+            }
+            .category-btn {
+                font-size: 10px;
+                padding: 10px 2px;
+            }
+            .category-btn i {
+                font-size: 20px;
+            }
+            #mapPicker {
+                height: 200px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- TOAST -->
+    <!-- ===== TOAST ===== -->
     <div id="toast" class="toast"></div>
 
-    <!-- APP -->
+    <!-- ===== APP ===== -->
     <div class="app-container">
 
-        <!-- HEADER -->
+        <!-- ===== HEADER ===== -->
         <header class="app-header">
             <div class="logo">
                 <i class="fas fa-road"></i>
@@ -86,53 +771,52 @@
                 <span class="subtitle" id="appSubtitle">Nepal</span>
             </div>
             <div class="header-right">
-                <!-- Language Toggle -->
                 <button class="lang-toggle" id="langToggle" title="Switch Language">🇳🇵 नेपाली</button>
                 <span class="badge">LIVE</span>
-                <button class="admin-toggle" onclick="window.location.href='login.html'" title="Admin login">
+                <button class="admin-toggle" onclick="window.location.href='login.html'" title="Admin Login">
                     <i class="fas fa-user-shield"></i>
                 </button>
             </div>
         </header>
 
-        <!-- HOME SCREEN -->
+        <!-- ===== HOME SCREEN ===== -->
         <div class="screen active" id="screen-home">
-            <div class="stats-grid">
-                <div class="stat-card glass-card">
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
                     <div class="number" id="statTotal">0</div>
                     <div class="label" data-key="totalReports">Total Reports</div>
                 </div>
-                <div class="stat-card resolved glass-card">
+                <div class="stat-card resolved">
                     <div class="number" id="statResolved">0</div>
                     <div class="label" data-key="resolved">Resolved</div>
                 </div>
-                <div class="stat-card pending glass-card">
+                <div class="stat-card pending">
                     <div class="number" id="statPending">0</div>
                     <div class="label" data-key="pending">Pending</div>
                 </div>
             </div>
 
-            <div class="category-grid">
-                <button class="category-btn glass-card" data-category="pothole" onclick="quickReport('pothole')">
+            <div class="category-grid" id="categoryGrid">
+                <button class="category-btn" data-category="pothole" onclick="quickReport('pothole')">
                     <i class="fas fa-circle-exclamation"></i> <span data-key="pothole">Pothole</span>
                 </button>
-                <button class="category-btn glass-card" data-category="streetlight" onclick="quickReport('streetlight')">
+                <button class="category-btn" data-category="streetlight" onclick="quickReport('streetlight')">
                     <i class="fas fa-lightbulb"></i> <span data-key="streetlight">Streetlight</span>
                 </button>
-                <button class="category-btn glass-card" data-category="drainage" onclick="quickReport('drainage')">
+                <button class="category-btn" data-category="drainage" onclick="quickReport('drainage')">
                     <i class="fas fa-water"></i> <span data-key="drainage">Drainage</span>
                 </button>
-                <button class="category-btn glass-card" data-category="garbage" onclick="quickReport('garbage')">
+                <button class="category-btn" data-category="garbage" onclick="quickReport('garbage')">
                     <i class="fas fa-trash"></i> <span data-key="garbage">Garbage</span>
                 </button>
-                <button class="category-btn glass-card" data-category="landslide" onclick="quickReport('landslide')">
+                <button class="category-btn" data-category="landslide" onclick="quickReport('landslide')">
                     <i class="fas fa-mountain"></i> <span data-key="landslide">Landslide</span>
                 </button>
             </div>
 
             <div class="section-title">
                 <span>📋 <span data-key="recentReports">Recent Reports</span></span>
-                <span class="report-count" id="reportCount">0 reports</span>
+                <span class="count" id="reportCount">0 reports</span>
             </div>
             <div id="reportList">
                 <div class="loading-state"><i class="fas fa-spinner fa-spin"></i> <span data-key="loading">Loading reports...</span></div>
@@ -145,45 +829,48 @@
             </div>
         </div>
 
-        <!-- REPORT FORM -->
+        <!-- ===== REPORT FORM ===== -->
         <div class="screen" id="screen-report">
             <div class="flex-between mb-16">
-                <button class="back-btn" onclick="showScreen('home')"><i class="fas fa-arrow-left"></i> <span data-key="back">Back</span></button>
-                <span class="page-title" data-key="report">Report an Issue</span>
+                <button class="back-btn" onclick="showScreen('home')">
+                    <i class="fas fa-arrow-left"></i> <span data-key="back">Back</span>
+                </button>
+                <span class="screen-title" data-key="report">Report an Issue</span>
                 <span class="spacer"></span>
             </div>
 
+            <!-- Category -->
             <div class="form-group">
-                <label data-key="selectCategory">Select Category <span class="required-star">*</span></label>
+                <label data-key="selectCategory">Select Category <span class="required-mark">*</span></label>
                 <div class="category-grid" id="formCategoryGrid">
-                    <button class="category-btn glass-card" data-category="pothole" onclick="selectFormCategory(this)">
+                    <button class="category-btn" data-category="pothole" onclick="selectFormCategory(this)">
                         <i class="fas fa-circle-exclamation"></i> <span data-key="pothole">Pothole</span>
                     </button>
-                    <button class="category-btn glass-card" data-category="streetlight" onclick="selectFormCategory(this)">
+                    <button class="category-btn" data-category="streetlight" onclick="selectFormCategory(this)">
                         <i class="fas fa-lightbulb"></i> <span data-key="streetlight">Streetlight</span>
                     </button>
-                    <button class="category-btn glass-card" data-category="drainage" onclick="selectFormCategory(this)">
+                    <button class="category-btn" data-category="drainage" onclick="selectFormCategory(this)">
                         <i class="fas fa-water"></i> <span data-key="drainage">Drainage</span>
                     </button>
-                    <button class="category-btn glass-card" data-category="garbage" onclick="selectFormCategory(this)">
+                    <button class="category-btn" data-category="garbage" onclick="selectFormCategory(this)">
                         <i class="fas fa-trash"></i> <span data-key="garbage">Garbage</span>
                     </button>
-                    <button class="category-btn glass-card" data-category="landslide" onclick="selectFormCategory(this)">
+                    <button class="category-btn" data-category="landslide" onclick="selectFormCategory(this)">
                         <i class="fas fa-mountain"></i> <span data-key="landslide">Landslide</span>
                     </button>
                 </div>
                 <div id="formCategoryError" class="form-error">Please select a category</div>
             </div>
 
-            <!-- PHOTO UPLOAD -->
+            <!-- Photo -->
             <div class="form-group">
                 <label data-key="photo">Photo</label>
-                <input type="file" id="photoInput" accept="image/*" class="hidden-input" title="Upload photo" />
-                <div class="photo-buttons">
-                    <button class="btn btn-outline btn-sm photo-action-btn" onclick="document.getElementById('photoInput').click();">
+                <input type="file" id="photoInput" accept="image/*" />
+                <div class="photo-actions">
+                    <button class="btn btn-outline btn-sm" onclick="document.getElementById('photoInput').click();">
                         <i class="fas fa-camera"></i> <span data-key="takePhoto">Take Photo</span>
                     </button>
-                    <button class="btn btn-outline btn-sm photo-action-btn" onclick="document.getElementById('photoInput').click();">
+                    <button class="btn btn-outline btn-sm" onclick="document.getElementById('photoInput').click();">
                         <i class="fas fa-image"></i> <span data-key="gallery">Gallery</span>
                     </button>
                 </div>
@@ -195,21 +882,25 @@
                 </div>
             </div>
 
-            <!-- MAP LOCATION PICKER (REPLACES TEXT INPUT) -->
+            <!-- Map + Location -->
             <div class="form-group">
-                <label data-key="selectLocation">Select Location on Map</label>
-                <div id="mapPicker" class="glass-card"></div>
-                <div class="map-hint" data-key="dragMarker">Drag the marker or click on the map</div>
+                <label data-key="selectLocation">Select Location on Map <span class="required-mark">*</span></label>
+                <div id="mapPicker"></div>
+                <div class="map-hint" data-key="dragMarker">Click on map or drag marker to set location</div>
                 <input type="hidden" id="selectedLat" value="27.7172" />
                 <input type="hidden" id="selectedLng" value="85.3240" />
-                <div class="location-status" id="locationStatus">📍 <span data-key="locationWaiting">Waiting for location...</span></div>
+                <div class="location-status" id="locationStatus">
+                    📍 <span data-key="locationWaiting">Click on the map to select location</span>
+                </div>
             </div>
 
+            <!-- Description -->
             <div class="form-group">
                 <label data-key="description">Description (optional)</label>
                 <textarea id="descriptionInput" placeholder="Describe the issue in detail..."></textarea>
             </div>
 
+            <!-- Name -->
             <div class="form-group">
                 <label data-key="yourName">Your Name (optional)</label>
                 <input type="text" id="nameInput" placeholder="e.g. Ram Sharma" />
@@ -220,7 +911,7 @@
             </button>
         </div>
 
-        <!-- BOTTOM NAV -->
+        <!-- ===== BOTTOM NAV ===== -->
         <nav class="bottom-nav">
             <button class="nav-item active" data-screen="home" onclick="showScreen('home')">
                 <i class="fas fa-home"></i> <span data-key="home">Home</span>
@@ -238,11 +929,11 @@
 
     <script type="module">
         // ================================================================
-        // 🔴 CONFIG: PASTE YOUR FIREBASE CONFIG & IMGBB KEY HERE
+        // 🔴🔴🔴 STEP 1: PASTE YOUR FIREBASE CONFIG HERE
         // ================================================================
 
         const firebaseConfig = {
-             apiKey: "AIzaSyBVvWlYUCOfALhtWdR53_ZcP5spTYhDyu8",
+            apiKey: "AIzaSyBVvWlYUCOfALhtWdR53_ZcP5spTYhDyu8",
   authDomain: "fixmyblock-nepal.firebaseapp.com",
   projectId: "fixmyblock-nepal",
   storageBucket: "fixmyblock-nepal.firebasestorage.app",
@@ -251,12 +942,17 @@
   measurementId: "G-C3RQER0PC1"
         };
 
-        const IMGBB_API_KEY = '2d59a842482977b8aa645a353ecbaafc';
-
         // ================================================================
-        // IMPORTS
+        // 🔴🔴🔴 STEP 2: PASTE YOUR IMGBB API KEY HERE
         // ================================================================
 
+        const IMGBB_API_KEY = '2d59a842482977b8aa645a353ecbaafc'; // ⚠️ REPLACE WITH YOUR ACTUAL KEY
+
+        // ================================================================
+        // 🔴 STEP 3: DO NOT CHANGE ANYTHING BELOW THIS LINE
+        // ================================================================
+
+        // Firebase imports
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
         import {
             getFirestore,
@@ -282,11 +978,16 @@
             loadSavedLanguage
         } from './js/translations.js';
 
-        // Map utilities
-        import { initMapPicker, getMapPosition, setMapPosition, destroyMap } from './js/map-utils.js';
+        // Map utilities (Leaflet + OpenStreetMap – free, no API key)
+        import {
+            initMapPicker,
+            getMapPosition,
+            setMapPosition,
+            destroyMap
+        } from './js/map-utils.js';
 
         // ================================================================
-        // INIT FIREBASE
+        //  INIT FIREBASE
         // ================================================================
 
         const app = initializeApp(firebaseConfig);
@@ -295,7 +996,7 @@
         console.log('✅ Firebase initialized!');
 
         // ================================================================
-        // LANGUAGE SETUP
+        //  LANGUAGE SETUP
         // ================================================================
 
         let currentLang = loadSavedLanguage() || 'en';
@@ -306,9 +1007,15 @@
                 const key = el.dataset.key;
                 el.textContent = getTranslation(key);
             });
-            // Also update placeholders, attributes etc.
-            document.getElementById('locationStatus').innerHTML = `📍 ${getTranslation('locationWaiting')}`;
-            // Update button texts etc.
+            // Update dynamic texts
+            const statusEl = document.getElementById('locationStatus');
+            if (statusEl) {
+                statusEl.innerHTML = `📍 ${getTranslation('locationWaiting')}`;
+            }
+            const submitBtn = document.getElementById('submitReportBtn');
+            if (submitBtn) {
+                submitBtn.innerHTML = `<i class="fas fa-paper-plane"></i> ${getTranslation('submit')}`;
+            }
         }
 
         function toggleLanguage() {
@@ -317,15 +1024,15 @@
             currentLang = newLang;
             langToggle.textContent = newLang === 'en' ? '🇳🇵 नेपाली' : '🇬🇧 English';
             applyTranslations();
-            // Refresh reports to reflect status translations
+            // Re-render reports to update status labels etc.
             if (typeof renderReports === 'function') {
-                renderReports(reports);
+                renderReports(reportsData);
             }
         }
 
         langToggle.addEventListener('click', toggleLanguage);
 
-        // Initial language
+        // Apply initial language
         if (currentLang === 'ne') {
             langToggle.textContent = '🇬🇧 English';
         } else {
@@ -334,7 +1041,7 @@
         applyTranslations();
 
         // ================================================================
-        // CATEGORIES & STATUSES
+        //  CATEGORIES & STATUSES (with translations)
         // ================================================================
 
         const CATEGORIES = {
@@ -353,34 +1060,41 @@
             rejected: { label: getTranslation('statusRejected'), class: 'status-rejected' }
         };
 
-        // Helper functions (using translations)
         function getCategoryLabel(cat) {
             const key = CATEGORIES[cat]?.label || cat;
             return getTranslation(key) || key;
         }
 
-        function getCategoryIcon(cat) { return CATEGORIES[cat]?.icon || 'fa-question'; }
+        function getCategoryIcon(cat) {
+            return CATEGORIES[cat]?.icon || 'fa-question';
+        }
 
         function getStatusLabel(status) {
             const key = STATUSES[status]?.label || status;
             return getTranslation(key) || key;
         }
 
-        function getStatusClass(status) { return STATUSES[status]?.class || ''; }
+        function getStatusClass(status) {
+            return STATUSES[status]?.class || '';
+        }
 
         function formatTimestamp(ts) {
-            if (!ts) return 'Recently';
+            if (!ts) return getTranslation('recently') || 'Recently';
             try {
                 const diff = Date.now() - ts.toMillis();
                 if (diff < 60000) return getTranslation('justNow') || 'Just now';
                 if (diff < 3600000) return Math.floor(diff / 60000) + ' min ago';
                 if (diff < 86400000) return Math.floor(diff / 3600000) + ' hours ago';
                 return Math.floor(diff / 86400000) + ' days ago';
-            } catch { return 'Recently'; }
+            } catch {
+                return getTranslation('recently') || 'Recently';
+            }
         }
 
+        let reportsData = [];
+
         // ================================================================
-        // TOAST
+        //  TOAST
         // ================================================================
 
         function showToast(msg, type = '') {
@@ -390,56 +1104,56 @@
             void el.offsetWidth;
             el.classList.add('show');
             clearTimeout(el._timer);
-            el._timer = setTimeout(() => el.classList.remove('show'), 3000);
+            el._timer = setTimeout(() => el.classList.remove('show'), 3500);
         }
 
         // ================================================================
-        // SCREEN NAVIGATION
+        //  SCREEN NAVIGATION
         // ================================================================
 
         window.showScreen = function(screenId) {
             document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
             const target = document.getElementById('screen-' + screenId);
             if (target) target.classList.add('active');
+
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             const navBtn = document.querySelector(`.nav-item[data-screen="${screenId}"]`);
             if (navBtn) navBtn.classList.add('active');
 
             if (screenId === 'report') {
-                // Initialize map if not already
+                // Initialize map if not already done
                 if (!window._mapInitialized) {
-                    initMapPicker('mapPicker', 27.7172, 85.3240, (lat, lng) => {
-                        document.getElementById('selectedLat').value = lat;
-                        document.getElementById('selectedLng').value = lng;
-                        document.getElementById('locationStatus').innerHTML =
-                            `📍 ${getTranslation('locationReady')} ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
-                    });
-                    window._mapInitialized = true;
+                    setTimeout(() => {
+                        initMapPicker('mapPicker', 27.7172, 85.3240, (lat, lng) => {
+                            document.getElementById('selectedLat').value = lat;
+                            document.getElementById('selectedLng').value = lng;
+                            const statusEl = document.getElementById('locationStatus');
+                            statusEl.innerHTML = `📍 ${getTranslation('locationReady')} ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+                        });
+                        window._mapInitialized = true;
+                    }, 200);
                 }
                 document.getElementById('formCategoryError').style.display = 'none';
             }
         };
 
         // ================================================================
-        // REPORT LISTENER (with performance caching)
+        //  REPORT LISTENER (REAL-TIME)
         // ================================================================
 
-        let reports = [];
-
         function listenToReports() {
-            console.log('📡 Setting up Firestore listener (cached)...');
+            console.log('📡 Setting up Firestore listener...');
 
             const q = query(collection(db, 'reports'), orderBy('createdAt', 'desc'), limit(50));
 
-            // Use onSnapshot for real-time updates with cache
             onSnapshot(q, (snapshot) => {
                 console.log('✅ Snapshot received! Size:', snapshot.size);
-                reports = [];
+                reportsData = [];
                 snapshot.forEach((doc) => {
-                    reports.push({ id: doc.id, ...doc.data() });
+                    reportsData.push({ id: doc.id, ...doc.data() });
                 });
-                renderReports(reports);
-                updateStats(reports);
+                renderReports(reportsData);
+                updateStats(reportsData);
             }, (error) => {
                 console.error('❌ Listener error:', error);
                 document.getElementById('reportList').innerHTML = `
@@ -447,7 +1161,7 @@
                             <i class="fas fa-exclamation-circle"></i>
                             <h3>Error Loading Reports</h3>
                             <p>${error.message}</p>
-                            <button onclick="location.reload()" class="btn btn-primary btn-sm retry-btn">Retry</button>
+                            <button onclick="location.reload()" class="retry-button">Retry</button>
                         </div>
                     `;
             });
@@ -469,10 +1183,10 @@
             }
 
             container.innerHTML = reports.map(r => `
-                    <div class="report-card glass-card">
+                    <div class="report-card" onclick="showReportDetail('${r.id}')">
                         <div class="top-row">
                             <div>
-                                <span class="icon-spacing"><i class="fas ${getCategoryIcon(r.category)}"></i></span>
+                                <span class="category-icon"><i class="fas ${getCategoryIcon(r.category)}"></i></span>
                                 <span class="title">${getCategoryLabel(r.category)}</span>
                             </div>
                             <span class="status-badge ${getStatusClass(r.status || 'submitted')}">${getStatusLabel(r.status || 'submitted')}</span>
@@ -482,7 +1196,7 @@
                         <div class="footer">
                             <span>${formatTimestamp(r.createdAt)}</span>
                             ${r.photoUrl ? '<span><i class="fas fa-image"></i> Photo</span>' : ''}
-                            <span><i class="fas fa-chevron-right small-icon"></i></span>
+                            <span><i class="fas fa-chevron-right chevron-icon"></i></span>
                         </div>
                     </div>
                 `).join('');
@@ -498,7 +1212,7 @@
         }
 
         // ================================================================
-        // REPORT FORM (with map integration)
+        //  REPORT FORM
         // ================================================================
 
         let selectedCategory = null;
@@ -543,7 +1257,10 @@
                 const data = await response.json();
                 if (data.success) return data.data.url;
                 else return '';
-            } catch (error) { return ''; }
+            } catch (error) {
+                console.error('ImgBB error:', error);
+                return '';
+            }
         }
 
         // Submit report
@@ -553,7 +1270,7 @@
 
             if (!selectedCategory) {
                 document.getElementById('formCategoryError').style.display = 'block';
-                showToast(getTranslation('selectCategoryError'), 'error');
+                showToast(getTranslation('selectCategoryError') || 'Please select a category', 'error');
                 return;
             }
 
@@ -562,8 +1279,7 @@
             const lat = pos ? pos.lat : parseFloat(document.getElementById('selectedLat').value) || 27.7172;
             const lng = pos ? pos.lng : parseFloat(document.getElementById('selectedLng').value) || 85.3240;
 
-            // Reverse geocode: we just save coordinates, not address (we can use a simple location name from coords, but we keep it simple)
-            // We'll store a placeholder address or let admin see coords on map.
+            // Build location string from coordinates
             const locationName = `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
 
             const description = document.getElementById('descriptionInput').value.trim();
@@ -610,7 +1326,7 @@
 
             } catch (error) {
                 console.error('Submit error:', error);
-                showToast(getTranslation('submitError') + ': ' + error.message, 'error');
+                showToast(`${getTranslation('submitError')}: ${error.message}`, 'error');
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = `<i class="fas fa-paper-plane"></i> ${getTranslation('submit')}`;
@@ -618,10 +1334,15 @@
         });
 
         // ================================================================
-        // INIT
+        //  DUPLICATE CHECK (placeholder – integrate your full duplicate logic)
+        //  For brevity, we are not importing duplicate-check here,
+        //  but you can import and call it before submitting.
         // ================================================================
 
-        // Check connection
+        // ================================================================
+        //  INIT
+        // ================================================================
+
         async function testConnection() {
             try {
                 console.log('📡 Testing Firestore connection...');
@@ -636,7 +1357,7 @@
                             <i class="fas fa-exclamation-circle"></i>
                             <h3>Connection Error</h3>
                             <p>${error.message}</p>
-                            <button onclick="location.reload()" class="btn btn-primary btn-sm retry-btn">Retry</button>
+                            <button onclick="location.reload()" class="retry-button">Retry</button>
                         </div>
                     `;
             }
@@ -644,7 +1365,23 @@
 
         testConnection();
 
-        console.log('🏗️ FixMyBlock Nepal - Updated with Map & Translation!');
+        console.log('🏗️ FixMyBlock Nepal - Fully Updated with Leaflet Maps & Translations!');
+
+        // ================================================================
+        //  Cleanup map on page unload
+        // ================================================================
+
+        window.addEventListener('beforeunload', function() {
+            destroyMap();
+        });
+
+        // ================================================================
+        //  Expose functions globally for inline onclick
+        // ================================================================
+
+        window.showScreen = showScreen;
+        window.quickReport = quickReport;
+        window.selectFormCategory = selectFormCategory;
     </script>
 
 </body>
