@@ -122,7 +122,7 @@ function showDuplicateModal(duplicate, userId) {
                                 <span class="label">Citizens Affected</span>
                             </div>
                             <div class="affected-bar">
-                                <div class="affected-progress" style="width: ${Math.min(100, duplicate.affectedCount)}%"></div>
+                                <div class="affected-progress" data-width="${Math.min(100, duplicate.affectedCount)}%"></div>
                             </div>
                         </div>
                         ${duplicate.description ? `<div class="duplicate-description">📝 ${duplicate.description}</div>` : ''}
@@ -144,6 +144,9 @@ function showDuplicateModal(duplicate, userId) {
     
     document.body.appendChild(overlay);
     document.body.style.overflow = 'hidden';
+    // Apply dynamic widths for elements created from template
+    const progEl = overlay.querySelector('.affected-progress');
+    if (progEl && progEl.dataset.width) progEl.style.width = progEl.dataset.width;
     
     // Add support button handler
     document.getElementById('supportDuplicateBtn').addEventListener('click', async function() {
