@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FixMyBlock Nepal</title>
     
-    <!-- Fonts & Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
     <style>
-        /* ===== CSS VARIABLES ===== */
         :root {
             --primary: #1a73e8;
             --primary-dark: #0d47a1;
@@ -35,7 +33,6 @@
             --transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
         }
 
-        /* ===== DARK THEME ===== */
         body.dark-theme {
             --bg: #121212;
             --card-bg: #1e1e2e;
@@ -48,7 +45,6 @@
             --text-muted: #888;
         }
 
-        /* ===== RESET ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', system-ui, sans-serif;
@@ -68,7 +64,7 @@
             transition: background 0.3s;
         }
 
-        /* ===== SPLASH SCREEN ===== */
+        /* Splash Screen */
         #splash {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -87,14 +83,12 @@
         @keyframes spin { 0% { transform: rotate(0); } 100% { transform: rotate(360deg); } }
         @keyframes pulseLogo { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
 
-        /* ===== OFFLINE BANNER ===== */
         .offline-banner {
             background: var(--danger); color: #fff; padding: 6px 12px; text-align: center;
             font-size: 12px; font-weight: 600; display: none;
         }
         .offline-banner.active { display: block; }
 
-        /* ===== HEADER ===== */
         .app-header {
             background: linear-gradient(135deg, var(--primary-dark), var(--primary));
             color: #fff; padding: 18px 20px 14px;
@@ -114,12 +108,10 @@
         .theme-toggle:hover, .lang-toggle:hover, .admin-toggle:hover { background: rgba(255,255,255,0.2); }
         .admin-toggle { font-size: 16px; padding: 4px 10px; }
 
-        /* ===== SCREENS ===== */
         .screen { display: none; padding: 16px 18px 30px; animation: fadeIn 0.3s ease; }
         .screen.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ===== STATS ===== */
         .stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 16px; }
         .stat-card {
             background: var(--gray-light); border-radius: var(--radius-sm); padding: 14px 8px;
@@ -131,7 +123,6 @@
         .stat-card.resolved .number { color: var(--success); }
         .stat-card.pending .number { color: var(--danger); }
 
-        /* ===== CATEGORIES ===== */
         .category-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; margin-bottom: 16px; }
         .category-btn {
             background: var(--gray-light); border: 2px solid transparent; border-radius: var(--radius);
@@ -142,7 +133,6 @@
         .category-btn:hover { background: var(--primary-light); border-color: var(--primary); transform: translateY(-2px); }
         .category-btn.selected { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
 
-        /* ===== EMERGENCY BUTTON ===== */
         .emergency-btn {
             background: linear-gradient(135deg, var(--danger), var(--danger-dark));
             color: #fff; border: none; padding: 14px 20px; border-radius: var(--radius);
@@ -154,7 +144,6 @@
         .emergency-btn i { font-size: 20px; animation: pulseIcon 1s infinite; }
         @keyframes pulseIcon { 0%,100% { transform: scale(1); } 50% { transform: scale(1.2); } }
 
-        /* ===== REPORT CARD ===== */
         .report-card {
             background: var(--card-bg); border: 1px solid var(--gray-border);
             border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px;
@@ -168,7 +157,6 @@
         .report-card .location i { margin-right: 4px; font-size: 12px; }
         .report-card .footer { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 12px; color: var(--text-muted); }
 
-        /* ===== STATUS BADGES ===== */
         .status-badge { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
         .status-submitted { background: #e3f2fd; color: #0d47a1; }
         .status-reviewing { background: #fff3e0; color: #e65100; }
@@ -181,7 +169,68 @@
         body.dark-theme .status-resolved { background: #1a3a2a; color: #4aff8a; }
         body.dark-theme .status-rejected { background: #2a2a2a; color: #888; }
 
-        /* ===== FORM ===== */
+        /* ===== BULK REPORT ENTRY ===== */
+        .report-entry {
+            background: var(--gray-light);
+            border: 1px solid var(--gray-border);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            margin-bottom: 12px;
+            position: relative;
+            transition: var(--transition);
+        }
+        .report-entry .remove-entry {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background: var(--danger);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        .report-entry .remove-entry:hover { transform: scale(1.1); }
+        .report-entry .entry-number {
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+        .report-entry .entry-photo-preview {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+            margin-top: 4px;
+        }
+        .report-entry .entry-photo-preview img {
+            width: 100%;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid var(--gray-border);
+        }
+        .add-entry-btn {
+            background: var(--primary-light);
+            color: var(--primary);
+            border: 2px dashed var(--primary);
+            border-radius: var(--radius-sm);
+            padding: 10px;
+            width: 100%;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            font-family: inherit;
+            font-size: 14px;
+        }
+        .add-entry-btn:hover { background: var(--primary); color: #fff; }
+
         .form-group { margin-bottom: 18px; }
         .form-group label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 6px; }
         .form-group textarea, .form-group input[type="text"], .form-group input[type="email"] {
@@ -193,9 +242,8 @@
             outline: none; border-color: var(--primary); background: var(--card-bg);
             box-shadow: 0 0 0 4px rgba(26,115,232,0.1);
         }
-        .form-group textarea { resize: vertical; min-height: 80px; }
+        .form-group textarea { resize: vertical; min-height: 60px; }
 
-        /* ===== PHOTO GALLERY ===== */
         .photo-gallery { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; margin-top: 6px; }
         .photo-gallery img { width: 100%; height: 80px; object-fit: cover; border-radius: 8px; border: 2px solid var(--gray-border); transition: var(--transition); cursor: pointer; }
         .photo-gallery img:hover { transform: scale(1.05); }
@@ -208,19 +256,16 @@
         .photo-gallery .add-photo:hover { border-color: var(--primary); background: var(--primary-light); }
         .photo-gallery .add-photo i { font-size: 24px; display: block; margin-bottom: 2px; }
 
-        /* ===== MAP ===== */
         #mapPicker { width: 100%; height: 280px; border-radius: var(--radius-sm); margin-top: 6px; border: 2px solid var(--gray-border); overflow: hidden; background: var(--gray-light); }
         .map-loading { display: flex; align-items: center; justify-content: center; height: 100%; color: var(--text-muted); background: var(--gray-light); font-size: 14px; }
         .map-loading i { margin-right: 8px; font-size: 20px; color: var(--primary); }
         .map-hint { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
 
-        /* ===== RATING STARS ===== */
         .stars { display: flex; gap: 6px; margin: 8px 0; }
         .stars .star { font-size: 28px; cursor: pointer; color: #ddd; transition: color 0.2s, transform 0.2s; }
         .stars .star.active { color: var(--warning); }
         .stars .star:hover { transform: scale(1.15); }
 
-        /* ===== BUTTONS ===== */
         .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border: none; border-radius: var(--radius); font-weight: 600; font-size: 16px; cursor: pointer; transition: var(--transition); width: 100%; font-family: inherit; }
         .btn-primary { background: var(--primary); color: #fff; }
         .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,115,232,0.3); }
@@ -232,7 +277,6 @@
         .btn-danger { background: var(--danger); color: #fff; }
         .btn-danger:hover { background: var(--danger-dark); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(234,67,53,0.3); }
 
-        /* ===== BOTTOM NAV ===== */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0; max-width: var(--max-width); margin: 0 auto;
             background: var(--card-bg); border-top: 1px solid var(--gray-border);
@@ -246,7 +290,6 @@
         .nav-item .fab { background: var(--primary); color: #fff; width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; box-shadow: 0 4px 16px rgba(26,115,232,0.35); transition: var(--transition); }
         .nav-item .fab:active { transform: scale(0.92); }
 
-        /* ===== TOAST ===== */
         .toast {
             position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
             max-width: 400px; width: 90%; background: var(--card-bg); color: var(--text);
@@ -259,36 +302,49 @@
         .toast.error { background: var(--danger); color: #fff; }
         .toast.info { background: var(--primary); color: #fff; }
 
-        /* ===== UTILITY ===== */
         .back-btn { background: none; border: none; color: var(--text); font-size: 18px; cursor: pointer; padding: 4px 8px; font-family: inherit; transition: var(--transition); }
         .back-btn:hover { color: var(--primary); }
         .flex-between { display: flex; justify-content: space-between; align-items: center; }
-        .mb-16 { margin-bottom: 16px; } .mt-16 { margin-top: 16px; }
+        .section-heading { font-weight: 600; font-size: 17px; }
+        .spacer { width: 40px; }
+        .report-count { font-size: 13px; font-weight: 400; color: #888; }
+        .emergency-toggle-row { margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+        .emergency-toggle-label { font-weight: 600; color: var(--danger); cursor: pointer; }
+        .required-star { color: red; }
+        .map-action-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+        .btn-auto { width: auto; }
+        .address-input { width: 100%; padding: 10px 14px; border: 2px solid var(--gray-border); border-radius: 10px; margin-top: 6px; font-size: 14px; }
+        .location-status { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+        .compact { margin-bottom: 8px; }
+        .entry-select { width: 100%; padding: 8px 10px; border: 2px solid var(--gray-border); border-radius: 8px; font-size: 14px; background: var(--gray-light); color: var(--text); font-family: inherit; }
+        .entry-description { width: 100%; padding: 8px 10px; border: 2px solid var(--gray-border); border-radius: 8px; font-size: 14px; font-family: inherit; background: var(--gray-light); color: var(--text); min-height: 50px; resize: vertical; }
+        .entry-photo { display: none; }
+        .btn-xs { padding: 4px 12px; font-size: 12px; width: auto; }
+        .photo-preview-img { width: 100%; height: 60px; object-fit: cover; border-radius: 6px; border: 1px solid var(--gray-border); }
+        .hidden { display: none !important; }
+        .mt-10 { margin-top: 10px; }
+        .emergency-pill { background: #ea4335; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; display: inline-block; }
+        .report-description { font-size: 13px; color: #555; margin: 4px 0 6px; }
+        .icon-warning { color: #fbbc04; }
+        .icon-small { font-size: 12px; }
+        .photo-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 6px; margin-top: 6px; }
+        .photo-gallery img { width: 100%; height: 80px; object-fit: cover; border-radius: 8px; border: 2px solid var(--gray-border); transition: var(--transition); cursor: pointer; }
+        .photo-gallery img:hover { transform: scale(1.05); }
+        .detail-photo-gallery { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+        .no-photos-text { color: #888; font-size: 13px; }
+        .rating-panel { margin-top: 16px; padding: 16px; background: var(--gray-light); border-radius: 12px; }
+        .rating-panel p { font-weight: 600; margin-bottom: 4px; }
+        .rating-message { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+        .detail-info-card { background: var(--gray-light); border-radius: 12px; padding: 16px; }
+        .detail-heading { font-size: 18px; }
+        .detail-heading i { color: #1a73e8; margin-right: 8px; }
+        .detail-row { margin: 6px 0; }
+        .detail-note { margin: 10px 0; padding: 10px; background: var(--card-bg); border-radius: 8px; }
+        .detail-action-row { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+        .rating-summary { color: #fbbc04; }
+        .btn-auto { width: auto; }
         .text-center { text-align: center; }
         .text-muted { color: var(--text-muted); font-size: 13px; }
-        .report-count { font-size:13px; font-weight:400; color:var(--text-muted); }
-        .section-action-title { font-weight:600; font-size:17px; }
-        .spacer { display:inline-block; width:40px; }
-        .checkbox-row { margin-bottom:16px; display:flex; align-items:center; gap:10px; }
-        .emergency-label { font-weight:600; color:var(--danger); cursor:pointer; }
-        .required-star { color:red; }
-        .form-error { color:red; font-size:13px; display:none; }
-        .small-muted { font-size:12px; color:var(--text-muted); }
-        #photoInput { display:none; }
-        .btn-auto { width: auto; }
-        .map-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; }
-        #addressInput { width:100%; padding:10px 14px; border:2px solid var(--gray-border); border-radius:10px; margin-top:6px; font-size:14px; }
-        .location-status { font-size:12px; color:var(--text-muted); margin-top:6px; }
-        .report-desc { font-size:13px; color:#555; margin:4px 0 6px; }
-        .report-emergency-badge { background:#ea4335; color:#fff; padding:2px 8px; border-radius:4px; font-size:10px; font-weight:700; display:inline-block; }
-        .photo-remove-btn { position:absolute; top:-4px; right:-4px; background:#ea4335; color:#fff; border:none; border-radius:50%; width:20px; height:20px; font-size:12px; cursor:pointer; }
-        .rating-star { color:#fbbc04; }
-        .icon-highlight { color:#1a73e8; }
-        .detail-box { background:var(--gray-light); border-radius:12px; padding:16px; }
-        .detail-row { margin:6px 0; }
-        .detail-photos .photo-gallery.cols-1 { grid-template-columns: repeat(1,1fr); }
-        .detail-photos .photo-gallery.cols-2 { grid-template-columns: repeat(2,1fr); }
-        .detail-photos .photo-gallery.cols-3 { grid-template-columns: repeat(3,1fr); }
         .spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.2); border-top: 3px solid #fff; border-radius: 50%; animation: spin 0.8s linear infinite; }
         .empty-state, .loading-state, .error-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
         .empty-state i, .error-state i { font-size: 48px; color: var(--text-muted); display: block; margin-bottom: 12px; }
@@ -296,7 +352,6 @@
         .error-state { color: var(--danger); } .error-state i { color: var(--danger); }
         .loading-state i { font-size: 32px; color: var(--primary); display: block; margin-bottom: 12px; }
 
-        /* ===== RESPONSIVE ===== */
         @media (max-width: 480px) {
             .app-container { box-shadow: none; }
             .stats-grid { gap: 6px; }
@@ -379,7 +434,7 @@
 
             <div class="section-title">
                 <span>📋 <span data-key="recentReports">Recent Reports</span></span>
-                <span id="reportCount" class="report-count">0 reports</span>
+                <span class="report-count" id="reportCount">0 reports</span>
             </div>
             <div id="reportList"><div class="loading-state"><i class="fas fa-spinner fa-spin"></i> <span data-key="loading">Loading reports...</span></div></div>
 
@@ -390,62 +445,27 @@
             </div>
         </div>
 
-        <!-- ===== REPORT FORM ===== -->
+        <!-- ===== REPORT FORM (BULK) ===== -->
         <div class="screen" id="screen-report">
             <div class="flex-between mb-16">
                 <button class="back-btn" onclick="showScreen('home')"><i class="fas fa-arrow-left"></i> <span data-key="back">Back</span></button>
-                <span class="section-action-title" data-key="report">Report an Issue</span>
+                <span class="section-heading" data-key="report">Report Issues</span>
                 <span class="spacer"></span>
             </div>
 
-            <div class="checkbox-row">
+            <!-- Emergency Toggle (global) -->
+            <div class="emergency-toggle-row">
                 <input type="checkbox" id="emergencyCheckbox" />
-                <label for="emergencyCheckbox" class="emergency-label">
-                    <i class="fas fa-triangle-exclamation"></i> This is an Emergency
+                <label for="emergencyCheckbox" class="emergency-toggle-label">
+                    <i class="fas fa-triangle-exclamation"></i> This is an Emergency (applies to all reports)
                 </label>
             </div>
 
-            <div class="form-group">
-                <label data-key="selectCategory">Select Category <span class="required-star">*</span></label>
-                <div class="category-grid" id="formCategoryGrid">
-                    <button class="category-btn" data-category="pothole" onclick="selectFormCategory(this)">
-                        <i class="fas fa-circle-exclamation"></i> <span data-key="pothole">Pothole</span>
-                    </button>
-                    <button class="category-btn" data-category="streetlight" onclick="selectFormCategory(this)">
-                        <i class="fas fa-lightbulb"></i> <span data-key="streetlight">Streetlight</span>
-                    </button>
-                    <button class="category-btn" data-category="drainage" onclick="selectFormCategory(this)">
-                        <i class="fas fa-water"></i> <span data-key="drainage">Drainage</span>
-                    </button>
-                    <button class="category-btn" data-category="garbage" onclick="selectFormCategory(this)">
-                        <i class="fas fa-trash"></i> <span data-key="garbage">Garbage</span>
-                    </button>
-                    <button class="category-btn" data-category="landslide" onclick="selectFormCategory(this)">
-                        <i class="fas fa-mountain"></i> <span data-key="landslide">Landslide</span>
-                    </button>
-                </div>
-                <div id="formCategoryError" class="form-error">Please select a category</div>
-            </div>
-
-            <!-- Multiple Photos -->
-            <div class="form-group">
-                <label>Photos <span class="small-muted">(up to 5)</span></label>
-                <input type="file" id="photoInput" accept="image/*" multiple />
-                <button class="btn btn-outline btn-sm btn-auto" onclick="document.getElementById('photoInput').click();">
-                    <i class="fas fa-camera"></i> Add Photos
-                </button>
-                <div class="photo-gallery" id="photoGallery">
-                    <div class="add-photo" onclick="document.getElementById('photoInput').click();">
-                        <i class="fas fa-plus"></i> Add
-                    </div>
-                </div>
-            </div>
-
-            <!-- Map -->
+            <!-- Map (shared for all entries) -->
             <div class="form-group">
                 <label data-key="selectLocation">Select Location <span class="required-star">*</span></label>
                 <div id="mapPicker"></div>
-                <div class="map-actions">
+                <div class="map-action-row">
                     <button class="btn btn-outline btn-sm btn-auto" onclick="getCurrentLocation()">
                         <i class="fas fa-location-dot"></i> My Location
                     </button>
@@ -453,26 +473,32 @@
                         <i class="fas fa-directions"></i> Get Directions
                     </button>
                 </div>
-                <input type="text" id="addressInput" placeholder="Search address..." />
+                <input type="text" id="addressInput" placeholder="Search address..." class="address-input" />
                 <input type="hidden" id="selectedLat" value="27.7172" />
                 <input type="hidden" id="selectedLng" value="85.3240" />
-                <div id="locationStatus" class="location-status">
+                <div class="location-status" id="locationStatus">
                     📍 <span data-key="locationWaiting">Click on the map to select location</span>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label data-key="description">Description (optional)</label>
-                <textarea id="descriptionInput" placeholder="Describe the issue in detail..."></textarea>
+            <!-- ===== BULK ENTRIES CONTAINER ===== -->
+            <div id="entriesContainer">
+                <!-- First entry will be added by JavaScript -->
             </div>
 
-            <div class="form-group">
+            <!-- Add More Button -->
+            <button class="add-entry-btn" id="addEntryBtn">
+                <i class="fas fa-plus"></i> Add More Issue
+            </button>
+
+            <!-- Name (shared) -->
+            <div class="form-group mt-16">
                 <label data-key="yourName">Your Name (optional)</label>
                 <input type="text" id="nameInput" placeholder="e.g. Ram Sharma" />
             </div>
 
             <button class="btn btn-success" id="submitReportBtn">
-                <i class="fas fa-paper-plane"></i> <span data-key="submit">Submit Report</span>
+                <i class="fas fa-paper-plane"></i> Submit All Reports
             </button>
         </div>
 
@@ -480,7 +506,7 @@
         <div class="screen" id="screen-detail">
             <div class="flex-between mb-16">
                 <button class="back-btn" onclick="showScreen('home')"><i class="fas fa-arrow-left"></i> <span data-key="back">Back</span></button>
-                <span class="section-action-title">Report Details</span>
+                <span class="section-heading">Report Details</span>
                 <span class="spacer"></span>
             </div>
             <div id="detailContent"></div>
@@ -504,22 +530,18 @@
 
     <script type="module">
         // ================================================================
-        // 🔴🔴🔴 PASTE YOUR FIREBASE CONFIG HERE
+        // 🔴🔴🔴 CONFIGURATION (Replace with your own)
         // ================================================================
 
         const firebaseConfig = {
-             apiKey: "AIzaSyBVvWlYUCOfALhtWdR53_ZcP5spTYhDyu8",
+            apiKey: "AIzaSyBVvWlYUCOfALhtWdR53_ZcP5spTYhDyu8",
   authDomain: "fixmyblock-nepal.firebaseapp.com",
   projectId: "fixmyblock-nepal",
   storageBucket: "fixmyblock-nepal.firebasestorage.app",
   messagingSenderId: "742804276117",
   appId: "1:742804276117:web:ddab9eeff9a357c1112c9c",
   measurementId: "G-C3RQER0PC1"
-        };
-
-        // ================================================================
-        // 🔴🔴🔴 PASTE YOUR IMGBB API KEY HERE
-        // ================================================================
+};
 
         const IMGBB_API_KEY = '2d59a842482977b8aa645a353ecbaafc';
 
@@ -650,8 +672,6 @@
         }
 
         let reportsData = [];
-        let selectedCategory = null;
-        let selectedPhotos = [];
 
         // ================================================================
         // SCREEN NAV
@@ -674,6 +694,10 @@
                     });
                     window._mapInitialized = true;
                 }, 200);
+                // Render initial entry if not already
+                if (document.querySelectorAll('.report-entry').length === 0) {
+                    addReportEntry();
+                }
             }
         };
 
@@ -727,117 +751,244 @@
         };
 
         // ================================================================
-        // PHOTOS
+        // BULK ENTRIES MANAGEMENT
         // ================================================================
 
-        document.getElementById('photoInput').addEventListener('change', function(e) {
-            const files = e.target.files;
-            if (files.length > 5) { showToast('Maximum 5 photos allowed.', 'error'); return; }
-            const gallery = document.getElementById('photoGallery');
-            const addBtn = gallery.querySelector('.add-photo');
-            gallery.innerHTML = ''; gallery.appendChild(addBtn);
-            selectedPhotos = [];
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                selectedPhotos.push(file);
+        let entryCount = 0;
+
+        function createEntryHTML(index) {
+            const num = index + 1;
+            return `
+                <div class="report-entry" data-index="${index}">
+                    <button class="remove-entry" onclick="removeEntry(${index})" ${index === 0 ? 'class="remove-entry hidden"' : ''}><i class="fas fa-times"></i></button>
+                    <div class="entry-number">Issue #${num}</div>
+                    <div class="form-group compact">
+                        <label>Category <span class="required-star">*</span></label>
+                        <select class="entry-category entry-select">
+                            <option value="pothole">${getTranslation('pothole')}</option>
+                            <option value="streetlight">${getTranslation('streetlight')}</option>
+                            <option value="drainage">${getTranslation('drainage')}</option>
+                            <option value="garbage">${getTranslation('garbage')}</option>
+                            <option value="landslide">${getTranslation('landslide')}</option>
+                        </select>
+                    </div>
+                    <div class="form-group compact">
+                        <label>Description (optional)</label>
+                        <textarea class="entry-description" placeholder="Describe this specific issue..."></textarea>
+                    </div>
+                    <div class="form-group compact">
+                        <label>Photo (optional)</label>
+                        <input type="file" class="entry-photo" accept="image/*" />
+                        <button class="btn btn-outline btn-sm btn-xs" onclick="triggerPhoto(${index})">
+                            <i class="fas fa-camera"></i> Upload Photo
+                        </button>
+                        <div class="entry-photo-preview" id="entryPreview${index}"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function addReportEntry() {
+            const container = document.getElementById('entriesContainer');
+            const index = entryCount;
+            const entryDiv = document.createElement('div');
+            entryDiv.innerHTML = createEntryHTML(index);
+            container.appendChild(entryDiv.firstElementChild);
+            entryCount++;
+            // Update remove buttons visibility
+            updateRemoveButtons();
+        }
+
+        window.removeEntry = function(index) {
+            if (document.querySelectorAll('.report-entry').length <= 1) {
+                showToast('You need at least one issue.', 'error');
+                return;
+            }
+            const entries = document.querySelectorAll('.report-entry');
+            // Find the one with data-index
+            for (let el of entries) {
+                if (parseInt(el.dataset.index) === index) {
+                    el.remove();
+                    break;
+                }
+            }
+            // Re-index remaining entries
+            reindexEntries();
+            updateRemoveButtons();
+        };
+
+        function reindexEntries() {
+            const entries = document.querySelectorAll('.report-entry');
+            entries.forEach((el, i) => {
+                el.dataset.index = i;
+                const numSpan = el.querySelector('.entry-number');
+                if (numSpan) numSpan.textContent = `Issue #${i+1}`;
+                // Update onclick for remove and photo triggers
+                const removeBtn = el.querySelector('.remove-entry');
+                if (removeBtn) removeBtn.onclick = () => removeEntry(i);
+                const photoBtn = el.querySelector('.btn-outline');
+                if (photoBtn) photoBtn.onclick = () => triggerPhoto(i);
+                const previewDiv = el.querySelector('.entry-photo-preview');
+                if (previewDiv) previewDiv.id = `entryPreview${i}`;
+            });
+        }
+
+        function updateRemoveButtons() {
+            const entries = document.querySelectorAll('.report-entry');
+            entries.forEach((el, i) => {
+                const btn = el.querySelector('.remove-entry');
+                if (btn) {
+                    if (entries.length === 1) btn.style.display = 'none';
+                    else btn.style.display = 'flex';
+                }
+            });
+        }
+
+        // Photo trigger for each entry
+        window.triggerPhoto = function(index) {
+            const entry = document.querySelector(`.report-entry[data-index="${index}"]`);
+            if (entry) {
+                const fileInput = entry.querySelector('.entry-photo');
+                if (fileInput) fileInput.click();
+            }
+        };
+
+        // Photo preview for each entry
+        document.addEventListener('change', function(e) {
+            if (e.target.classList.contains('entry-photo')) {
+                const entry = e.target.closest('.report-entry');
+                if (!entry) return;
+                const index = parseInt(entry.dataset.index);
+                const file = e.target.files[0];
+                if (!file) return;
+                const previewDiv = document.getElementById(`entryPreview${index}`);
+                if (!previewDiv) return;
                 const reader = new FileReader();
                 reader.onload = function(ev) {
-                    const div = document.createElement('div');
-                    div.style.position = 'relative';
-                    div.innerHTML = `
-                        <img src="${ev.target.result}" alt="Photo" />
-                        <button onclick="removePhoto(${i})" class="photo-remove-btn">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    `;
-                    gallery.insertBefore(div, addBtn);
+                    previewDiv.innerHTML = `<img src="${ev.target.result}" alt="Photo" class="photo-preview-img" />`;
                 };
                 reader.readAsDataURL(file);
             }
         });
 
-        window.removePhoto = function(index) {
-            selectedPhotos.splice(index, 1);
-            const gallery = document.getElementById('photoGallery');
-            const addBtn = gallery.querySelector('.add-photo');
-            gallery.innerHTML = ''; gallery.appendChild(addBtn);
-            selectedPhotos.forEach((file, i) => {
-                const reader = new FileReader();
-                reader.onload = function(ev) {
-                    const div = document.createElement('div');
-                    div.style.position = 'relative';
-                    div.innerHTML = `
-                        <img src="${ev.target.result}" alt="Photo" />
-                        <button onclick="removePhoto(${i})" class="photo-remove-btn">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    `;
-                    gallery.insertBefore(div, addBtn);
-                };
-                reader.readAsDataURL(file);
-            });
-        };
+        // Add initial entry on load
+        setTimeout(() => {
+            if (document.querySelectorAll('.report-entry').length === 0) {
+                addReportEntry();
+            }
+        }, 100);
+
+        // Add more entries button
+        document.getElementById('addEntryBtn').addEventListener('click', function() {
+            if (document.querySelectorAll('.report-entry').length >= 10) {
+                showToast('Maximum 10 issues per submission.', 'error');
+                return;
+            }
+            addReportEntry();
+            // Reindex
+            reindexEntries();
+            updateRemoveButtons();
+        });
 
         // ================================================================
-        // SUBMIT
+        // SUBMIT ALL REPORTS (BULK)
         // ================================================================
 
         document.getElementById('submitReportBtn').addEventListener('click', async function() {
             const btn = this;
             if (btn.disabled) return;
-            if (!selectedCategory) {
-                document.getElementById('formCategoryError').style.display = 'block';
-                showToast('Please select a category', 'error');
-                return;
-            }
+
+            // Get shared location
             const pos = getMapPosition();
             const lat = pos ? pos.lat : parseFloat(document.getElementById('selectedLat').value) || 27.7172;
             const lng = pos ? pos.lng : parseFloat(document.getElementById('selectedLng').value) || 85.3240;
             const locationName = `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
-            const description = document.getElementById('descriptionInput').value.trim();
             const name = document.getElementById('nameInput').value.trim() || 'Anonymous';
             const isEmergency = document.getElementById('emergencyCheckbox').checked;
 
+            // Collect entries
+            const entries = document.querySelectorAll('.report-entry');
+            const reportData = [];
+            let valid = true;
+
+            entries.forEach((entry, idx) => {
+                const category = entry.querySelector('.entry-category')?.value;
+                const description = entry.querySelector('.entry-description')?.value.trim();
+                const photoFile = entry.querySelector('.entry-photo')?.files[0] || null;
+
+                if (!category) {
+                    showToast(`Issue #${idx+1} missing category.`, 'error');
+                    valid = false;
+                    return;
+                }
+                reportData.push({ category, description: description || 'No description provided', photoFile });
+            });
+
+            if (!valid) return;
+            if (reportData.length === 0) {
+                showToast('Please add at least one issue.', 'error');
+                return;
+            }
+
             btn.disabled = true;
-            btn.innerHTML = `<span class="spinner"></span> ${getTranslation('submitting')}`;
+            btn.innerHTML = `<span class="spinner"></span> Submitting ${reportData.length} reports...`;
 
             try {
-                const photoUrls = [];
-                for (const file of selectedPhotos) {
-                    const fd = new FormData();
-                    fd.append('key', IMGBB_API_KEY);
-                    fd.append('image', file);
-                    try {
-                        const res = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: fd });
-                        const data = await res.json();
-                        if (data.success) photoUrls.push(data.data.url);
-                    } catch (e) { console.error('Upload error:', e); }
-                }
-
-                await addDoc(collection(db, 'reports'), {
-                    category: selectedCategory, description: description || 'No description provided',
-                    location: locationName, latitude: lat, longitude: lng,
-                    photoUrls: photoUrls || [], status: 'submitted', submittedBy: name,
-                    isEmergency: isEmergency, affectedCount: 0, supportedBy: [], priority: 'LOW',
-                    rating: 0, ratingCount: 0, createdAt: serverTimestamp()
+                const uploadPromises = reportData.map(async (data) => {
+                    let photoUrl = '';
+                    if (data.photoFile) {
+                        const fd = new FormData();
+                        fd.append('key', IMGBB_API_KEY);
+                        fd.append('image', data.photoFile);
+                        try {
+                            const res = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: fd });
+                            const imgData = await res.json();
+                            if (imgData.success) photoUrl = imgData.data.url;
+                        } catch (e) { console.error('ImgBB error:', e); }
+                    }
+                    return {
+                        category: data.category,
+                        description: data.description,
+                        location: locationName,
+                        latitude: lat,
+                        longitude: lng,
+                        photoUrls: photoUrl ? [photoUrl] : [],
+                        status: 'submitted',
+                        submittedBy: name,
+                        isEmergency: isEmergency,
+                        affectedCount: 0,
+                        supportedBy: [],
+                        priority: 'LOW',
+                        rating: 0,
+                        ratingCount: 0,
+                        createdAt: serverTimestamp()
+                    };
                 });
 
+                const allData = await Promise.all(uploadPromises);
+
+                // Submit all reports in parallel
+                const addOps = allData.map(data => addDoc(collection(db, 'reports'), data));
+                await Promise.all(addOps);
+
+                const count = allData.length;
                 if (isEmergency) {
-                    console.log('🚨 EMERGENCY REPORT SUBMITTED! Notifying authorities...');
-                    showToast('🚨 Emergency report sent to authorities!', 'info');
+                    console.log(`🚨 ${count} emergency reports submitted! Notifying authorities...`);
+                    showToast(`🚨 ${count} emergency reports sent to authorities!`, 'info');
                 }
+                showToast(`✅ ${count} reports submitted successfully!`, 'success');
 
-                showToast(getTranslation('submitSuccess'), 'success');
-
-                document.querySelectorAll('#formCategoryGrid .category-btn').forEach(b => b.classList.remove('selected'));
-                document.getElementById('descriptionInput').value = '';
-                document.getElementById('nameInput').value = '';
-                document.getElementById('photoInput').value = '';
+                // Reset form
                 document.getElementById('emergencyCheckbox').checked = false;
-                selectedCategory = null;
-                selectedPhotos = [];
-                document.getElementById('photoGallery').innerHTML =
-                    `<div class="add-photo" onclick="document.getElementById('photoInput').click();"><i class="fas fa-plus"></i> Add</div>`;
+                document.getElementById('nameInput').value = '';
+                document.querySelectorAll('.report-entry').forEach(el => el.remove());
+                entryCount = 0;
+                // Add one fresh entry
+                addReportEntry();
+                reindexEntries();
+                updateRemoveButtons();
+
+                // Reset map
                 setMapPosition(27.7172, 85.3240);
                 document.getElementById('selectedLat').value = '27.7172';
                 document.getElementById('selectedLng').value = '85.3240';
@@ -845,16 +996,16 @@
                 showScreen('home');
 
             } catch (error) {
-                console.error('Submit error:', error);
-                showToast(`${getTranslation('submitError')}: ${error.message}`, 'error');
+                console.error('Bulk submit error:', error);
+                showToast(`❌ Error: ${error.message}`, 'error');
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = `<i class="fas fa-paper-plane"></i> ${getTranslation('submit')}`;
+                btn.innerHTML = `<i class="fas fa-paper-plane"></i> Submit All Reports`;
             }
         });
 
         // ================================================================
-        // REPORT LISTENER
+        // REPORT LISTENER (unchanged)
         // ================================================================
 
         function listenToReports() {
@@ -869,7 +1020,7 @@
                 document.getElementById('reportList').innerHTML = `
                     <div class="error-state"><i class="fas fa-exclamation-circle"></i>
                     <h3>Error Loading Reports</h3><p>${error.message}</p>
-                    <button onclick="location.reload()" class="btn btn-sm btn-primary">Retry</button></div>`;
+                    <button onclick="location.reload()" class="btn btn-sm btn-primary mt-10">Retry</button></div>`;
             });
         }
 
@@ -886,17 +1037,17 @@
                         <div>
                             <span class="category-icon"><i class="fas ${getCategoryIcon(r.category)}"></i></span>
                             <span class="title">${getCategoryLabel(r.category)}</span>
-                            ${r.isEmergency ? '<span class="report-emergency-badge">🚨 EMERGENCY</span>' : ''}
+                            ${r.isEmergency ? '<span class="emergency-pill">🚨 EMERGENCY</span>' : ''}
                         </div>
                         <span class="status-badge ${getStatusClass(r.status || 'submitted')}">${getStatusLabel(r.status || 'submitted')}</span>
                     </div>
                     <div class="location"><i class="fas fa-location-dot"></i> ${r.location || 'Unknown location'}</div>
-                    <div class="report-desc">${r.description ? r.description.substring(0,80)+(r.description.length>80?'...':'') : 'No description'}</div>
+                    <div class="report-description">${r.description ? r.description.substring(0,80)+(r.description.length>80?'...':'') : 'No description'}</div>
                     <div class="footer">
                         <span>${formatTimestamp(r.createdAt)}</span>
                         ${r.photoUrls && r.photoUrls.length > 0 ? `<span><i class="fas fa-image"></i> ${r.photoUrls.length} photos</span>` : ''}
-                        ${r.rating > 0 ? `<span><i class="fas fa-star rating-star"></i> ${r.rating.toFixed(1)}</span>` : ''}
-                        <span><i class="fas fa-chevron-right chev"></i></span>
+                        ${r.rating > 0 ? `<span><i class="fas fa-star icon-warning"></i> ${r.rating.toFixed(1)}</span>` : ''}
+                        <span><i class="fas fa-chevron-right icon-small"></i></span>
                     </div>
                 </div>
             `).join('');
@@ -912,7 +1063,7 @@
         }
 
         // ================================================================
-        // REPORT DETAIL (with Rating)
+        // REPORT DETAIL (unchanged, but keep rating)
         // ================================================================
 
         window.showReportDetail = async function(reportId) {
@@ -923,13 +1074,13 @@
                 if (!snap.exists()) { container.innerHTML = '<div class="error-state"><i class="fas fa-exclamation-circle"></i><p>Report not found</p></div>'; return; }
                 const r = { id: snap.id, ...snap.data() };
                 const photoHtml = r.photoUrls && r.photoUrls.length > 0 ?
-                    `<div class="photo-gallery cols-${Math.min(r.photoUrls.length,3)}">
+                    `<div class="photo-gallery detail-photo-gallery">
                         ${r.photoUrls.map(url => `<img src="${url}" alt="Report photo" onclick="window.open('${url}','_blank')" />`).join('')}
                     </div>` :
-                    '<div class="small-muted">No photos</div>';
+                    '<div class="no-photos-text">No photos</div>';
                 const ratingHtml = r.status === 'resolved' ?
                     `<div class="rating-panel">
-                        <p class="rating-title">Rate this resolution</p>
+                        <p>Rate this resolution</p>
                         <div class="stars" id="ratingStars">
                             ${[1,2,3,4,5].map(i => `<span class="star" onclick="submitRating('${r.id}', ${i})" data-value="${i}">★</span>`).join('')}
                         </div>
@@ -937,19 +1088,19 @@
                     </div>` :
                     '';
                 container.innerHTML = `
-                    <div class="detail-box">
-                        <h3 class="detail-title"><i class="fas ${getCategoryIcon(r.category)} icon-highlight"></i> ${getCategoryLabel(r.category)}</h3>
-                        ${r.isEmergency ? '<span class="report-emergency-badge">🚨 EMERGENCY</span>' : ''}
+                    <div class="detail-info-card">
+                        <h3 class="detail-heading"><i class="fas ${getCategoryIcon(r.category)}"></i> ${getCategoryLabel(r.category)}</h3>
+                        ${r.isEmergency ? '<span class="emergency-pill">🚨 EMERGENCY</span>' : ''}
                         <div class="detail-row"><i class="fas fa-location-dot"></i> ${r.location || 'Unknown location'}</div>
                         <div class="detail-row"><i class="fas fa-user"></i> ${r.submittedBy || 'Anonymous'}</div>
                         <div class="detail-row"><i class="fas fa-clock"></i> ${formatTimestamp(r.createdAt)}</div>
                         <div class="detail-row"><span class="status-badge ${getStatusClass(r.status || 'submitted')}">${getStatusLabel(r.status || 'submitted')}</span></div>
-                        ${r.description ? `<div class="detail-desc">📝 ${r.description}</div>` : ''}
+                        ${r.description ? `<div class="detail-note">📝 ${r.description}</div>` : ''}
                         <div class="detail-row"><strong>${getTranslation('affected')}:</strong> ${r.affectedCount || 0}</div>
-                        <div class="detail-photos"><strong>Photos:</strong> ${photoHtml}</div>
-                        ${r.rating > 0 ? `<div class="rating-summary"><i class="fas fa-star rating-star"></i> ${r.rating.toFixed(1)} (${r.ratingCount} reviews)</div>` : ''}
+                        <div class="detail-row"><strong>Photos:</strong> ${photoHtml}</div>
+                        ${r.rating > 0 ? `<div class="detail-row rating-summary"><i class="fas fa-star"></i> ${r.rating.toFixed(1)} (${r.ratingCount} reviews)</div>` : ''}
                         ${ratingHtml}
-                        <div class="map-actions">
+                        <div class="detail-action-row">
                             <button class="btn btn-sm btn-primary btn-auto" onclick="getRoute()"><i class="fas fa-directions"></i> Directions</button>
                             <button class="btn btn-sm btn-outline btn-auto" onclick="window.open('https://www.google.com/maps?q=${r.latitude},${r.longitude}','_blank')"><i class="fas fa-map"></i> Open Map</button>
                         </div>
@@ -957,10 +1108,6 @@
             } catch (error) { console.error('Error loading detail:', error);
                 container.innerHTML = '<div class="error-state"><i class="fas fa-exclamation-circle"></i><p>Error loading report</p></div>'; }
         };
-
-        // ================================================================
-        // SUBMIT RATING
-        // ================================================================
 
         window.submitRating = async function(reportId, rating) {
             try {
@@ -983,27 +1130,6 @@
         };
 
         // ================================================================
-        // SELECT CATEGORY
-        // ================================================================
-
-        window.selectFormCategory = function(el) {
-            document.querySelectorAll('#formCategoryGrid .category-btn').forEach(b => b.classList.remove('selected'));
-            el.classList.add('selected');
-            selectedCategory = el.dataset.category;
-            document.getElementById('formCategoryError').style.display = 'none';
-        };
-
-        window.quickReport = function(category) {
-            showScreen('report');
-            document.querySelectorAll('#formCategoryGrid .category-btn').forEach(b => {
-                b.classList.remove('selected');
-                if (b.dataset.category === category) { b.classList.add('selected');
-                    selectedCategory = category; }
-            });
-            document.getElementById('formCategoryError').style.display = 'none';
-        };
-
-        // ================================================================
         // INIT
         // ================================================================
 
@@ -1012,7 +1138,7 @@
                 console.log('✅ Firestore connected!');
                 listenToReports(); } catch (error) { console.error('Firestore connection failed:', error);
                 document.getElementById('reportList').innerHTML =
-                `<div class="error-state"><i class="fas fa-exclamation-circle"></i><h3>Connection Error</h3><p>${error.message}</p><button onclick="location.reload()" class="btn btn-sm btn-primary">Retry</button></div>`; }
+                `<div class="error-state"><i class="fas fa-exclamation-circle"></i><h3>Connection Error</h3><p>${error.message}</p><button onclick="location.reload()" class="btn btn-sm btn-primary mt-10">Retry</button></div>`; }
         }
         testConnection();
 
@@ -1021,14 +1147,22 @@
         window.showScreen = showScreen;
         window.showReportDetail = showReportDetail;
         window.submitRating = submitRating;
-        window.quickReport = quickReport;
-        window.selectFormCategory = selectFormCategory;
+        window.quickReport = function(category) {
+            showScreen('report');
+            // Pre-select category for the first entry
+            const entries = document.querySelectorAll('.report-entry');
+            if (entries.length) {
+                const sel = entries[0].querySelector('.entry-category');
+                if (sel) sel.value = category;
+            }
+        };
         window.getRoute = getRoute;
         window.getCurrentLocation = getCurrentLocation;
         window.openEmergency = openEmergency;
-        window.removePhoto = removePhoto;
+        window.removeEntry = removeEntry;
+        window.triggerPhoto = triggerPhoto;
 
-        console.log('🏗️ FixMyBlock Nepal - All 16 features loaded!');
+        console.log('🏗️ FixMyBlock Nepal - Bulk Reporting Feature Added!');
     </script>
 
 </body>
