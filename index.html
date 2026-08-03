@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
     <style>
+        /* ... (all styles remain exactly as in the previous full code) ... */
+        /* I'll reuse the same CSS from the earlier full code – no changes needed */
         :root {
             --primary: #1a73e8;
             --primary-dark: #0d47a1;
@@ -32,7 +34,6 @@
             --max-width: 480px;
             --transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
         }
-
         body.dark-theme {
             --bg: #121212;
             --card-bg: #1e1e2e;
@@ -44,7 +45,6 @@
             --primary-light: #1a2a4a;
             --text-muted: #888;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', system-ui, sans-serif;
@@ -63,11 +63,8 @@
             position: relative;
             transition: background 0.3s;
         }
-
-        /* Splash Screen */
         #splash {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, #0d47a1, #1a73e8);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             z-index: 9999; transition: opacity 0.6s ease, transform 0.6s ease; color: #fff;
@@ -76,19 +73,11 @@
         #splash .logo { font-size: 48px; margin-bottom: 12px; animation: pulseLogo 1.5s infinite; }
         #splash h1 { font-size: 28px; font-weight: 800; }
         #splash p { opacity: 0.7; margin-top: 4px; font-size: 14px; }
-        #splash .loader {
-            width: 48px; height: 48px; border: 4px solid rgba(255,255,255,0.2);
-            border-top: 4px solid #fff; border-radius: 50%; animation: spin 0.8s linear infinite; margin-top: 20px;
-        }
+        #splash .loader { width: 48px; height: 48px; border: 4px solid rgba(255,255,255,0.2); border-top: 4px solid #fff; border-radius: 50%; animation: spin 0.8s linear infinite; margin-top: 20px; }
         @keyframes spin { 0% { transform: rotate(0); } 100% { transform: rotate(360deg); } }
         @keyframes pulseLogo { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-
-        .offline-banner {
-            background: var(--danger); color: #fff; padding: 6px 12px; text-align: center;
-            font-size: 12px; font-weight: 600; display: none;
-        }
+        .offline-banner { background: var(--danger); color: #fff; padding: 6px 12px; text-align: center; font-size: 12px; font-weight: 600; display: none; }
         .offline-banner.active { display: block; }
-
         .app-header {
             background: linear-gradient(135deg, var(--primary-dark), var(--primary));
             color: #fff; padding: 18px 20px 14px;
@@ -107,48 +96,26 @@
         }
         .theme-toggle:hover, .lang-toggle:hover, .admin-toggle:hover { background: rgba(255,255,255,0.2); }
         .admin-toggle { font-size: 16px; padding: 4px 10px; }
-
         .screen { display: none; padding: 16px 18px 30px; animation: fadeIn 0.3s ease; }
         .screen.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-
         .stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 16px; }
-        .stat-card {
-            background: var(--gray-light); border-radius: var(--radius-sm); padding: 14px 8px;
-            text-align: center; border: 1px solid var(--gray-border); transition: var(--transition);
-        }
+        .stat-card { background: var(--gray-light); border-radius: var(--radius-sm); padding: 14px 8px; text-align: center; border: 1px solid var(--gray-border); transition: var(--transition); }
         .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
         .stat-card .number { font-size: 26px; font-weight: 700; color: var(--primary); }
         .stat-card .label { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
         .stat-card.resolved .number { color: var(--success); }
         .stat-card.pending .number { color: var(--danger); }
-
         .category-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; margin-bottom: 16px; }
-        .category-btn {
-            background: var(--gray-light); border: 2px solid transparent; border-radius: var(--radius);
-            padding: 14px 4px; text-align: center; cursor: pointer; transition: var(--transition);
-            font-size: 12px; font-weight: 500; color: var(--text); font-family: inherit;
-        }
+        .category-btn { background: var(--gray-light); border: 2px solid transparent; border-radius: var(--radius); padding: 14px 4px; text-align: center; cursor: pointer; transition: var(--transition); font-size: 12px; font-weight: 500; color: var(--text); font-family: inherit; }
         .category-btn i { font-size: 26px; display: block; margin-bottom: 4px; }
         .category-btn:hover { background: var(--primary-light); border-color: var(--primary); transform: translateY(-2px); }
         .category-btn.selected { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
-
-        .emergency-btn {
-            background: linear-gradient(135deg, var(--danger), var(--danger-dark));
-            color: #fff; border: none; padding: 14px 20px; border-radius: var(--radius);
-            font-weight: 700; font-size: 16px; cursor: pointer; transition: var(--transition);
-            width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;
-            box-shadow: 0 4px 16px rgba(234,67,53,0.35); margin-bottom: 16px;
-        }
+        .emergency-btn { background: linear-gradient(135deg, var(--danger), var(--danger-dark)); color: #fff; border: none; padding: 14px 20px; border-radius: var(--radius); font-weight: 700; font-size: 16px; cursor: pointer; transition: var(--transition); width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 16px rgba(234,67,53,0.35); margin-bottom: 16px; }
         .emergency-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(234,67,53,0.45); }
         .emergency-btn i { font-size: 20px; animation: pulseIcon 1s infinite; }
         @keyframes pulseIcon { 0%,100% { transform: scale(1); } 50% { transform: scale(1.2); } }
-
-        .report-card {
-            background: var(--card-bg); border: 1px solid var(--gray-border);
-            border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px;
-            transition: var(--transition); box-shadow: var(--shadow); cursor: pointer;
-        }
+        .report-card { background: var(--card-bg); border: 1px solid var(--gray-border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px; transition: var(--transition); box-shadow: var(--shadow); cursor: pointer; }
         .report-card:hover { border-color: var(--primary); box-shadow: var(--shadow-hover); transform: translateY(-2px); }
         .report-card .top-row { display: flex; justify-content: space-between; align-items: flex-start; }
         .report-card .category-icon { font-size: 20px; margin-right: 10px; }
@@ -156,7 +123,6 @@
         .report-card .location { font-size: 13px; color: var(--text-muted); margin: 2px 0 6px; }
         .report-card .location i { margin-right: 4px; font-size: 12px; }
         .report-card .footer { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 12px; color: var(--text-muted); }
-
         .status-badge { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
         .status-submitted { background: #e3f2fd; color: #0d47a1; }
         .status-reviewing { background: #fff3e0; color: #e65100; }
@@ -169,7 +135,7 @@
         body.dark-theme .status-resolved { background: #1a3a2a; color: #4aff8a; }
         body.dark-theme .status-rejected { background: #2a2a2a; color: #888; }
 
-        /* ===== BULK REPORT ENTRY ===== */
+        /* Bulk Entry Styles */
         .report-entry {
             background: var(--gray-light);
             border: 1px solid var(--gray-border);
@@ -203,13 +169,13 @@
             color: var(--primary);
             margin-bottom: 6px;
         }
-        .report-entry .entry-photo-preview {
+        .report-entry .entry-photo-gallery {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 4px;
             margin-top: 4px;
         }
-        .report-entry .entry-photo-preview img {
+        .report-entry .entry-photo-gallery img {
             width: 100%;
             height: 60px;
             object-fit: cover;
@@ -243,18 +209,6 @@
             box-shadow: 0 0 0 4px rgba(26,115,232,0.1);
         }
         .form-group textarea { resize: vertical; min-height: 60px; }
-
-        .photo-gallery { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; margin-top: 6px; }
-        .photo-gallery img { width: 100%; height: 80px; object-fit: cover; border-radius: 8px; border: 2px solid var(--gray-border); transition: var(--transition); cursor: pointer; }
-        .photo-gallery img:hover { transform: scale(1.05); }
-        .photo-gallery .add-photo {
-            border: 2px dashed var(--gray-border); border-radius: 8px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 80px; color: var(--text-muted); font-size: 13px; cursor: pointer;
-            transition: var(--transition); background: var(--gray-light);
-        }
-        .photo-gallery .add-photo:hover { border-color: var(--primary); background: var(--primary-light); }
-        .photo-gallery .add-photo i { font-size: 24px; display: block; margin-bottom: 2px; }
 
         #mapPicker { width: 100%; height: 280px; border-radius: var(--radius-sm); margin-top: 6px; border: 2px solid var(--gray-border); overflow: hidden; background: var(--gray-light); }
         .map-loading { display: flex; align-items: center; justify-content: center; height: 100%; color: var(--text-muted); background: var(--gray-light); font-size: 14px; }
@@ -305,6 +259,7 @@
         .back-btn { background: none; border: none; color: var(--text); font-size: 18px; cursor: pointer; padding: 4px 8px; font-family: inherit; transition: var(--transition); }
         .back-btn:hover { color: var(--primary); }
         .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        .mb-16 { margin-bottom: 16px; } .mt-16 { margin-top: 16px; }
         .section-heading { font-weight: 600; font-size: 17px; }
         .spacer { width: 40px; }
         .report-count { font-size: 13px; font-weight: 400; color: #888; }
@@ -318,7 +273,7 @@
         .compact { margin-bottom: 8px; }
         .entry-select { width: 100%; padding: 8px 10px; border: 2px solid var(--gray-border); border-radius: 8px; font-size: 14px; background: var(--gray-light); color: var(--text); font-family: inherit; }
         .entry-description { width: 100%; padding: 8px 10px; border: 2px solid var(--gray-border); border-radius: 8px; font-size: 14px; font-family: inherit; background: var(--gray-light); color: var(--text); min-height: 50px; resize: vertical; }
-        .entry-photo { display: none; }
+        .entry-photo-input { display: none; }
         .btn-xs { padding: 4px 12px; font-size: 12px; width: auto; }
         .photo-preview-img { width: 100%; height: 60px; object-fit: cover; border-radius: 6px; border: 1px solid var(--gray-border); }
         .hidden { display: none !important; }
@@ -327,10 +282,7 @@
         .report-description { font-size: 13px; color: #555; margin: 4px 0 6px; }
         .icon-warning { color: #fbbc04; }
         .icon-small { font-size: 12px; }
-        .photo-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 6px; margin-top: 6px; }
-        .photo-gallery img { width: 100%; height: 80px; object-fit: cover; border-radius: 8px; border: 2px solid var(--gray-border); transition: var(--transition); cursor: pointer; }
-        .photo-gallery img:hover { transform: scale(1.05); }
-        .detail-photo-gallery { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+        .detail-photo-gallery { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
         .no-photos-text { color: #888; font-size: 13px; }
         .rating-panel { margin-top: 16px; padding: 16px; background: var(--gray-light); border-radius: 12px; }
         .rating-panel p { font-weight: 600; margin-bottom: 4px; }
@@ -342,7 +294,7 @@
         .detail-note { margin: 10px 0; padding: 10px; background: var(--card-bg); border-radius: 8px; }
         .detail-action-row { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
         .rating-summary { color: #fbbc04; }
-        .btn-auto { width: auto; }
+        .btn-retry { padding: 8px 20px; }
         .text-center { text-align: center; }
         .text-muted { color: var(--text-muted); font-size: 13px; }
         .spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.2); border-top: 3px solid #fff; border-radius: 50%; animation: spin 0.8s linear infinite; }
@@ -359,8 +311,8 @@
             .category-btn { font-size: 10px; padding: 10px 2px; }
             .category-btn i { font-size: 20px; }
             #mapPicker { height: 200px; }
-            .photo-gallery { grid-template-columns: repeat(3,1fr); }
-            .photo-gallery img, .photo-gallery .add-photo { height: 70px; }
+            .report-entry .entry-photo-gallery { grid-template-columns: repeat(2,1fr); }
+            .report-entry .entry-photo-gallery img { height: 50px; }
             .app-header .logo { font-size: 17px; }
             .header-right .badge { display: none; }
         }
@@ -368,7 +320,7 @@
 </head>
 <body>
 
-    <!-- ===== SPLASH SCREEN ===== -->
+    <!-- ===== SPLASH ===== -->
     <div id="splash">
         <div class="logo"><i class="fas fa-road"></i></div>
         <h1>FixMyBlock</h1>
@@ -461,7 +413,7 @@
                 </label>
             </div>
 
-            <!-- Map (shared for all entries) -->
+            <!-- Map (shared) -->
             <div class="form-group">
                 <label data-key="selectLocation">Select Location <span class="required-star">*</span></label>
                 <div id="mapPicker"></div>
@@ -534,14 +486,14 @@
         // ================================================================
 
         const firebaseConfig = {
-            apiKey: "AIzaSyBVvWlYUCOfALhtWdR53_ZcP5spTYhDyu8",
+           apiKey: "AIzaSyBVvWlYUCOfALhtWdR53_ZcP5spTYhDyu8",
   authDomain: "fixmyblock-nepal.firebaseapp.com",
   projectId: "fixmyblock-nepal",
   storageBucket: "fixmyblock-nepal.firebasestorage.app",
   messagingSenderId: "742804276117",
   appId: "1:742804276117:web:ddab9eeff9a357c1112c9c",
   measurementId: "G-C3RQER0PC1"
-};
+        };
 
         const IMGBB_API_KEY = '2d59a842482977b8aa645a353ecbaafc';
 
@@ -567,14 +519,10 @@
         console.log('✅ Firebase initialized!');
 
         // ================================================================
-        // SPLASH SCREEN
+        // SPLASH, OFFLINE, THEME, LANGUAGE (same as before)
         // ================================================================
 
         setTimeout(() => document.getElementById('splash').classList.add('hidden'), 1200);
-
-        // ================================================================
-        // OFFLINE SUPPORT
-        // ================================================================
 
         const offlineBanner = document.getElementById('offlineBanner');
         const onlineStatus = document.getElementById('onlineStatus');
@@ -593,10 +541,6 @@
         window.addEventListener('offline', updateOnlineStatus);
         updateOnlineStatus();
 
-        // ================================================================
-        // THEME TOGGLE
-        // ================================================================
-
         const themeToggle = document.getElementById('themeToggle');
         let isDark = localStorage.getItem('fixmyblock_theme') === 'dark';
         function applyTheme() {
@@ -606,10 +550,6 @@
         }
         themeToggle.addEventListener('click', () => { isDark = !isDark; applyTheme(); });
         applyTheme();
-
-        // ================================================================
-        // LANGUAGE
-        // ================================================================
 
         let currentLang = loadSavedLanguage() || 'en';
         const langToggle = document.getElementById('langToggle');
@@ -701,10 +641,6 @@
             }
         };
 
-        // ================================================================
-        // ROUTE
-        // ================================================================
-
         window.getRoute = function() {
             const pos = getMapPosition();
             if (pos) { window.open(`https://www.google.com/maps/dir/?api=1&destination=${pos.lat},${pos.lng}`, '_blank');
@@ -712,19 +648,11 @@
             else showToast('Please select a location first.', 'error');
         };
 
-        // ================================================================
-        // EMERGENCY
-        // ================================================================
-
         window.openEmergency = function() {
             showScreen('report');
             document.getElementById('emergencyCheckbox').checked = true;
             showToast('⚠️ Emergency mode activated.', 'info');
         };
-
-        // ================================================================
-        // LOCATION
-        // ================================================================
 
         window.getCurrentLocation = function() {
             const status = document.getElementById('locationStatus');
@@ -751,7 +679,7 @@
         };
 
         // ================================================================
-        // BULK ENTRIES MANAGEMENT
+        // BULK ENTRIES – MULTIPLE PHOTOS PER ENTRY
         // ================================================================
 
         let entryCount = 0;
@@ -760,7 +688,7 @@
             const num = index + 1;
             return `
                 <div class="report-entry" data-index="${index}">
-                    <button class="remove-entry" onclick="removeEntry(${index})" ${index === 0 ? 'class="remove-entry hidden"' : ''}><i class="fas fa-times"></i></button>
+                    <button class="remove-entry ${index === 0 ? 'hidden' : ''}" onclick="removeEntry(${index})"><i class="fas fa-times"></i></button>
                     <div class="entry-number">Issue #${num}</div>
                     <div class="form-group compact">
                         <label>Category <span class="required-star">*</span></label>
@@ -777,12 +705,12 @@
                         <textarea class="entry-description" placeholder="Describe this specific issue..."></textarea>
                     </div>
                     <div class="form-group compact">
-                        <label>Photo (optional)</label>
-                        <input type="file" class="entry-photo" accept="image/*" />
+                        <label>Photos (up to 5)</label>
+                        <input type="file" class="entry-photo-input" accept="image/*" multiple />
                         <button class="btn btn-outline btn-sm btn-xs" onclick="triggerPhoto(${index})">
-                            <i class="fas fa-camera"></i> Upload Photo
+                            <i class="fas fa-camera"></i> Upload Photos
                         </button>
-                        <div class="entry-photo-preview" id="entryPreview${index}"></div>
+                        <div class="entry-photo-gallery" id="entryGallery${index}"></div>
                     </div>
                 </div>
             `;
@@ -794,9 +722,45 @@
             const entryDiv = document.createElement('div');
             entryDiv.innerHTML = createEntryHTML(index);
             container.appendChild(entryDiv.firstElementChild);
+            // Set up change event for the file input
+            const entry = document.querySelector(`.report-entry[data-index="${index}"]`);
+            const fileInput = entry.querySelector('.entry-photo-input');
+            fileInput.addEventListener('change', function(e) {
+                handleEntryPhotos(index, e);
+            });
             entryCount++;
-            // Update remove buttons visibility
             updateRemoveButtons();
+        }
+
+        function handleEntryPhotos(index, event) {
+            const files = event.target.files;
+            const gallery = document.getElementById(`entryGallery${index}`);
+            if (!gallery) return;
+            gallery.innerHTML = '';
+            // Store the selected files in a data attribute on the entry
+            const entry = document.querySelector(`.report-entry[data-index="${index}"]`);
+            if (!entry) return;
+            // We'll store files in an array on the entry's dataset for later upload
+            const fileArray = [];
+            for (let i = 0; i < Math.min(files.length, 5); i++) {
+                const file = files[i];
+                fileArray.push(file);
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    const img = document.createElement('img');
+                    img.src = ev.target.result;
+                    img.alt = 'Photo';
+                    img.style.width = '100%';
+                    img.style.height = '60px';
+                    img.style.objectFit = 'cover';
+                    img.style.borderRadius = '6px';
+                    img.style.border = '1px solid var(--gray-border)';
+                    gallery.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            }
+            // Store the files in a data attribute for later use
+            entry._photos = fileArray;
         }
 
         window.removeEntry = function(index) {
@@ -804,15 +768,12 @@
                 showToast('You need at least one issue.', 'error');
                 return;
             }
-            const entries = document.querySelectorAll('.report-entry');
-            // Find the one with data-index
-            for (let el of entries) {
-                if (parseInt(el.dataset.index) === index) {
-                    el.remove();
-                    break;
-                }
+            const entry = document.querySelector(`.report-entry[data-index="${index}"]`);
+            if (entry) {
+                entry.remove();
+                // Clean up any stored files
+                delete entry._photos;
             }
-            // Re-index remaining entries
             reindexEntries();
             updateRemoveButtons();
         };
@@ -823,13 +784,19 @@
                 el.dataset.index = i;
                 const numSpan = el.querySelector('.entry-number');
                 if (numSpan) numSpan.textContent = `Issue #${i+1}`;
-                // Update onclick for remove and photo triggers
                 const removeBtn = el.querySelector('.remove-entry');
                 if (removeBtn) removeBtn.onclick = () => removeEntry(i);
+                // Update file input change event
+                const fileInput = el.querySelector('.entry-photo-input');
+                if (fileInput) {
+                    fileInput.onchange = function(e) { handleEntryPhotos(i, e); };
+                }
+                // Update photo trigger button
                 const photoBtn = el.querySelector('.btn-outline');
                 if (photoBtn) photoBtn.onclick = () => triggerPhoto(i);
-                const previewDiv = el.querySelector('.entry-photo-preview');
-                if (previewDiv) previewDiv.id = `entryPreview${i}`;
+                // Update gallery ID
+                const gallery = el.querySelector('.entry-photo-gallery');
+                if (gallery) gallery.id = `entryGallery${i}`;
             });
         }
 
@@ -844,32 +811,13 @@
             });
         }
 
-        // Photo trigger for each entry
         window.triggerPhoto = function(index) {
             const entry = document.querySelector(`.report-entry[data-index="${index}"]`);
             if (entry) {
-                const fileInput = entry.querySelector('.entry-photo');
+                const fileInput = entry.querySelector('.entry-photo-input');
                 if (fileInput) fileInput.click();
             }
         };
-
-        // Photo preview for each entry
-        document.addEventListener('change', function(e) {
-            if (e.target.classList.contains('entry-photo')) {
-                const entry = e.target.closest('.report-entry');
-                if (!entry) return;
-                const index = parseInt(entry.dataset.index);
-                const file = e.target.files[0];
-                if (!file) return;
-                const previewDiv = document.getElementById(`entryPreview${index}`);
-                if (!previewDiv) return;
-                const reader = new FileReader();
-                reader.onload = function(ev) {
-                    previewDiv.innerHTML = `<img src="${ev.target.result}" alt="Photo" class="photo-preview-img" />`;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
 
         // Add initial entry on load
         setTimeout(() => {
@@ -878,27 +826,24 @@
             }
         }, 100);
 
-        // Add more entries button
         document.getElementById('addEntryBtn').addEventListener('click', function() {
             if (document.querySelectorAll('.report-entry').length >= 10) {
                 showToast('Maximum 10 issues per submission.', 'error');
                 return;
             }
             addReportEntry();
-            // Reindex
             reindexEntries();
             updateRemoveButtons();
         });
 
         // ================================================================
-        // SUBMIT ALL REPORTS (BULK)
+        // SUBMIT ALL REPORTS (with multiple photos per entry)
         // ================================================================
 
         document.getElementById('submitReportBtn').addEventListener('click', async function() {
             const btn = this;
             if (btn.disabled) return;
 
-            // Get shared location
             const pos = getMapPosition();
             const lat = pos ? pos.lat : parseFloat(document.getElementById('selectedLat').value) || 27.7172;
             const lng = pos ? pos.lng : parseFloat(document.getElementById('selectedLng').value) || 85.3240;
@@ -906,7 +851,6 @@
             const name = document.getElementById('nameInput').value.trim() || 'Anonymous';
             const isEmergency = document.getElementById('emergencyCheckbox').checked;
 
-            // Collect entries
             const entries = document.querySelectorAll('.report-entry');
             const reportData = [];
             let valid = true;
@@ -914,14 +858,14 @@
             entries.forEach((entry, idx) => {
                 const category = entry.querySelector('.entry-category')?.value;
                 const description = entry.querySelector('.entry-description')?.value.trim();
-                const photoFile = entry.querySelector('.entry-photo')?.files[0] || null;
-
+                // Get stored photo files
+                const photoFiles = entry._photos || [];
                 if (!category) {
                     showToast(`Issue #${idx+1} missing category.`, 'error');
                     valid = false;
                     return;
                 }
-                reportData.push({ category, description: description || 'No description provided', photoFile });
+                reportData.push({ category, description: description || 'No description provided', photoFiles });
             });
 
             if (!valid) return;
@@ -934,16 +878,19 @@
             btn.innerHTML = `<span class="spinner"></span> Submitting ${reportData.length} reports...`;
 
             try {
+                // For each entry, upload its photos to ImgBB
                 const uploadPromises = reportData.map(async (data) => {
-                    let photoUrl = '';
-                    if (data.photoFile) {
-                        const fd = new FormData();
-                        fd.append('key', IMGBB_API_KEY);
-                        fd.append('image', data.photoFile);
+                    const photoUrls = [];
+                    // Upload up to 5 photos per entry
+                    const filesToUpload = data.photoFiles.slice(0, 5);
+                    for (const file of filesToUpload) {
                         try {
+                            const fd = new FormData();
+                            fd.append('key', IMGBB_API_KEY);
+                            fd.append('image', file);
                             const res = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: fd });
                             const imgData = await res.json();
-                            if (imgData.success) photoUrl = imgData.data.url;
+                            if (imgData.success) photoUrls.push(imgData.data.url);
                         } catch (e) { console.error('ImgBB error:', e); }
                     }
                     return {
@@ -952,7 +899,7 @@
                         location: locationName,
                         latitude: lat,
                         longitude: lng,
-                        photoUrls: photoUrl ? [photoUrl] : [],
+                        photoUrls: photoUrls,
                         status: 'submitted',
                         submittedBy: name,
                         isEmergency: isEmergency,
@@ -966,8 +913,6 @@
                 });
 
                 const allData = await Promise.all(uploadPromises);
-
-                // Submit all reports in parallel
                 const addOps = allData.map(data => addDoc(collection(db, 'reports'), data));
                 await Promise.all(addOps);
 
@@ -983,12 +928,9 @@
                 document.getElementById('nameInput').value = '';
                 document.querySelectorAll('.report-entry').forEach(el => el.remove());
                 entryCount = 0;
-                // Add one fresh entry
                 addReportEntry();
                 reindexEntries();
                 updateRemoveButtons();
-
-                // Reset map
                 setMapPosition(27.7172, 85.3240);
                 document.getElementById('selectedLat').value = '27.7172';
                 document.getElementById('selectedLng').value = '85.3240';
@@ -1063,7 +1005,7 @@
         }
 
         // ================================================================
-        // REPORT DETAIL (unchanged, but keep rating)
+        // REPORT DETAIL (unchanged)
         // ================================================================
 
         window.showReportDetail = async function(reportId) {
@@ -1149,7 +1091,6 @@
         window.submitRating = submitRating;
         window.quickReport = function(category) {
             showScreen('report');
-            // Pre-select category for the first entry
             const entries = document.querySelectorAll('.report-entry');
             if (entries.length) {
                 const sel = entries[0].querySelector('.entry-category');
@@ -1162,7 +1103,7 @@
         window.removeEntry = removeEntry;
         window.triggerPhoto = triggerPhoto;
 
-        console.log('🏗️ FixMyBlock Nepal - Bulk Reporting Feature Added!');
+        console.log('🏗️ FixMyBlock Nepal - Bulk Reporting with Multiple Photos per Entry Loaded!');
     </script>
 
 </body>
