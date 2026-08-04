@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
     <title>Admin Dashboard - FixMyBlock Nepal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         * {
             margin: 0;
@@ -47,6 +48,20 @@
         .admin-header .logo i {
             font-size: 26px;
             color: #1a73e8;
+        }
+        .admin-header .logo .subtitle {
+            font-size: 12px;
+            font-weight: 400;
+            opacity: 0.7;
+            margin-left: -4px;
+        }
+        .admin-header .badge {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
         }
         .header-right {
             display: flex;
@@ -91,10 +106,18 @@
         .btn-success:hover {
             background: #2d9248;
         }
+        .btn-primary {
+            background: #1a73e8;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: #1557b0;
+        }
         .btn-sm {
             padding: 6px 14px;
             font-size: 12px;
         }
+
         .admin-stats {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -107,10 +130,16 @@
             padding: 16px 12px;
             text-align: center;
             border: 1px solid #e8ecf2;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .admin-stat:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
         }
         .admin-stat .num {
             font-size: 30px;
             font-weight: 700;
+            color: #1a1a2e;
         }
         .admin-stat .lbl {
             font-size: 12px;
@@ -129,6 +158,10 @@
         .admin-stat .num.total {
             color: #1a73e8;
         }
+        .admin-stat .num.emergency {
+            color: #ea4335;
+        }
+
         .admin-actions {
             display: flex;
             gap: 10px;
@@ -147,11 +180,15 @@
             border-radius: 10px;
             font-size: 14px;
             background: #fafbfc;
+            transition: border 0.2s, box-shadow 0.2s;
         }
         .admin-actions .search-box input:focus {
             outline: none;
             border-color: #1a73e8;
+            box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.1);
+            background: #fff;
         }
+
         .filters-row {
             display: flex;
             flex-wrap: wrap;
@@ -165,6 +202,7 @@
             font-size: 13px;
             font-weight: 600;
             color: #5f6b7a;
+            margin-right: 4px;
         }
         .filter-priority-btn {
             padding: 6px 16px;
@@ -175,7 +213,11 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
-            font-family: inherit;
+            color: #555;
+        }
+        .filter-priority-btn:hover {
+            border-color: #1a73e8;
+            color: #1a73e8;
         }
         .filter-priority-btn.active {
             border-color: #1a73e8;
@@ -210,42 +252,7 @@
         .filter-priority-btn.priority-critical.active {
             background: #fce4ec;
         }
-        .admin-subtitle {
-            font-size: 12px;
-            font-weight: 400;
-            opacity: 0.7;
-        }
-        .admin-badge {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            display: inline-flex;
-            align-items: center;
-        }
-        .sort-row {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-bottom: 16px;
-        }
-        .admin-label {
-            font-size: 13px;
-            font-weight: 600;
-            color: #5f6b7a;
-        }
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            border: 0;
-            white-space: nowrap;
-        }
+
         .sort-select {
             padding: 6px 14px;
             border-radius: 8px;
@@ -253,10 +260,17 @@
             font-size: 13px;
             background: #fff;
             cursor: pointer;
-            font-family: inherit;
+            color: #333;
+            transition: border 0.2s;
         }
+        .sort-select:focus {
+            outline: none;
+            border-color: #1a73e8;
+        }
+
+        /* ===== ADMIN REPORT ITEM ===== */
         .admin-report-item {
-            background: #fff;
+            background: #ffffff;
             border: 1px solid #e8ecf2;
             border-radius: 12px;
             padding: 16px 18px;
@@ -265,6 +279,7 @@
             flex-wrap: wrap;
             gap: 14px;
             transition: all 0.2s;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
         }
         .admin-report-item:hover {
             border-color: #1a73e8;
@@ -288,10 +303,17 @@
             font-weight: 400;
             font-size: 13px;
         }
+        .admin-report-item .info .title .category-icon {
+            margin: 0 2px;
+        }
         .admin-report-item .info .loc {
             font-size: 13px;
             color: #5f6b7a;
             margin: 2px 0;
+        }
+        .admin-report-item .info .loc i {
+            margin-right: 4px;
+            font-size: 12px;
         }
         .admin-report-item .info .meta {
             font-size: 12px;
@@ -307,27 +329,60 @@
             border-radius: 8px;
             border-left: 3px solid #1a73e8;
         }
-        .admin-report-item .actions {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            flex-wrap: wrap;
+        .admin-report-item .info .photo-link {
+            font-size: 12px;
+            margin-top: 4px;
         }
-        .admin-report-item .actions select {
-            padding: 6px 12px;
-            border-radius: 8px;
-            border: 2px solid #e0e4ea;
-            font-size: 13px;
-            background: #fff;
-            cursor: pointer;
-            font-family: inherit;
+        .admin-report-item .info .photo-link a {
+            color: #1a73e8;
+            text-decoration: none;
         }
+        .admin-report-item .info .photo-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== EMERGENCY STYLES ===== */
+        .emergency-report {
+            background: #fce4ec !important;
+            border-left: 6px solid #ea4335 !important;
+            animation: pulseRed 1.5s infinite;
+        }
+        @keyframes pulseRed {
+            0%,
+            100% {
+                background-color: #fce4ec;
+            }
+            50% {
+                background-color: #ffcdd2;
+            }
+        }
+        .emergency-badge {
+            background: #ea4335;
+            color: #fff;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 700;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        /* ===== STATUS BADGE ===== */
         .status-badge {
             display: inline-block;
             padding: 3px 14px;
             border-radius: 20px;
             font-size: 11px;
             font-weight: 600;
+            white-space: nowrap;
         }
         .status-submitted {
             background: #e3f2fd;
@@ -349,6 +404,8 @@
             background: #fafafa;
             color: #616161;
         }
+
+        /* ===== PRIORITY BADGE ===== */
         .priority-badge {
             display: inline-flex;
             align-items: center;
@@ -373,7 +430,19 @@
         .priority-critical {
             background: #fce4ec;
             color: #ea4335;
+            animation: pulseCritical 1.5s infinite;
         }
+        @keyframes pulseCritical {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.04);
+            }
+        }
+
+        /* ===== COMMUNITY STATS ===== */
         .community-stats {
             display: flex;
             gap: 18px;
@@ -387,10 +456,61 @@
             align-items: center;
             gap: 4px;
         }
+        .stat-item i {
+            font-size: 14px;
+        }
         .stat-item .count {
             font-weight: 600;
             color: #1a1a2e;
         }
+
+        /* ===== ACTIONS ===== */
+        .admin-report-item .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: flex-start;
+        }
+        .admin-report-item .actions select {
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 2px solid #e0e4ea;
+            font-size: 13px;
+            background: #fff;
+            cursor: pointer;
+            transition: border 0.2s;
+            color: #333;
+            font-family: inherit;
+        }
+        .admin-report-item .actions select:focus {
+            outline: none;
+            border-color: #1a73e8;
+        }
+        .admin-report-item .actions .btn-sm {
+            padding: 6px 10px;
+            font-size: 13px;
+            min-width: 36px;
+        }
+
+        /* ===== MINI MAP ===== */
+        .mini-map {
+            width: 100%;
+            height: 150px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f8f9fc;
+            border: 1px solid #e8ecf2;
+        }
+        .mini-map .map-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            font-size: 13px;
+            color: #888;
+        }
+
+        /* ===== EMPTY / LOADING / ERROR ===== */
         .empty-state,
         .loading-state,
         .error-state {
@@ -405,11 +525,22 @@
             display: block;
             margin-bottom: 14px;
         }
+        .empty-state h3 {
+            color: #555;
+            margin-bottom: 4px;
+            font-size: 18px;
+        }
+        .empty-state p {
+            font-size: 14px;
+        }
         .error-state {
             color: #ea4335;
         }
         .error-state i {
             color: #ea4335;
+        }
+        .error-state .btn {
+            margin-top: 12px;
         }
         .loading-state i {
             font-size: 36px;
@@ -417,6 +548,12 @@
             display: block;
             margin-bottom: 14px;
         }
+        .loading-state p {
+            font-size: 15px;
+            color: #888;
+        }
+
+        /* ===== TOAST ===== */
         .toast {
             position: fixed;
             bottom: 100px;
@@ -432,12 +569,13 @@
             font-weight: 500;
             z-index: 9999;
             opacity: 0;
-            transition: opacity 0.35s ease;
+            transition: opacity 0.35s ease, transform 0.35s ease;
             pointer-events: none;
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
         }
         .toast.show {
             opacity: 1;
+            transform: translateX(-50%) translateY(0);
         }
         .toast.success {
             background: #1b5e20;
@@ -448,6 +586,7 @@
         .toast.info {
             background: #0d47a1;
         }
+
         .spinner {
             display: inline-block;
             width: 20px;
@@ -465,6 +604,7 @@
                 transform: rotate(360deg);
             }
         }
+
         @media (max-width: 768px) {
             .admin-container {
                 padding: 0 14px 30px;
@@ -476,6 +616,9 @@
                 align-items: stretch;
                 gap: 8px;
             }
+            .admin-header .logo {
+                font-size: 18px;
+            }
             .header-right {
                 justify-content: space-between;
             }
@@ -483,8 +626,15 @@
                 grid-template-columns: repeat(2, 1fr);
                 gap: 10px;
             }
+            .admin-stat .num {
+                font-size: 24px;
+            }
             .admin-actions {
                 flex-direction: column;
+            }
+            .admin-actions .btn {
+                width: 100%;
+                justify-content: center;
             }
             .admin-actions .search-box {
                 min-width: 100%;
@@ -494,14 +644,29 @@
                 align-items: stretch;
                 gap: 8px;
             }
+            .filters-row .label {
+                margin-right: 0;
+            }
+            .filter-priority-btn {
+                padding: 5px 12px;
+                font-size: 11px;
+            }
             .admin-report-item {
                 flex-direction: column;
                 align-items: stretch;
+                padding: 14px;
             }
             .admin-report-item .actions {
                 justify-content: flex-start;
                 padding-top: 10px;
                 border-top: 1px solid #f0f2f5;
+            }
+            .admin-report-item .actions select {
+                flex: 1;
+                min-width: 100px;
+            }
+            .sort-select {
+                width: 100%;
             }
         }
         @media (max-width: 480px) {
@@ -515,6 +680,17 @@
             .admin-stat .num {
                 font-size: 20px;
             }
+            .admin-stat .lbl {
+                font-size: 10px;
+            }
+            .admin-report-item .info .title {
+                font-size: 14px;
+            }
+            .toast {
+                font-size: 14px;
+                padding: 12px 16px;
+                bottom: 80px;
+            }
         }
     </style>
 </head>
@@ -523,14 +699,15 @@
     <div id="toast" class="toast"></div>
 
     <div class="admin-container">
+
         <header class="admin-header">
             <div class="logo">
                 <i class="fas fa-road"></i>
                 <span>FixMyBlock</span>
-                <span class="admin-subtitle">Admin</span>
+                <span class="subtitle">Admin</span>
             </div>
             <div class="header-right">
-                <span class="badge admin-badge">● LIVE</span>
+                <span class="badge">● LIVE</span>
                 <button class="btn btn-outline btn-sm" onclick="refreshReports()">
                     <i class="fas fa-sync"></i> Refresh
                 </button>
@@ -541,11 +718,28 @@
         </header>
 
         <div class="admin-body">
+
             <div class="admin-stats" id="adminStats">
-                <div class="admin-stat"><div class="num total" id="adminTotal">0</div><div class="lbl">Total Reports</div></div>
-                <div class="admin-stat"><div class="num submitted" id="adminSubmitted">0</div><div class="lbl">Submitted</div></div>
-                <div class="admin-stat"><div class="num progress" id="adminProgress">0</div><div class="lbl">In Progress</div></div>
-                <div class="admin-stat"><div class="num resolved" id="adminResolved">0</div><div class="lbl">Resolved</div></div>
+                <div class="admin-stat">
+                    <div class="num total" id="adminTotal">0</div>
+                    <div class="lbl">Total Reports</div>
+                </div>
+                <div class="admin-stat">
+                    <div class="num submitted" id="adminSubmitted">0</div>
+                    <div class="lbl">Submitted</div>
+                </div>
+                <div class="admin-stat">
+                    <div class="num progress" id="adminProgress">0</div>
+                    <div class="lbl">In Progress</div>
+                </div>
+                <div class="admin-stat">
+                    <div class="num resolved" id="adminResolved">0</div>
+                    <div class="lbl">Resolved</div>
+                </div>
+                <div class="admin-stat">
+                    <div class="num emergency" id="adminEmergency">0</div>
+                    <div class="lbl">🚨 Emergency</div>
+                </div>
             </div>
 
             <div class="admin-actions">
@@ -569,10 +763,9 @@
                 <button class="filter-priority-btn priority-critical" onclick="filterByPriority('CRITICAL')">🔴 Critical</button>
             </div>
 
-            <div class="sort-row">
-                <label class="sr-only" for="adminSort">Sort by</label>
-                <span class="admin-label">Sort by:</span>
-                <select id="adminSort" class="sort-select" onchange="sortReports(this.value)">
+            <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px;">
+                <span style="font-size:13px;font-weight:600;color:#5f6b7a;">Sort by:</span>
+                <select class="sort-select" onchange="sortReports(this.value)">
                     <option value="newest">Newest</option>
                     <option value="oldest">Oldest</option>
                     <option value="supported">Most Supported</option>
@@ -586,12 +779,13 @@
                     <p>Loading reports...</p>
                 </div>
             </div>
+
         </div>
     </div>
 
     <script type="module">
         // ================================================================
-        // 🔴 PASTE YOUR FIREBASE CONFIG HERE
+        // 🔴🔴🔴 PASTE YOUR FIREBASE CONFIG HERE
         // ================================================================
 
         const firebaseConfig = {
@@ -605,7 +799,7 @@
         };
 
         // ================================================================
-        // 🔴 DO NOT CHANGE ANYTHING BELOW THIS LINE
+        // 🔴🔴🔴 DO NOT CHANGE ANYTHING BELOW THIS LINE
         // ================================================================
 
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
@@ -624,17 +818,27 @@
             getDoc,
             updateDoc,
             deleteDoc,
-            onSnapshot
+            onSnapshot,
+            where,
+            writeBatch,
+            serverTimestamp,
+            addDoc
         } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+        import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-functions.js';
+
+        // ================================================================
+        //  INIT FIREBASE
+        // ================================================================
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        const functions = getFunctions(app);
 
         console.log('✅ Firebase Admin initialized!');
 
         // ================================================================
-        // HELPERS
+        //  HELPERS
         // ================================================================
 
         const CATEGORIES = {
@@ -685,6 +889,7 @@
         let filteredReports = [];
         let currentPriorityFilter = 'all';
         let currentSort = 'newest';
+        let selectedReports = [];
 
         function showToast(msg, type = '') {
             const el = document.getElementById('toast');
@@ -698,68 +903,91 @@
         }
 
         // ================================================================
-        // AUTH GUARD
+        //  AUTH GUARD + LOGIN ALERT
         // ================================================================
 
         onAuthStateChanged(auth, async (user) => {
-            console.log('🔐 Auth state:', user ? 'Logged in as ' + user.email : 'Logged out');
-
             if (!user) {
-                console.log('🔐 No user, redirecting to login...');
                 window.location.href = 'login.html';
                 return;
             }
-
             try {
-                console.log('🔍 Checking admin status for UID:', user.uid);
                 const adminDoc = await getDoc(doc(db, 'admins', user.uid));
-
                 if (!adminDoc.exists() || adminDoc.data().role !== 'admin') {
-                    console.error('❌ User is NOT admin!');
                     await signOut(auth);
                     window.location.href = 'login.html';
                     return;
                 }
-
                 console.log('✅ Admin verified! Loading reports...');
-                if (window._listenerUnsubscribe) {
-                    window._listenerUnsubscribe();
-                }
+                if (window._listenerUnsubscribe) window._listenerUnsubscribe();
                 listenToReports();
+                loadAdminLogs();
+
+                // ===== SEND LOGIN ALERT EMAIL (once per session) =====
+                if (!window._loginAlertSent) {
+                    window._loginAlertSent = true;
+                    const sendLoginAlert = httpsCallable(functions, 'sendLoginAlert');
+                    const email = user.email;
+                    const displayName = user.displayName || '';
+                    const timestamp = Date.now();
+                    fetch('https://api.ipify.org?format=json')
+                        .then(res => res.json())
+                        .then(data => {
+                            const ip = data.ip;
+                            sendLoginAlert({
+                                email,
+                                displayName,
+                                timestamp,
+                                ip,
+                                userAgent: navigator.userAgent
+                            }).catch(err => console.error('Login alert failed:', err));
+                        })
+                        .catch(err => console.error('IP fetch failed:', err));
+                }
 
             } catch (error) {
-                console.error('❌ Error checking admin:', error);
+                console.error('Error checking admin:', error);
                 document.getElementById('adminReportList').innerHTML = `
                         <div class="error-state">
                             <i class="fas fa-exclamation-circle"></i>
                             <h3>Error checking admin status</h3>
                             <p>${error.message}</p>
-                            <button onclick="location.reload()" class="btn btn-primary btn-sm">Retry</button>
+                            <button onclick="location.reload()" class="btn btn-primary btn-sm" style="margin-top:12px;">Retry</button>
                         </div>
                     `;
             }
         });
-
-        // ================================================================
-        // LOGOUT
-        // ================================================================
 
         window.logout = async function() {
             await signOut(auth);
             window.location.href = 'login.html';
         };
 
+        async function logAdminAction(action, reportId = null, details = {}) {
+            try {
+                const user = auth.currentUser;
+                await addDoc(collection(db, 'admin_logs'), {
+                    action,
+                    reportId,
+                    adminId: user?.uid || 'unknown',
+                    adminEmail: user?.email || 'unknown',
+                    details,
+                    timestamp: serverTimestamp()
+                });
+            } catch (error) {
+                console.error('Error logging admin action:', error);
+            }
+        }
+
         // ================================================================
-        // LISTEN TO REPORTS
+        //  LISTEN TO REPORTS
         // ================================================================
 
         function listenToReports() {
-            console.log('📡 Setting up Firestore listener...');
-
             const q = query(collection(db, 'reports'), orderBy('createdAt', 'desc'));
 
             const unsubscribe = onSnapshot(q, (snapshot) => {
-                console.log('✅ Snapshot received! Size:', snapshot.size);
+                console.log('✅ Admin Snapshot size:', snapshot.size);
                 allReports = [];
                 snapshot.forEach((doc) => {
                     allReports.push({ id: doc.id, ...doc.data() });
@@ -767,13 +995,13 @@
                 applyFiltersAndSort();
                 updateStats();
             }, (error) => {
-                console.error('❌ Listener error:', error);
+                console.error('Listener error:', error);
                 document.getElementById('adminReportList').innerHTML = `
                         <div class="error-state">
                             <i class="fas fa-exclamation-circle"></i>
                             <h3>Error Loading Reports</h3>
                             <p>${error.message}</p>
-                            <button onclick="location.reload()" class="btn btn-primary btn-sm">Retry</button>
+                            <button onclick="location.reload()" class="btn btn-primary btn-sm" style="margin-top:12px;">Retry</button>
                         </div>
                     `;
             });
@@ -781,8 +1009,39 @@
             window._listenerUnsubscribe = unsubscribe;
         }
 
+        async function loadAdminLogs() {
+            try {
+                const q = query(collection(db, 'admin_logs'), orderBy('timestamp', 'desc'), limit(50));
+                const snapshot = await getDocs(q);
+                const logs = [];
+                snapshot.forEach((doc) => {
+                    logs.push({ id: doc.id, ...doc.data() });
+                });
+                renderAdminLogs(logs);
+            } catch (error) {
+                console.error('Error loading logs:', error);
+            }
+        }
+
+        function renderAdminLogs(logs) {
+            const container = document.getElementById('adminLogs');
+            if (!container) return;
+            if (logs.length === 0) {
+                container.innerHTML = '<div class="text-muted" style="padding:12px;text-align:center;">No activity logs yet</div>';
+                return;
+            }
+            container.innerHTML = logs.map(log => `
+                    <div style="padding:6px 0;border-bottom:1px solid #f0f2f5;font-size:13px;">
+                        <strong>${log.action}</strong>
+                        ${log.reportId ? ` on #${log.reportId.substring(0,8)}` : ''}
+                        <span style="color:#888;font-size:12px;"> ${log.adminEmail || 'Unknown'}</span>
+                        <span style="color:#aaa;font-size:11px;float:right;">${formatTimestamp(log.timestamp)}</span>
+                    </div>
+                `).join('');
+        }
+
         // ================================================================
-        // FILTERS & SORTING
+        //  FILTERS & SORTING
         // ================================================================
 
         window.filterByPriority = function(priority) {
@@ -843,7 +1102,55 @@
         };
 
         // ================================================================
-        // RENDER ADMIN REPORTS
+        //  BULK SELECT
+        // ================================================================
+
+        window.toggleSelectReport = function(reportId) {
+            const index = selectedReports.indexOf(reportId);
+            if (index > -1) {
+                selectedReports.splice(index, 1);
+            } else {
+                selectedReports.push(reportId);
+            }
+            updateBulkActions();
+        };
+
+        function updateBulkActions() {
+            const container = document.getElementById('bulkActions');
+            if (!container) return;
+            if (selectedReports.length === 0) {
+                container.style.display = 'none';
+                return;
+            }
+            container.style.display = 'flex';
+            document.getElementById('bulkCount').textContent = selectedReports.length;
+        }
+
+        window.bulkUpdateStatus = async function(newStatus) {
+            if (selectedReports.length === 0) return;
+            if (!confirm(`Update ${selectedReports.length} reports to "${getStatusLabel(newStatus)}"?`)) return;
+
+            try {
+                const batch = writeBatch(db);
+                for (const id of selectedReports) {
+                    const ref = doc(db, 'reports', id);
+                    batch.update(ref, {
+                        status: newStatus,
+                        updatedAt: new Date().toISOString()
+                    });
+                }
+                await batch.commit();
+                showToast(`✅ Updated ${selectedReports.length} reports to "${getStatusLabel(newStatus)}"`, 'success');
+                selectedReports = [];
+                updateBulkActions();
+            } catch (error) {
+                console.error('Bulk update error:', error);
+                showToast('❌ Error updating reports: ' + error.message, 'error');
+            }
+        };
+
+        // ================================================================
+        //  RENDER ADMIN REPORTS (EMERGENCY HIGHLIGHTING)
         // ================================================================
 
         function renderAdminReports() {
@@ -860,57 +1167,97 @@
                 return;
             }
 
+            // Import initStaticMap dynamically here since it's used
+            // We'll call it after rendering
+
             container.innerHTML = filteredReports.map(r => {
                 const priority = r.priority || 'LOW';
                 const priorityClass = priority.toLowerCase();
                 const priorityIcon = PRIORITY_ICONS[priority] || 'fa-circle';
                 const affected = r.affectedCount || 0;
                 const supporters = (r.supportedBy || []).length;
+                const isSelected = selectedReports.includes(r.id);
+                const isEmergency = r.isEmergency || false;
+                const cardClass = isEmergency ? 'admin-report-item emergency-report' : 'admin-report-item';
+
+                // Photo gallery
+                const photoHtml = r.photoUrls && r.photoUrls.length > 0 ?
+                    `<div style="display:grid;grid-template-columns:repeat(${Math.min(r.photoUrls.length, 3)},1fr);gap:4px;margin-top:4px;max-width:200px;">
+                            ${r.photoUrls.map(url => `<a href="${url}" target="_blank" style="display:block;"><img src="${url}" alt="Photo" style="width:100%;height:60px;object-fit:cover;border-radius:6px;border:1px solid #e8ecf2;" /></a>`).join('')}
+                        </div>` :
+                    '<div style="color:#888;font-size:12px;margin-top:4px;">No photos</div>';
 
                 return `
-                        <div class="admin-report-item">
-                            <div class="info">
-                                <div class="title">
-                                    <span class="report-id">#${r.id.substring(0, 8)}</span>
-                                    <i class="fas ${getCategoryIcon(r.category)} category-icon icon-highlight"></i>
-                                    ${getCategoryLabel(r.category)}
-                                    <span class="priority-badge priority-${priorityClass}">
-                                        <i class="fas ${priorityIcon}"></i> ${priority}
-                                    </span>
+                        <div class="${cardClass}" style="${isSelected ? 'border-color:#1a73e8;background:#e8f0fe;' : ''}">
+                            <div style="display:flex;align-items:center;gap:12px;width:100%;flex-wrap:wrap;">
+                                <input type="checkbox" ${isSelected ? 'checked' : ''} onchange="toggleSelectReport('${r.id}')" style="width:18px;height:18px;cursor:pointer;" />
+                                <div class="info" style="flex:1;min-width:200px;">
+                                    <div class="title">
+                                        <span class="report-id">#${r.id.substring(0, 8)}</span>
+                                        <i class="fas ${getCategoryIcon(r.category)} category-icon" style="color:#1a73e8;"></i>
+                                        ${getCategoryLabel(r.category)}
+                                        ${isEmergency ? '<span class="emergency-badge">🚨 EMERGENCY</span>' : ''}
+                                        <span class="priority-badge priority-${priorityClass}">
+                                            <i class="fas ${priorityIcon}"></i> ${priority}
+                                        </span>
+                                    </div>
+                                    <div class="loc"><i class="fas fa-location-dot"></i> ${r.location || 'Unknown'}</div>
+                                    <div class="meta">
+                                        ${formatTimestamp(r.createdAt)} ·
+                                        ${r.submittedBy || 'Anonymous'} ·
+                                        ${r.latitude ? `${r.latitude.toFixed(4)}, ${r.longitude?.toFixed(4) || ''}` : ''}
+                                    </div>
+                                    <div class="community-stats">
+                                        <span class="stat-item"><i class="fas fa-users"></i> <span class="count">${affected}</span> affected</span>
+                                        <span class="stat-item"><i class="fas fa-hand-peace"></i> <span class="count">${supporters}</span> supporters</span>
+                                        ${r.rating > 0 ? `<span class="stat-item"><i class="fas fa-star" style="color:#fbbc04;"></i> ${r.rating.toFixed(1)}</span>` : ''}
+                                    </div>
+                                    ${r.description ? `<div class="desc">📝 ${r.description}</div>` : ''}
+                                    <div style="margin-top:6px;">
+                                        <strong>Photos:</strong>
+                                        ${photoHtml}
+                                    </div>
+                                    <div style="margin-top:6px;">
+                                        <div class="mini-map" id="map-${r.id}"></div>
+                                    </div>
                                 </div>
-                                <div class="loc"><i class="fas fa-location-dot"></i> ${r.location || 'Unknown'}</div>
-                                <div class="meta">
-                                    ${formatTimestamp(r.createdAt)} ·
-                                    ${r.submittedBy || 'Anonymous'} ·
-                                    ${r.latitude ? `${r.latitude.toFixed(4)}, ${r.longitude?.toFixed(4) || ''}` : ''}
+                                <div class="actions">
+                                    <span class="status-badge ${getStatusClass(r.status || 'submitted')}">${getStatusLabel(r.status || 'submitted')}</span>
+                                    <select onchange="updateStatus('${r.id}', this.value)">
+                                        <option value="submitted" ${(r.status || 'submitted') === 'submitted' ? 'selected' : ''}>Submitted</option>
+                                        <option value="reviewing" ${(r.status || 'submitted') === 'reviewing' ? 'selected' : ''}>Under Review</option>
+                                        <option value="in_progress" ${(r.status || 'submitted') === 'in_progress' ? 'selected' : ''}>In Progress</option>
+                                        <option value="resolved" ${(r.status || 'submitted') === 'resolved' ? 'selected' : ''}>Resolved</option>
+                                        <option value="rejected" ${(r.status || 'submitted') === 'rejected' ? 'selected' : ''}>Rejected</option>
+                                    </select>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteReport('${r.id}')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
                                 </div>
-                                <div class="community-stats">
-                                    <span class="stat-item"><i class="fas fa-users"></i> <span class="count">${affected}</span> affected</span>
-                                    <span class="stat-item"><i class="fas fa-hand-peace"></i> <span class="count">${supporters}</span> supporters</span>
-                                </div>
-                                ${r.description ? `<div class="desc">📝 ${r.description}</div>` : ''}
-                                ${r.photoUrl ? `<div class="photo-link">📷 <a href="${r.photoUrl}" target="_blank">View Photo</a></div>` : ''}
-                            </div>
-                            <div class="actions">
-                                <span class="status-badge ${getStatusClass(r.status || 'submitted')}">${getStatusLabel(r.status || 'submitted')}</span>
-                                <select onchange="updateStatus('${r.id}', this.value)">
-                                    <option value="submitted" ${(r.status || 'submitted') === 'submitted' ? 'selected' : ''}>Submitted</option>
-                                    <option value="reviewing" ${(r.status || 'submitted') === 'reviewing' ? 'selected' : ''}>Under Review</option>
-                                    <option value="in_progress" ${(r.status || 'submitted') === 'in_progress' ? 'selected' : ''}>In Progress</option>
-                                    <option value="resolved" ${(r.status || 'submitted') === 'resolved' ? 'selected' : ''}>Resolved</option>
-                                    <option value="rejected" ${(r.status || 'submitted') === 'rejected' ? 'selected' : ''}>Rejected</option>
-                                </select>
-                                <button class="btn btn-danger btn-sm" onclick="deleteReport('${r.id}')">
-                                    <i class="fas fa-trash"></i>
-                                </button>
                             </div>
                         </div>
                     `;
             }).join('');
+
+            // Initialize maps – import initStaticMap from map-utils
+            // We need to dynamically import because it's a module
+            import('./js/map-utils.js').then(({ initStaticMap }) => {
+                filteredReports.forEach(r => {
+                    if (r.latitude && r.longitude) {
+                        const mapId = `map-${r.id}`;
+                        const container = document.getElementById(mapId);
+                        if (container) {
+                            initStaticMap(mapId, r.latitude, r.longitude, `<b>${getCategoryLabel(r.category)}</b><br>${r.location}`);
+                        }
+                    }
+                });
+            });
+
+            updateBulkActions();
         }
 
         // ================================================================
-        // UPDATE STATS
+        //  UPDATE STATS
         // ================================================================
 
         function updateStats() {
@@ -918,15 +1265,17 @@
             const submitted = allReports.filter(r => r.status === 'submitted').length;
             const progress = allReports.filter(r => r.status === 'reviewing' || r.status === 'in_progress').length;
             const resolved = allReports.filter(r => r.status === 'resolved').length;
+            const emergency = allReports.filter(r => r.isEmergency).length;
 
             document.getElementById('adminTotal').textContent = total;
             document.getElementById('adminSubmitted').textContent = submitted;
             document.getElementById('adminProgress').textContent = progress;
             document.getElementById('adminResolved').textContent = resolved;
+            document.getElementById('adminEmergency').textContent = emergency;
         }
 
         // ================================================================
-        // ACTIONS
+        //  UPDATE STATUS
         // ================================================================
 
         window.updateStatus = async function(reportId, newStatus) {
@@ -935,30 +1284,42 @@
                     status: newStatus,
                     updatedAt: new Date().toISOString()
                 });
+                await logAdminAction('status_update', reportId, { newStatus });
                 showToast(`✅ Report updated to "${getStatusLabel(newStatus)}"`, 'success');
             } catch (error) {
-                console.error('Error updating status:', error);
                 showToast('❌ Error updating status: ' + error.message, 'error');
             }
         };
 
+        // ================================================================
+        //  DELETE REPORT
+        // ================================================================
+
         window.deleteReport = async function(reportId) {
-            if (!confirm('⚠️ Are you sure you want to delete this report?')) return;
-            if (!confirm('⚠️ This cannot be undone!')) return;
+            if (!confirm('Are you sure? This cannot be undone.')) return;
             try {
                 await deleteDoc(doc(db, 'reports', reportId));
+                await logAdminAction('delete', reportId);
                 showToast('🗑️ Report deleted', 'info');
                 applyFiltersAndSort();
             } catch (error) {
-                console.error('Error deleting report:', error);
                 showToast('❌ Error deleting report: ' + error.message, 'error');
             }
         };
 
+        // ================================================================
+        //  REFRESH
+        // ================================================================
+
         window.refreshReports = function() {
             showToast('🔄 Refreshing...', 'info');
             applyFiltersAndSort();
+            loadAdminLogs();
         };
+
+        // ================================================================
+        //  EXPORT EXCEL
+        // ================================================================
 
         window.exportExcel = function() {
             if (allReports.length === 0) {
@@ -966,8 +1327,8 @@
                 return;
             }
 
-            const headers = ['ID', 'Category', 'Description', 'Location', 'Latitude', 'Longitude', 'Photo URL', 'Status',
-                'Priority', 'Affected Count', 'Supporters', 'Submitted By', 'Date'
+            const headers = ['ID', 'Category', 'Description', 'Location', 'Latitude', 'Longitude', 'Photo URLs', 'Status',
+                'Priority', 'Affected Count', 'Supporters', 'Emergency', 'Rating', 'Submitted By', 'Date'
             ];
 
             const rows = allReports.map(r => [
@@ -977,11 +1338,13 @@
                 (r.location || '').replace(/,/g, ';'),
                 r.latitude || '',
                 r.longitude || '',
-                r.photoUrl || '',
+                (r.photoUrls || []).join('; '),
                 getStatusLabel(r.status || 'submitted'),
                 r.priority || 'LOW',
                 r.affectedCount || 0,
                 (r.supportedBy || []).length,
+                r.isEmergency ? 'YES' : 'NO',
+                r.rating || 0,
                 r.submittedBy || 'Anonymous',
                 r.createdAt ? new Date(r.createdAt.toMillis()).toLocaleString() : ''
             ]);
@@ -1001,30 +1364,32 @@
             showToast('📊 Excel file downloaded!', 'success');
         };
 
-        window.clearAllReports = async function() {
-            if (!confirm('⚠️ Delete ALL reports? This cannot be undone!')) return;
-            if (!confirm('⚠️ Are you absolutely sure?')) return;
+        // ================================================================
+        //  CLEAR ALL REPORTS
+        // ================================================================
 
+        window.clearAllReports = async function() {
+            if (!confirm('Delete ALL reports? This cannot be undone!')) return;
             try {
                 const q = query(collection(db, 'reports'));
                 const snapshot = await getDocs(q);
+                const batch = writeBatch(db);
                 let count = 0;
                 for (const doc of snapshot.docs) {
-                    await deleteDoc(doc.ref);
+                    batch.delete(doc.ref);
                     count++;
                 }
+                await batch.commit();
+                await logAdminAction('clear_all');
                 showToast(`🗑️ Deleted ${count} reports`, 'info');
             } catch (error) {
-                console.error('Error clearing reports:', error);
                 showToast('❌ Error clearing reports: ' + error.message, 'error');
             }
         };
 
         // ================================================================
-        // INIT
+        //  EXPOSE FUNCTIONS
         // ================================================================
-
-        console.log('👑 FixMyBlock Nepal - Admin Dashboard Loaded');
 
         window.filterByPriority = filterByPriority;
         window.sortReports = sortReports;
@@ -1035,6 +1400,10 @@
         window.exportExcel = exportExcel;
         window.clearAllReports = clearAllReports;
         window.logout = logout;
+        window.toggleSelectReport = toggleSelectReport;
+        window.bulkUpdateStatus = bulkUpdateStatus;
+
+        console.log('👑 FixMyBlock Nepal - Admin Dashboard with Emergency Highlighting & Login Alert Loaded');
     </script>
 
 </body>

@@ -87,3 +87,12 @@
     color: #888;
     margin-top: 1px;
 }
+.emergency-report {
+    background: #fce4ec !important;
+    border-left: 6px solid #ea4335 !important;
+    animation: pulseRed 1.5s infinite;
+}
+@keyframes pulseRed {
+    0%, 100% { background-color: #fce4ec; }
+    50% { background-color: #ffcdd2; }
+}
