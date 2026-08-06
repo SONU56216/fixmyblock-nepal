@@ -211,9 +211,9 @@ FixMyBlock-Nepal/
 
 | Field | Value |
 |-------|-------|
-| **Email** | `admin@fixmyblock.gov.np` |
-| **Password** | `admin123` |
-| **Security Code** | `1234` |
+| **Email** | `**********` |
+| **Password** | `********` |
+| **Security Code** | `****` |
 
 ---
 
@@ -301,8 +301,8 @@ firebase deploy --only hosting
 1. Go to Firebase Console → Authentication → Sign-in methods
 2. Enable **Email/Password**
 3. Create admin user:
-   - Email: `admin@fixmyblock.gov.np`
-   - Password: `admin123`
+   - Email: `**********`
+   - Password: `******`
 
 ### Firestore Database
 
