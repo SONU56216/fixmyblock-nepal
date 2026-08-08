@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FixMyBlock Nepal</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -846,6 +846,80 @@
                 display: none;
             }
         }
+        /* ===== SIMPLE BACKGROUND – CLEAR PHOTO ===== */
+body {
+    background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTf9wMS1VZNluak-Y2e9pHdYvTevRfEHYj4CJi7tdvIgQ&s=10') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+    font-family: 'Inter', system-ui, sans-serif;
+    padding-bottom: 80px;
+}
+
+/* No dark overlay – the image is fully visible */
+
+.app-container {
+    max-width: 480px;
+    margin: 20px auto;
+    background: rgba(255, 255, 255, 0.75);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+    border-radius: 20px;
+    padding: 0 0 20px 0;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* Light text on dark background areas – we'll keep text dark for readability */
+.app-container,
+.app-header .logo,
+.app-header .badge,
+.section-title,
+.stat-card .number,
+.stat-card .label,
+.report-card .title,
+.report-card .location,
+.report-card .footer,
+.category-btn,
+.nav-item,
+.form-group label,
+.form-group input,
+.form-group textarea,
+.toast,
+.back-btn {
+    color: #1a1a2e !important;
+}
+
+/* Cards: transparent but with white background */
+.stat-card,
+.report-card,
+.category-btn {
+    background: rgba(255, 255, 255, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* Dark theme – use dark semi-transparent */
+body.dark-theme .app-container {
+    background: rgba(0, 0, 0, 0.7) !important;
+}
+body.dark-theme .stat-card,
+body.dark-theme .report-card,
+body.dark-theme .category-btn {
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+body.dark-theme .app-container,
+body.dark-theme .stat-card .number,
+body.dark-theme .stat-card .label,
+body.dark-theme .report-card .title,
+body.dark-theme .report-card .location,
+body.dark-theme .report-card .footer,
+body.dark-theme .category-btn,
+body.dark-theme .nav-item,
+body.dark-theme .form-group label,
+body.dark-theme .form-group input,
+body.dark-theme .form-group textarea {
+    color: #e0e0e0 !important;
+}
     </style>
 </head>
 <body>
@@ -916,7 +990,7 @@
 
             <div class="section-title">
                 <span>📋 <span data-key="recentReports">Recent Reports</span></span>
-                <span style="font-size: 13px; font-weight: 400; color: #888;" id="reportCount">0 reports</span>
+                <span class="report-count" id="reportCount">0 reports</span>
             </div>
             <div id="reportList"><div class="loading-state"><i class="fas fa-spinner fa-spin"></i> <span data-key="loading">Loading reports...</span></div></div>
 
@@ -931,34 +1005,34 @@
         <div class="screen" id="screen-report">
             <div class="flex-between mb-16">
                 <button class="back-btn" onclick="showScreen('home')"><i class="fas fa-arrow-left"></i> <span data-key="back">Back</span></button>
-                <span style="font-weight:600;font-size:17px;" data-key="report">Report Issues</span>
-                <span style="width:40px;"></span>
+                <span class="screen-header-title" data-key="report">Report Issues</span>
+                <span class="screen-header-spacer"></span>
             </div>
 
             <!-- Emergency Toggle (global) -->
-            <div style="margin-bottom:16px;display:flex;align-items:center;gap:10px;">
+            <div class="emergency-row">
                 <input type="checkbox" id="emergencyCheckbox" />
-                <label for="emergencyCheckbox" style="font-weight:600;color:var(--danger);cursor:pointer;">
+                <label for="emergencyCheckbox" class="emergency-label">
                     <i class="fas fa-triangle-exclamation"></i> This is an Emergency (applies to all reports)
                 </label>
             </div>
 
             <!-- Map (shared) -->
             <div class="form-group">
-                <label data-key="selectLocation">Select Location <span style="color:red;">*</span></label>
+                <label data-key="selectLocation">Select Location <span class="required-star">*</span></label>
                 <div id="mapPicker"></div>
-                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
-                    <button class="btn btn-outline btn-sm" onclick="getCurrentLocation()" style="width:auto;">
+                <div class="location-actions">
+                    <button class="btn btn-outline btn-sm" onclick="getCurrentLocation()">
                         <i class="fas fa-location-dot"></i> My Location
                     </button>
-                    <button class="btn btn-outline btn-sm" onclick="getRoute()" style="width:auto;">
+                    <button class="btn btn-outline btn-sm" onclick="getRoute()">
                         <i class="fas fa-directions"></i> Get Directions
                     </button>
                 </div>
-                <input type="text" id="addressInput" placeholder="Search address..." style="width:100%;padding:10px 14px;border:2px solid var(--gray-border);border-radius:10px;margin-top:6px;font-size:14px;" />
+                <input type="text" id="addressInput" placeholder="Search address..." />
                 <input type="hidden" id="selectedLat" value="27.7172" />
                 <input type="hidden" id="selectedLng" value="85.3240" />
-                <div style="font-size:12px;color:var(--text-muted);margin-top:6px;" id="locationStatus">
+                <div id="locationStatus">
                     📍 <span data-key="locationWaiting">Click on the map to select location</span>
                 </div>
             </div>
@@ -974,7 +1048,7 @@
             </button>
 
             <!-- Name (shared) -->
-            <div class="form-group" style="margin-top:16px;">
+            <div class="form-group top-gap">
                 <label data-key="yourName">Your Name (optional)</label>
                 <input type="text" id="nameInput" placeholder="e.g. Ram Sharma" />
             </div>
@@ -988,8 +1062,8 @@
         <div class="screen" id="screen-detail">
             <div class="flex-between mb-16">
                 <button class="back-btn" onclick="showScreen('home')"><i class="fas fa-arrow-left"></i> <span data-key="back">Back</span></button>
-                <span style="font-weight:600;font-size:17px;">Report Details</span>
-                <span style="width:40px;"></span>
+                <span class="screen-title">Report Details</span>
+                <span class="screen-header-spacer"></span>
             </div>
             <div id="detailContent"></div>
         </div>

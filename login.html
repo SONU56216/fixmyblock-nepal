@@ -108,6 +108,59 @@
             font-size: 14px;
             box-shadow: 0 4px 12px rgba(234,67,53,0.3);
         }
+        /* ===== SIMPLE BACKGROUND – CLEAR PHOTO ===== */
+body {
+    background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTf9wMS1VZNluak-Y2e9pHdYvTevRfEHYj4CJi7tdvIgQ&s=10') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* No overlay – image visible */
+
+.login-box {
+    background: rgba(255, 255, 255, 0.85);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    border-radius: 24px;
+    padding: 36px 28px;
+    max-width: 420px;
+    width: 90%;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.login-box .login-header h2,
+.login-box .login-header .subtitle,
+.login-box .form-group label,
+.login-box .demo-cred,
+.login-box .login-footer a {
+    color: #1a1a2e !important;
+}
+
+.login-box .form-group input {
+    background: rgba(255, 255, 255, 0.7) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    color: #1a1a2e !important;
+}
+
+.login-box .form-group input:focus {
+    border-color: #1a73e8 !important;
+    background: #fff !important;
+}
+
+.login-box .btn {
+    background: #1a73e8 !important;
+    color: #fff !important;
+    border: none;
+}
+
+.login-box .btn:hover {
+    background: #1557b0 !important;
+}
     </style>
 </head>
 <body>

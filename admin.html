@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Dashboard - FixMyBlock Nepal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -691,7 +691,96 @@
                 padding: 12px 16px;
                 bottom: 80px;
             }
+
+            .sort-toolbar {
+                display: flex;
+                gap: 12px;
+                align-items: center;
+                flex-wrap: wrap;
+                margin-bottom: 16px;
+            }
+
+            .sort-label {
+                font-size: 13px;
+                font-weight: 600;
+                color: #5f6b7a;
+            }
+            
         }
+        /* ===== SIMPLE BACKGROUND – CLEAR PHOTO ===== */
+body {
+    background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTf9wMS1VZNluak-Y2e9pHdYvTevRfEHYj4CJi7tdvIgQ&s=10') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* No overlay */
+
+.admin-container {
+    max-width: 1100px;
+    margin: 20px auto;
+    background: rgba(255, 255, 255, 0.8);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+}
+
+.admin-header {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-radius: 16px !important;
+    margin: 16px -16px 20px !important;
+    padding: 18px 24px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    color: #1a1a2e !important;
+}
+
+.admin-stat,
+.admin-report-item {
+    background: rgba(255, 255, 255, 0.7) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: #1a1a2e !important;
+}
+
+.admin-stat .num,
+.admin-stat .lbl,
+.admin-report-item .info .title,
+.admin-report-item .info .loc,
+.admin-report-item .info .meta,
+.admin-report-item .info .desc {
+    color: #1a1a2e !important;
+}
+
+.admin-report-item .info .desc {
+    background: rgba(255, 255, 255, 0.5) !important;
+}
+
+.admin-report-item .actions select {
+    background: #fff !important;
+    color: #1a1a2e !important;
+    border-color: #ddd !important;
+}
+
+/* Dark theme */
+body.dark-theme .admin-container {
+    background: rgba(0, 0, 0, 0.7) !important;
+}
+body.dark-theme .admin-header {
+    background: rgba(0, 0, 0, 0.5) !important;
+    color: #fff !important;
+}
+body.dark-theme .admin-stat,
+body.dark-theme .admin-report-item {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: #fff !important;
+}
+body.dark-theme .admin-stat .num,
+body.dark-theme .admin-stat .lbl,
+body.dark-theme .admin-report-item .info .title,
+body.dark-theme .admin-report-item .info .loc,
+body.dark-theme .admin-report-item .info .meta,
+body.dark-theme .admin-report-item .info .desc {
+    color: #fff !important;
+}
     </style>
 </head>
 <body>
@@ -763,9 +852,9 @@
                 <button class="filter-priority-btn priority-critical" onclick="filterByPriority('CRITICAL')">🔴 Critical</button>
             </div>
 
-            <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px;">
-                <span style="font-size:13px;font-weight:600;color:#5f6b7a;">Sort by:</span>
-                <select class="sort-select" onchange="sortReports(this.value)">
+            <div class="sort-toolbar">
+                <label for="sortSelect" class="sort-label">Sort by:</label>
+                <select id="sortSelect" class="sort-select" title="Sort reports" onchange="sortReports(this.value)">
                     <option value="newest">Newest</option>
                     <option value="oldest">Oldest</option>
                     <option value="supported">Most Supported</option>
