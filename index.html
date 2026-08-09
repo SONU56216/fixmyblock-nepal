@@ -4,11 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FixMyBlock Nepal</title>
+    
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<!-- PWA Manifest -->
+<link rel="manifest" href="manifest.json" />
 
+<!-- Apple Touch Icon -->
+<link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
+
+<!-- Theme Color -->
+<meta name="theme-color" content="#1a73e8" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <style>
         :root {
             --primary: #1a73e8;
@@ -923,6 +933,14 @@ body.dark-theme .form-group textarea {
     </style>
 </head>
 <body>
+    <script>
+  // Register Service Worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/Fixmyblock-nepal/sw.js')
+      .then(reg => console.log('✅ SW registered'))
+      .catch(err => console.error('❌ SW registration failed:', err));
+  }
+</script>
 
     <!-- ===== SPLASH ===== -->
     <div id="splash">
