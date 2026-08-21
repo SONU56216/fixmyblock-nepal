@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login - FixMyBlock Nepal</title>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+        /* Login specific */
+        body {
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+        }
+        body.has-glass-bg {
+            background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTf9wMS1VZNluak-Y2e9pHdYvTevRfEHYj4CJi7tdvIgQ&s=10');
+            background-size: cover;
+            background-attachment: fixed;
+        }
+        .login-box {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 36px 28px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-border);
+            transition: var(--transition);
+        }
+        .login-box:hover { box-shadow: var(--shadow-hover); }
+        .login-box .login-header { text-align: center; margin-bottom: 24px; }
+        .login-box .login-header i { font-size: 48px; color: var(--primary); }
+        .login-box .login-header h2 { font-size: 24px; margin-top: 8px; }
+        .login-box .login-header .subtitle { color: var(--text-muted); font-size: 14px; }
+        .login-box .form-group { margin-bottom: 16px; }
+        .login-box .form-group input { background: var(--gray-light); border-color: var(--gray-border); }
+        .login-box .btn { margin-top: 8px; }
+        .login-box .demo-cred { display: none; } /* Hide demo credentials */
+        .login-box .error-msg { color: var(--danger); font-size: 13px; margin-top: 8px; display: none; }
+        .login-box .login-footer { text-align: center; margin-top: 16px; }
+        .login-box .login-footer a { color: var(--primary); text-decoration: none; font-size: 13px; }
+        @media (max-width: 480px) { .login-box { padding: 24px 16px; } }
+    </style>
+</head>
+<body class="has-glass-bg">
+
+    <div class="login-box">
+        <div class="login-header">
+            <i class="fas fa-shield-halved"></i>
+            <h2>Admin Access</h2>
+            <p class="subtitle">Secure login for authorized officials</p>
+        </div>
+
+        <form id="loginForm" class="login-form">
+            <div class="form-group">
+                <label for="loginEmail"><i class="fas fa-envelope"></i> Email</label>
+                <input type="email" id="loginEmail" placeholder="Enter your email" />
+            </div>
+            <div class="form-group">
+                <label for="loginPassword"><i class="fas fa-lock"></i> Password</label>
+                <input type="password" id="loginPassword" placeholder="Enter your password" />
+            </div>
+            <div class="form-group">
+                <label for="securityCode"><i class="fas fa-shield-alt"></i> Security Code</label>
+                <input type="password" id="securityCode" placeholder="Enter 4‑digit code" maxlength="4" />
+            </div>
+            <div class="error-msg" id="loginError">
+                <i class="fas fa-exclamation-circle"></i> Invalid credentials.
+            </div>
+            <button type="submit" class="btn btn-primary" id="loginBtn">
+                <i class="fas fa-arrow-right-to-bracket"></i> Login
+            </button>
+        </form>
+
+        <div class="login-footer">
+            <a href="index.html"><i class="fas fa-arrow-left"></i> Back to App</a>
+        </div>
+    </div>
+
+    <!-- Your existing login JS -->
+    <script type="module" src="js/login.js"></script>
+</body>
+</html>

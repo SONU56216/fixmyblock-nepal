@@ -1,0 +1,1832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - FixMyBlock Nepal</title>
+
+    <!-- ===== PWA CONFIG ===== -->
+    <link rel="manifest" href="manifest.json" />
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16.png" />
+
+    <!-- ===== FONTS & ICONS ===== -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <!-- ===== STYLES ===== -->
+    <style>
+        /* ================================================================
+           FIXMYBLOCK NEPAL – ADMIN DASHBOARD (Modern Theme)
+           ================================================================ */
+
+        /* ----- Variables ----- */
+        :root {
+            --primary: #1a73e8;
+            --primary-dark: #0d47a1;
+            --secondary: #dc143c;
+            --success: #34a853;
+            --danger: #ea4335;
+            --gray: #5f6b7a;
+            --gray-light: #f0f2f5;
+            --gray-border: #e8ecf2;
+            --card-bg: #ffffff;
+            --bg: #f8f9fc;
+            --text: #1a1a2e;
+            --text-muted: #6b7280;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.1);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            --max-width: 1100px;
+        }
+
+        body.dark-theme {
+            --card-bg: #1e1e2e;
+            --bg: #121212;
+            --text: #e0e0e0;
+            --gray-light: #1a1a2a;
+            --gray-border: #2a2a3e;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        /* ----- Base ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+            max-width: 100vw;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+            line-height: 1.6;
+        }
+
+        /* ----- Glass Background ----- */
+        body.has-glass-bg {
+            background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTf9wMS1VZNluak-Y2e9pHdYvTevRfEHYj4CJi7tdvIgQ&s=10');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+        }
+
+        body.has-glass-bg::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: -1;
+        }
+
+        body.dark-theme.has-glass-bg::before {
+            background: rgba(0, 0, 0, 0.65);
+        }
+
+        /* ----- Container ----- */
+        .admin-container {
+            max-width: var(--max-width);
+            margin: 16px auto;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 0 16px 20px;
+            transition: var(--transition);
+            width: calc(100% - 24px);
+        }
+
+        body.has-glass-bg .admin-container {
+            background: rgba(255, 255, 255, 0.88);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        body.dark-theme.has-glass-bg .admin-container {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        /* ----- Header ----- */
+        .admin-header {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #fff;
+            padding: 14px 18px;
+            border-radius: var(--radius-sm);
+            margin: 12px -8px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .admin-header .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .admin-header .logo img {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+        }
+
+        .admin-header .badge {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        /* ----- Buttons ----- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: var(--transition);
+            width: auto;
+            font-family: inherit;
+        }
+
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: #fff;
+        }
+        .btn-danger:hover {
+            background: #c62828;
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: #fff;
+        }
+        .btn-success:hover {
+            background: #2d9248;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-sm {
+            padding: 5px 12px;
+            font-size: 12px;
+        }
+
+        .btn-delete {
+            background: var(--danger);
+            color: #fff;
+        }
+        .btn-delete:hover {
+            background: #c62828;
+        }
+
+        /* ----- Stats ----- */
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .admin-stat {
+            background: var(--gray-light);
+            border: 1px solid var(--gray-border);
+            border-radius: var(--radius-sm);
+            padding: 14px 8px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .admin-stat:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .admin-stat .num {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1.2;
+        }
+
+        .admin-stat .lbl {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .admin-stat .num.submitted {
+            color: #0d47a1;
+        }
+        .admin-stat .num.progress {
+            color: #e65100;
+        }
+        .admin-stat .num.resolved {
+            color: #1b5e20;
+        }
+        .admin-stat .num.emergency {
+            color: var(--secondary);
+        }
+        .admin-stat .num.total {
+            color: var(--primary);
+        }
+
+        /* ----- Actions ----- */
+        .admin-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .admin-actions .search-box {
+            flex: 2;
+            min-width: 180px;
+        }
+
+        .admin-actions .search-box input {
+            width: 100%;
+            padding: 8px 14px;
+            border: 2px solid var(--gray-border);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            background: var(--gray-light);
+            transition: var(--transition);
+            color: var(--text);
+        }
+
+        .admin-actions .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--card-bg);
+            box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.1);
+        }
+
+        /* ----- Filters ----- */
+        .filters-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--gray-border);
+        }
+
+        .filters-row .label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-right: 4px;
+        }
+
+        .filter-priority-btn {
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 2px solid var(--gray-border);
+            background: transparent;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text);
+            font-family: inherit;
+        }
+
+        .filter-priority-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .filter-priority-btn.active {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .filter-priority-btn.priority-low {
+            border-color: #34a853;
+            color: #34a853;
+        }
+        .filter-priority-btn.priority-low.active {
+            background: #e8f5e9;
+        }
+
+        .filter-priority-btn.priority-medium {
+            border-color: #fbbc04;
+            color: #fbbc04;
+        }
+        .filter-priority-btn.priority-medium.active {
+            background: #fff8e1;
+        }
+
+        .filter-priority-btn.priority-high {
+            border-color: #ff6b00;
+            color: #ff6b00;
+        }
+        .filter-priority-btn.priority-high.active {
+            background: #fff3e0;
+        }
+
+        .filter-priority-btn.priority-critical {
+            border-color: var(--secondary);
+            color: var(--secondary);
+        }
+        .filter-priority-btn.priority-critical.active {
+            background: #fce4ec;
+        }
+
+        .sort-select {
+            padding: 5px 12px;
+            border-radius: var(--radius-sm);
+            border: 2px solid var(--gray-border);
+            font-size: 13px;
+            background: var(--card-bg);
+            color: var(--text);
+            cursor: pointer;
+            font-family: inherit;
+            transition: var(--transition);
+        }
+
+        .sort-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .admin-label {
+            font-size: 11px;
+            font-weight: 400;
+            opacity: 0.7;
+            margin-left: -4px;
+        }
+        .bulk-status-select {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 2px solid var(--gray-border);
+            font-size: 13px;
+            background: var(--card-bg);
+            color: var(--text);
+            font-family: inherit;
+        }
+        .sort-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        .sort-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        /* ----- Report List ----- */
+        #adminReportList {
+            margin-top: 4px;
+        }
+
+        /* ----- Report Item ----- */
+        .admin-report-item {
+            background: var(--card-bg);
+            border: 1px solid var(--gray-border);
+            border-radius: var(--radius-sm);
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .admin-report-item:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .admin-report-item .info {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .admin-report-item .title {
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 2px;
+        }
+
+        .admin-report-item .title .report-id {
+            color: var(--text-muted);
+            font-weight: 400;
+            font-size: 12px;
+        }
+
+        .admin-report-item .title .category-icon {
+            margin: 0 2px;
+        }
+
+        .admin-report-item .loc {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin: 2px 0;
+        }
+
+        .admin-report-item .meta {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .admin-report-item .desc {
+            background: var(--gray-light);
+            padding: 6px 10px;
+            border-radius: 6px;
+            margin-top: 4px;
+            font-size: 13px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .admin-report-item .community-stats {
+            display: flex;
+            gap: 14px;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            flex-wrap: wrap;
+        }
+
+        .admin-report-item .stat-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .admin-report-item .stat-item .count {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        /* ----- Status Badge ----- */
+        .status-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+            color: #fff;
+        }
+
+        .status-submitted {
+            background: #0d47a1;
+        }
+        .status-reviewing {
+            background: #e65100;
+        }
+        .status-progress {
+            background: #b71c1c;
+        }
+        .status-resolved {
+            background: #1b5e20;
+        }
+        .status-rejected {
+            background: #616161;
+        }
+
+        /* ----- Priority Badge ----- */
+        .priority-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .priority-low {
+            background: #e8f5e9;
+            color: #34a853;
+        }
+        .priority-medium {
+            background: #fff8e1;
+            color: #fbbc04;
+        }
+        .priority-high {
+            background: #fff3e0;
+            color: #ff6b00;
+        }
+        .priority-critical {
+            background: #fce4ec;
+            color: var(--secondary);
+            animation: pulseCritical 1.5s infinite;
+        }
+
+        @keyframes pulseCritical {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.04);
+            }
+        }
+
+        /* ----- Emergency Highlighting ----- */
+        .emergency-report {
+            background: #fce4ec !important;
+            border-left: 6px solid var(--secondary) !important;
+            animation: pulseRed 1.5s infinite;
+        }
+
+        @keyframes pulseRed {
+            0%,
+            100% {
+                background-color: #fce4ec;
+            }
+            50% {
+                background-color: #ffcdd2;
+            }
+        }
+
+        body.dark-theme .emergency-report {
+            background: #3a1a1a !important;
+        }
+
+        .emergency-badge {
+            background: var(--secondary);
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        /* ----- Mini Map ----- */
+        .mini-map {
+            width: 100%;
+            height: 120px;
+            border-radius: 6px;
+            overflow: hidden;
+            background: var(--gray-light);
+            border: 1px solid var(--gray-border);
+            margin-top: 6px;
+        }
+
+        .mini-map .map-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* ----- Actions (Status dropdown + delete) ----- */
+        .admin-report-item .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: flex-start;
+            min-width: 140px;
+        }
+
+        .admin-report-item .actions select {
+            padding: 5px 10px;
+            border-radius: 6px;
+            border: 2px solid var(--gray-border);
+            font-size: 13px;
+            background: var(--card-bg);
+            color: var(--text);
+            cursor: pointer;
+            font-family: inherit;
+            width: 100%;
+            transition: var(--transition);
+        }
+
+        .admin-report-item .actions select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .admin-report-item .actions .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* ----- Photo Gallery in Admin ----- */
+        .admin-photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+            margin-top: 4px;
+            max-width: 150px;
+        }
+
+        .admin-photo-gallery img {
+            width: 100%;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid var(--gray-border);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .admin-photo-gallery img:hover {
+            transform: scale(1.05);
+        }
+
+        .admin-photo-gallery a {
+            display: block;
+        }
+
+        /* ----- Bulk Actions ----- */
+        #bulkActions {
+            display: none;
+            background: var(--primary-light);
+            border: 1px solid var(--primary);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            color: var(--text);
+        }
+
+        #bulkActions .bulk-info {
+            font-weight: 600;
+            font-size: 14px;
+            flex: 1;
+        }
+
+        #bulkActions .btn {
+            flex: 0 1 auto;
+        }
+
+        /* ----- Empty / Loading / Error ----- */
+        .empty-state,
+        .loading-state,
+        .error-state {
+            text-align: center;
+            padding: 40px 16px;
+            color: var(--text-muted);
+        }
+
+        .empty-state i,
+        .error-state i {
+            font-size: 48px;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .empty-state h3 {
+            color: var(--text);
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
+        .error-state {
+            color: var(--danger);
+        }
+        .error-state i {
+            color: var(--danger);
+        }
+
+        .loading-state i {
+            font-size: 32px;
+            color: var(--primary);
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* ----- Toast ----- */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 90%;
+            width: 90%;
+            background: var(--card-bg);
+            color: var(--text);
+            padding: 12px 16px;
+            border-radius: var(--radius);
+            text-align: center;
+            font-weight: 500;
+            font-size: 14px;
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--gray-border);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .toast.success {
+            background: var(--success);
+            color: #fff;
+        }
+        .toast.error {
+            background: var(--danger);
+            color: #fff;
+        }
+        .toast.info {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        /* ----- Spinner ----- */
+        .spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-top: 3px solid #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ----- Responsive ----- */
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: 0 12px 16px;
+                margin: 10px;
+                width: calc(100% - 20px);
+                border-radius: 12px;
+            }
+
+            .admin-stats {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+
+            .admin-stat {
+                padding: 10px 4px;
+            }
+            .admin-stat .num {
+                font-size: 18px;
+            }
+            .admin-stat .lbl {
+                font-size: 10px;
+            }
+
+            .admin-header {
+                padding: 10px 14px;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 6px;
+            }
+
+            .admin-header .logo {
+                font-size: 16px;
+            }
+            .admin-header .logo img {
+                width: 24px;
+                height: 24px;
+            }
+
+            .header-right {
+                justify-content: space-between;
+            }
+
+            .admin-actions {
+                flex-direction: column;
+            }
+
+            .admin-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .admin-actions .search-box {
+                min-width: 100%;
+            }
+
+            .filters-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 4px;
+            }
+
+            .filter-priority-btn {
+                font-size: 10px;
+                padding: 3px 10px;
+            }
+
+            .admin-report-item {
+                padding: 12px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .admin-report-item .actions {
+                flex-direction: row;
+                flex-wrap: wrap;
+                min-width: 100%;
+            }
+
+            .admin-report-item .actions select {
+                flex: 1;
+                min-width: 100px;
+            }
+
+            .admin-report-item .actions .btn {
+                flex: 0 1 auto;
+                width: auto;
+            }
+
+            .admin-photo-gallery {
+                max-width: 120px;
+            }
+            .admin-photo-gallery img {
+                height: 40px;
+            }
+
+            #bulkActions {
+                flex-direction: column;
+            }
+
+            .mini-map {
+                height: 100px;
+            }
+
+            .sort-select {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .admin-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 6px;
+            }
+
+            .admin-stat .num {
+                font-size: 16px;
+            }
+
+            .admin-header .logo {
+                font-size: 14px;
+            }
+            .admin-header .logo img {
+                width: 20px;
+                height: 20px;
+            }
+
+            .admin-report-item .title {
+                font-size: 13px;
+            }
+
+            .admin-photo-gallery {
+                max-width: 100px;
+            }
+            .admin-photo-gallery img {
+                height: 35px;
+            }
+
+            .toast {
+                font-size: 13px;
+                padding: 10px 14px;
+                bottom: 70px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .admin-container {
+                margin: 6px;
+                padding: 0 8px 12px;
+                width: calc(100% - 12px);
+                border-radius: 10px;
+            }
+
+            .admin-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 4px;
+            }
+
+            .admin-stat {
+                padding: 6px 4px;
+            }
+            .admin-stat .num {
+                font-size: 14px;
+            }
+            .admin-stat .lbl {
+                font-size: 9px;
+            }
+
+            .filter-priority-btn {
+                font-size: 9px;
+                padding: 2px 8px;
+            }
+
+            .admin-report-item {
+                padding: 8px 10px;
+            }
+        }
+
+        /* ----- Landscape mode ----- */
+        @media (orientation: landscape) and (max-height: 500px) {
+            .admin-container {
+                margin: 6px auto;
+                padding: 0 12px 10px;
+            }
+
+            .admin-header {
+                padding: 6px 12px;
+                margin: 8px -4px 10px;
+            }
+
+            .admin-stats {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 4px;
+            }
+
+            .admin-stat {
+                padding: 4px 4px;
+            }
+            .admin-stat .num {
+                font-size: 14px;
+            }
+            .admin-stat .lbl {
+                font-size: 9px;
+            }
+
+            .admin-report-item {
+                padding: 8px 10px;
+                margin-bottom: 6px;
+            }
+
+            .admin-report-item .info {
+                font-size: 13px;
+            }
+
+            .mini-map {
+                height: 80px;
+            }
+        }
+
+        /* ----- Print ----- */
+        @media print {
+            .bottom-nav,
+            .admin-header .header-right,
+            .btn {
+                display: none !important;
+            }
+            .admin-container {
+                margin: 0 !important;
+                width: 100% !important;
+                border: none !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="has-glass-bg">
+
+    <!-- ===== TOAST ===== -->
+    <div id="toast" class="toast"></div>
+
+    <!-- ===== ADMIN CONTAINER ===== -->
+    <div class="admin-container">
+
+        <!-- ===== HEADER ===== -->
+        <header class="admin-header">
+            <div class="logo">
+                <img src="assets/icons/icon-32.png" alt="FixMyBlock" />
+                <span>FixMyBlock</span>
+                <span class="admin-label">Admin</span>
+            </div>
+            <div class="header-right">
+                <span class="badge">● LIVE</span>
+                <button class="btn btn-outline btn-sm" onclick="refreshReports()">
+                    <i class="fas fa-sync"></i> Refresh
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </header>
+
+        <!-- ===== STATS ===== -->
+        <div class="admin-stats" id="adminStats">
+            <div class="admin-stat">
+                <div class="num total" id="adminTotal">0</div>
+                <div class="lbl">Total Reports</div>
+            </div>
+            <div class="admin-stat">
+                <div class="num submitted" id="adminSubmitted">0</div>
+                <div class="lbl">Submitted</div>
+            </div>
+            <div class="admin-stat">
+                <div class="num progress" id="adminProgress">0</div>
+                <div class="lbl">In Progress</div>
+            </div>
+            <div class="admin-stat">
+                <div class="num resolved" id="adminResolved">0</div>
+                <div class="lbl">Resolved</div>
+            </div>
+            <div class="admin-stat">
+                <div class="num emergency" id="adminEmergency">0</div>
+                <div class="lbl">🚨 Emergency</div>
+            </div>
+        </div>
+
+        <!-- ===== ACTIONS ===== -->
+        <div class="admin-actions">
+            <button class="btn btn-success btn-sm" onclick="exportExcel()">
+                <i class="fas fa-file-excel"></i> Export Excel
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="clearAllReports()">
+                <i class="fas fa-trash"></i> Clear All
+            </button>
+            <div class="search-box">
+                <input type="text" id="adminSearch" placeholder="🔍 Search reports..." oninput="applyFiltersAndSort()" />
+            </div>
+        </div>
+
+        <!-- ===== BULK ACTIONS ===== -->
+        <div id="bulkActions">
+            <span class="bulk-info"><i class="fas fa-check-circle"></i> <span id="bulkCount">0</span> reports selected</span>
+            <select id="bulkStatusSelect" class="bulk-status-select" title="Bulk report status">
+                <option value="submitted">Submitted</option>
+                <option value="reviewing">Under Review</option>
+                <option value="in_progress">In Progress</option>
+                <option value="resolved">Resolved</option>
+                <option value="rejected">Rejected</option>
+            </select>
+            <button class="btn btn-primary btn-sm" onclick="bulkUpdateStatus()">
+                <i class="fas fa-check"></i> Apply
+            </button>
+            <button class="btn btn-outline btn-sm" onclick="clearBulkSelection()">
+                <i class="fas fa-times"></i> Clear
+            </button>
+        </div>
+
+        <!-- ===== FILTERS ===== -->
+        <div class="filters-row">
+            <span class="label">Priority:</span>
+            <button class="filter-priority-btn active" onclick="filterByPriority('all')">All</button>
+            <button class="filter-priority-btn priority-low" onclick="filterByPriority('LOW')">🟢 Low</button>
+            <button class="filter-priority-btn priority-medium" onclick="filterByPriority('MEDIUM')">🟡 Medium</button>
+            <button class="filter-priority-btn priority-high" onclick="filterByPriority('HIGH')">🟠 High</button>
+            <button class="filter-priority-btn priority-critical" onclick="filterByPriority('CRITICAL')">🔴 Critical</button>
+        </div>
+
+        <!-- ===== SORT ===== -->
+        <div class="sort-row">
+            <span class="sort-label">Sort by:</span>
+            <select class="sort-select" title="Sort reports" onchange="sortReports(this.value)">
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
+                <option value="supported">Most Supported</option>
+                <option value="priority">Highest Priority</option>
+            </select>
+        </div>
+
+        <!-- ===== REPORTS LIST ===== -->
+        <div id="adminReportList">
+            <div class="loading-state">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Loading reports...</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ===== JAVASCRIPT ===== -->
+    <!-- ============================================================ -->
+
+    <script type="module">
+        // ================================================================
+        // 🔴🔴🔴 PASTE YOUR FIREBASE CONFIG HERE
+        // ================================================================
+
+        const firebaseConfig = {
+           apiKey: "AIzaSyBVvWlYUCOfALhtWdR53_ZcP5spTYhDyu8",
+  authDomain: "fixmyblock-nepal.firebaseapp.com",
+  projectId: "fixmyblock-nepal",
+  storageBucket: "fixmyblock-nepal.firebasestorage.app",
+  messagingSenderId: "742804276117",
+  appId: "1:742804276117:web:ddab9eeff9a357c1112c9c",
+  measurementId: "G-C3RQER0PC1"
+        };
+
+        // ================================================================
+        // IMPORTS
+        // ================================================================
+
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+        import {
+            getAuth,
+            onAuthStateChanged,
+            signOut
+        } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+        import {
+            getFirestore,
+            collection,
+            query,
+            orderBy,
+            getDocs,
+            doc,
+            getDoc,
+            updateDoc,
+            deleteDoc,
+            onSnapshot,
+            where,
+            writeBatch,
+            serverTimestamp,
+            addDoc
+        } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+        import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-functions.js';
+
+        // ================================================================
+        // INIT FIREBASE
+        // ================================================================
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const functions = getFunctions(app);
+
+        console.log('✅ Firebase Admin initialized!');
+
+        // ================================================================
+        // HELPERS
+        // ================================================================
+
+        const CATEGORIES = {
+            pothole: { label: 'Pothole', icon: 'fa-circle-exclamation' },
+            streetlight: { label: 'Streetlight', icon: 'fa-lightbulb' },
+            drainage: { label: 'Drainage', icon: 'fa-water' },
+            garbage: { label: 'Garbage', icon: 'fa-trash' },
+            landslide: { label: 'Landslide', icon: 'fa-mountain' }
+        };
+
+        const STATUSES = {
+            submitted: { label: 'Submitted', class: 'status-submitted' },
+            reviewing: { label: 'Under Review', class: 'status-reviewing' },
+            in_progress: { label: 'In Progress', class: 'status-progress' },
+            resolved: { label: 'Resolved', class: 'status-resolved' },
+            rejected: { label: 'Rejected', class: 'status-rejected' }
+        };
+
+        const PRIORITY_ICONS = {
+            LOW: 'fa-arrow-down',
+            MEDIUM: 'fa-minus',
+            HIGH: 'fa-arrow-up',
+            CRITICAL: 'fa-exclamation-triangle'
+        };
+
+        const PRIORITY_ORDER = { CRITICAL: 0, HIGH: 1, MEDIUM: 2, LOW: 3 };
+
+        function getCategoryLabel(cat) {
+            return CATEGORIES[cat]?.label || cat;
+        }
+
+        function getCategoryIcon(cat) {
+            return CATEGORIES[cat]?.icon || 'fa-question';
+        }
+
+        function getStatusLabel(status) {
+            return STATUSES[status]?.label || status;
+        }
+
+        function getStatusClass(status) {
+            return STATUSES[status]?.class || '';
+        }
+
+        function formatTimestamp(ts) {
+            if (!ts) return 'Recently';
+            try {
+                const diff = Date.now() - ts.toMillis();
+                if (diff < 60000) return 'Just now';
+                if (diff < 3600000) return Math.floor(diff / 60000) + ' min ago';
+                if (diff < 86400000) return Math.floor(diff / 3600000) + ' hours ago';
+                return Math.floor(diff / 86400000) + ' days ago';
+            } catch {
+                return 'Recently';
+            }
+        }
+
+        let allReports = [];
+        let filteredReports = [];
+        let currentPriorityFilter = 'all';
+        let currentSort = 'newest';
+        let selectedReports = [];
+
+        function showToast(msg, type = '') {
+            const el = document.getElementById('toast');
+            if (!el) return;
+            el.textContent = msg;
+            el.className = 'toast ' + type;
+            void el.offsetWidth;
+            el.classList.add('show');
+            clearTimeout(el._timer);
+            el._timer = setTimeout(() => el.classList.remove('show'), 3500);
+        }
+
+        // ================================================================
+        // AUTH GUARD + LOGIN ALERT
+        // ================================================================
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                const adminDoc = await getDoc(doc(db, 'admins', user.uid));
+                if (!adminDoc.exists() || adminDoc.data().role !== 'admin') {
+                    await signOut(auth);
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                console.log('✅ Admin verified! Loading reports...');
+                if (window._listenerUnsubscribe) window._listenerUnsubscribe();
+                listenToReports();
+                loadAdminLogs();
+
+                // ===== SEND LOGIN ALERT =====
+                if (!window._loginAlertSent) {
+                    window._loginAlertSent = true;
+                    const sendLoginAlert = httpsCallable(functions, 'sendLoginAlert');
+                    const email = user.email;
+                    const displayName = user.displayName || '';
+                    const timestamp = Date.now();
+
+                    fetch('https://api.ipify.org?format=json')
+                        .then(res => res.json())
+                        .then(data => {
+                            sendLoginAlert({
+                                email,
+                                displayName,
+                                timestamp,
+                                ip: data.ip,
+                                userAgent: navigator.userAgent
+                            }).catch(err => console.error('Login alert failed:', err));
+                        })
+                        .catch(err => console.error('IP fetch failed:', err));
+                }
+
+            } catch (error) {
+                console.error('Error checking admin:', error);
+                document.getElementById('adminReportList').innerHTML = `
+                        <div class="error-state">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <h3>Error checking admin status</h3>
+                            <p>${error.message}</p>
+                            <button onclick="location.reload()" class="btn btn-primary btn-sm" style="margin-top:12px;">Retry</button>
+                        </div>
+                    `;
+            }
+        });
+
+        window.logout = async function() {
+            await signOut(auth);
+            window.location.href = 'login.html';
+        };
+
+        async function logAdminAction(action, reportId = null, details = {}) {
+            try {
+                const user = auth.currentUser;
+                await addDoc(collection(db, 'admin_logs'), {
+                    action,
+                    reportId,
+                    adminId: user?.uid || 'unknown',
+                    adminEmail: user?.email || 'unknown',
+                    details,
+                    timestamp: serverTimestamp()
+                });
+            } catch (error) {
+                console.error('Error logging admin action:', error);
+            }
+        }
+
+        // ================================================================
+        // LISTEN TO REPORTS
+        // ================================================================
+
+        function listenToReports() {
+            const q = query(collection(db, 'reports'), orderBy('createdAt', 'desc'));
+
+            const unsubscribe = onSnapshot(q, (snapshot) => {
+                console.log('✅ Admin Snapshot size:', snapshot.size);
+                allReports = [];
+                snapshot.forEach((doc) => {
+                    allReports.push({ id: doc.id, ...doc.data() });
+                });
+                applyFiltersAndSort();
+                updateStats();
+            }, (error) => {
+                console.error('Listener error:', error);
+                document.getElementById('adminReportList').innerHTML = `
+                        <div class="error-state">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <h3>Error Loading Reports</h3>
+                            <p>${error.message}</p>
+                            <button onclick="location.reload()" class="btn btn-primary btn-sm" style="margin-top:12px;">Retry</button>
+                        </div>
+                    `;
+            });
+
+            window._listenerUnsubscribe = unsubscribe;
+        }
+
+        async function loadAdminLogs() {
+            try {
+                const q = query(collection(db, 'admin_logs'), orderBy('timestamp', 'desc'), limit(50));
+                const snapshot = await getDocs(q);
+                const logs = [];
+                snapshot.forEach((doc) => {
+                    logs.push({ id: doc.id, ...doc.data() });
+                });
+                renderAdminLogs(logs);
+            } catch (error) {
+                console.error('Error loading logs:', error);
+            }
+        }
+
+        function renderAdminLogs(logs) {
+            const container = document.getElementById('adminLogs');
+            if (!container) return;
+            if (logs.length === 0) {
+                container.innerHTML = '<div class="text-muted" style="padding:12px;text-align:center;">No activity logs yet</div>';
+                return;
+            }
+            container.innerHTML = logs.map(log => `
+                    <div style="padding:6px 0;border-bottom:1px solid var(--gray-border);font-size:13px;">
+                        <strong>${log.action}</strong>
+                        ${log.reportId ? ` on #${log.reportId.substring(0, 8)}` : ''}
+                        <span style="color:var(--text-muted);font-size:12px;"> ${log.adminEmail || 'Unknown'}</span>
+                        <span style="color:var(--text-muted);font-size:11px;float:right;">${formatTimestamp(log.timestamp)}</span>
+                    </div>
+                `).join('');
+        }
+
+        // ================================================================
+        // FILTERS & SORTING
+        // ================================================================
+
+        window.filterByPriority = function(priority) {
+            currentPriorityFilter = priority;
+            document.querySelectorAll('.filter-priority-btn').forEach(btn => btn.classList.remove('active'));
+            if (priority === 'all') {
+                document.querySelector('.filter-priority-btn')?.classList.add('active');
+            } else {
+                const btn = document.querySelector(`.filter-priority-btn.priority-${priority.toLowerCase()}`);
+                if (btn) btn.classList.add('active');
+            }
+            applyFiltersAndSort();
+        };
+
+        window.sortReports = function(sort) {
+            currentSort = sort;
+            applyFiltersAndSort();
+        };
+
+        window.applyFiltersAndSort = function() {
+            const search = document.getElementById('adminSearch')?.value.toLowerCase().trim() || '';
+
+            let filtered = allReports;
+            if (currentPriorityFilter !== 'all') {
+                filtered = filtered.filter(r => (r.priority || 'LOW') === currentPriorityFilter);
+            }
+
+            if (search) {
+                filtered = filtered.filter(r =>
+                    (r.location || '').toLowerCase().includes(search) ||
+                    (r.description || '').toLowerCase().includes(search) ||
+                    (r.category || '').toLowerCase().includes(search) ||
+                    (r.submittedBy || '').toLowerCase().includes(search) ||
+                    r.id.toLowerCase().includes(search)
+                );
+            }
+
+            switch (currentSort) {
+                case 'priority':
+                    filtered.sort((a, b) =>
+                        (PRIORITY_ORDER[a.priority || 'LOW'] || 4) - (PRIORITY_ORDER[b.priority || 'LOW'] || 4)
+                    );
+                    break;
+                case 'supported':
+                    filtered.sort((a, b) => (b.affectedCount || 0) - (a.affectedCount || 0));
+                    break;
+                case 'oldest':
+                    filtered.sort((a, b) => (a.createdAt?.toMillis() || 0) - (b.createdAt?.toMillis() || 0));
+                    break;
+                case 'newest':
+                default:
+                    filtered.sort((a, b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
+                    break;
+            }
+
+            filteredReports = filtered;
+            renderAdminReports();
+        };
+
+        // ================================================================
+        // BULK SELECT
+        // ================================================================
+
+        window.toggleSelectReport = function(reportId) {
+            const index = selectedReports.indexOf(reportId);
+            if (index > -1) {
+                selectedReports.splice(index, 1);
+            } else {
+                selectedReports.push(reportId);
+            }
+            updateBulkActions();
+        };
+
+        function updateBulkActions() {
+            const container = document.getElementById('bulkActions');
+            if (!container) return;
+            if (selectedReports.length === 0) {
+                container.style.display = 'none';
+                return;
+            }
+            container.style.display = 'flex';
+            document.getElementById('bulkCount').textContent = selectedReports.length;
+        }
+
+        function clearBulkSelection() {
+            selectedReports = [];
+            updateBulkActions();
+            // Re-render to uncheck checkboxes
+            renderAdminReports();
+        }
+
+        window.bulkUpdateStatus = async function() {
+            if (selectedReports.length === 0) return;
+
+            const newStatus = document.getElementById('bulkStatusSelect').value;
+            if (!confirm(`Update ${selectedReports.length} reports to "${getStatusLabel(newStatus)}"?`)) return;
+
+            try {
+                const batch = writeBatch(db);
+                for (const id of selectedReports) {
+                    const ref = doc(db, 'reports', id);
+                    batch.update(ref, {
+                        status: newStatus,
+                        updatedAt: new Date().toISOString()
+                    });
+                }
+                await batch.commit();
+                showToast(`✅ Updated ${selectedReports.length} reports to "${getStatusLabel(newStatus)}"`, 'success');
+                selectedReports = [];
+                updateBulkActions();
+            } catch (error) {
+                console.error('Bulk update error:', error);
+                showToast('❌ Error updating reports: ' + error.message, 'error');
+            }
+        };
+
+        window.clearBulkSelection = clearBulkSelection;
+
+        // ================================================================
+        // RENDER ADMIN REPORTS
+        // ================================================================
+
+        function renderAdminReports() {
+            const container = document.getElementById('adminReportList');
+
+            if (filteredReports.length === 0) {
+                container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <h3>No reports found</h3>
+                            <p>${allReports.length === 0 ? 'No reports submitted yet.' : 'Try adjusting your search or filters.'}</p>
+                        </div>
+                    `;
+                return;
+            }
+
+            container.innerHTML = filteredReports.map(r => {
+                const priority = r.priority || 'LOW';
+                const priorityClass = priority.toLowerCase();
+                const priorityIcon = PRIORITY_ICONS[priority] || 'fa-circle';
+                const affected = r.affectedCount || 0;
+                const supporters = (r.supportedBy || []).length;
+                const isSelected = selectedReports.includes(r.id);
+                const isEmergency = r.isEmergency || false;
+                const cardClass = isEmergency ? 'admin-report-item emergency-report' : 'admin-report-item';
+
+                // Photo gallery
+                const photoHtml = r.photoUrls && r.photoUrls.length > 0 ?
+                    `<div class="admin-photo-gallery">
+                            ${r.photoUrls.map(url => `<a href="${url}" target="_blank"><img src="${url}" alt="Photo" /></a>`).join('')}
+                        </div>` :
+                    '<div style="color:var(--text-muted);font-size:12px;margin-top:4px;">No photos</div>';
+
+                return `
+                        <div class="${cardClass}" style="${isSelected ? 'border-color:var(--primary);background:var(--primary-light);' : ''}">
+                            <div style="display:flex;align-items:flex-start;gap:10px;width:100%;flex-wrap:wrap;">
+                                <input type="checkbox" ${isSelected ? 'checked' : ''} onchange="toggleSelectReport('${r.id}')" style="width:18px;height:18px;margin-top:4px;cursor:pointer;" />
+                                <div class="info">
+                                    <div class="title">
+                                        <span class="report-id">#${r.id.substring(0, 8)}</span>
+                                        <i class="fas ${getCategoryIcon(r.category)} category-icon" style="color:var(--primary);"></i>
+                                        ${getCategoryLabel(r.category)}
+                                        ${isEmergency ? '<span class="emergency-badge">🚨 EMERGENCY</span>' : ''}
+                                        <span class="priority-badge priority-${priorityClass}">
+                                            <i class="fas ${priorityIcon}"></i> ${priority}
+                                        </span>
+                                    </div>
+                                    <div class="loc"><i class="fas fa-location-dot"></i> ${r.location || 'Unknown'}</div>
+                                    <div class="meta">
+                                        ${formatTimestamp(r.createdAt)} ·
+                                        ${r.submittedBy || 'Anonymous'} ·
+                                        ${r.latitude ? `${r.latitude.toFixed(4)}, ${r.longitude?.toFixed(4) || ''}` : ''}
+                                    </div>
+                                    <div class="community-stats">
+                                        <span class="stat-item"><i class="fas fa-users"></i> <span class="count">${affected}</span> affected</span>
+                                        <span class="stat-item"><i class="fas fa-hand-peace"></i> <span class="count">${supporters}</span> supporters</span>
+                                        ${r.rating > 0 ? `<span class="stat-item"><i class="fas fa-star" style="color:#fbbc04;"></i> ${r.rating.toFixed(1)}</span>` : ''}
+                                    </div>
+                                    ${r.description ? `<div class="desc">📝 ${r.description}</div>` : ''}
+                                    <div style="margin-top:6px;">
+                                        <strong>Photos:</strong>
+                                        ${photoHtml}
+                                    </div>
+                                    <div style="margin-top:6px;">
+                                        <div class="mini-map" id="map-${r.id}"></div>
+                                    </div>
+                                </div>
+                                <div class="actions">
+                                    <span class="status-badge ${getStatusClass(r.status || 'submitted')}">${getStatusLabel(r.status || 'submitted')}</span>
+                                    <select onchange="updateStatus('${r.id}', this.value)">
+                                        <option value="submitted" ${(r.status || 'submitted') === 'submitted' ? 'selected' : ''}>Submitted</option>
+                                        <option value="reviewing" ${(r.status || 'submitted') === 'reviewing' ? 'selected' : ''}>Under Review</option>
+                                        <option value="in_progress" ${(r.status || 'submitted') === 'in_progress' ? 'selected' : ''}>In Progress</option>
+                                        <option value="resolved" ${(r.status || 'submitted') === 'resolved' ? 'selected' : ''}>Resolved</option>
+                                        <option value="rejected" ${(r.status || 'submitted') === 'rejected' ? 'selected' : ''}>Rejected</option>
+                                    </select>
+                                    <button class="btn btn-danger btn-sm btn-delete" onclick="deleteReport('${r.id}')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+            }).join('');
+
+            // Initialize maps
+            import('./js/map-utils.js').then(({ initStaticMap }) => {
+                filteredReports.forEach(r => {
+                    if (r.latitude && r.longitude) {
+                        const mapId = `map-${r.id}`;
+                        const container = document.getElementById(mapId);
+                        if (container) {
+                            initStaticMap(mapId, r.latitude, r.longitude,
+                                `<b>${getCategoryLabel(r.category)}</b><br>${r.location}`);
+                        }
+                    }
+                });
+            });
+
+            updateBulkActions();
+        }
+
+        // ================================================================
+        // UPDATE STATS
+        // ================================================================
+
+        function updateStats() {
+            const total = allReports.length;
+            const submitted = allReports.filter(r => r.status === 'submitted').length;
+            const progress = allReports.filter(r => r.status === 'reviewing' || r.status === 'in_progress').length;
+            const resolved = allReports.filter(r => r.status === 'resolved').length;
+            const emergency = allReports.filter(r => r.isEmergency).length;
+
+            document.getElementById('adminTotal').textContent = total;
+            document.getElementById('adminSubmitted').textContent = submitted;
+            document.getElementById('adminProgress').textContent = progress;
+            document.getElementById('adminResolved').textContent = resolved;
+            document.getElementById('adminEmergency').textContent = emergency;
+        }
+
+        // ================================================================
+        // UPDATE STATUS
+        // ================================================================
+
+        window.updateStatus = async function(reportId, newStatus) {
+            try {
+                await updateDoc(doc(db, 'reports', reportId), {
+                    status: newStatus,
+                    updatedAt: new Date().toISOString()
+                });
+                await logAdminAction('status_update', reportId, { newStatus });
+                showToast(`✅ Report updated to "${getStatusLabel(newStatus)}"`, 'success');
+            } catch (error) {
+                showToast('❌ Error updating status: ' + error.message, 'error');
+            }
+        };
+
+        // ================================================================
+        // DELETE REPORT
+        // ================================================================
+
+        window.deleteReport = async function(reportId) {
+            if (!confirm('Are you sure? This cannot be undone.')) return;
+            try {
+                await deleteDoc(doc(db, 'reports', reportId));
+                await logAdminAction('delete', reportId);
+                showToast('🗑️ Report deleted', 'info');
+                applyFiltersAndSort();
+            } catch (error) {
+                showToast('❌ Error deleting report: ' + error.message, 'error');
+            }
+        };
+
+        // ================================================================
+        // REFRESH
+        // ================================================================
+
+        window.refreshReports = function() {
+            showToast('🔄 Refreshing...', 'info');
+            applyFiltersAndSort();
+            loadAdminLogs();
+        };
+
+        // ================================================================
+        // EXPORT EXCEL
+        // ================================================================
+
+        window.exportExcel = function() {
+            if (allReports.length === 0) {
+                showToast('📭 No reports to export', 'error');
+                return;
+            }
+
+            const headers = ['ID', 'Category', 'Description', 'Location', 'Latitude', 'Longitude', 'Photo URLs', 'Status',
+                'Priority', 'Affected Count', 'Supporters', 'Emergency', 'Rating', 'Submitted By', 'Date'
+            ];
+
+            const rows = allReports.map(r => [
+                r.id || '',
+                getCategoryLabel(r.category) || '',
+                (r.description || '').replace(/,/g, ';'),
+                (r.location || '').replace(/,/g, ';'),
+                r.latitude || '',
+                r.longitude || '',
+                (r.photoUrls || []).join('; '),
+                getStatusLabel(r.status || 'submitted'),
+                r.priority || 'LOW',
+                r.affectedCount || 0,
+                (r.supportedBy || []).length,
+                r.isEmergency ? 'YES' : 'NO',
+                r.rating || 0,
+                r.submittedBy || 'Anonymous',
+                r.createdAt ? new Date(r.createdAt.toMillis()).toLocaleString() : ''
+            ]);
+
+            let csv = headers.join(',') + '\n';
+            rows.forEach(row => csv += row.join(',') + '\n');
+
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `FixMyBlock_Reports_${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('📊 Excel file downloaded!', 'success');
+        };
+
+        // ================================================================
+        // CLEAR ALL REPORTS
+        // ================================================================
+
+        window.clearAllReports = async function() {
+            if (!confirm('Delete ALL reports? This cannot be undone!')) return;
+            try {
+                const q = query(collection(db, 'reports'));
+                const snapshot = await getDocs(q);
+                const batch = writeBatch(db);
+                let count = 0;
+                for (const doc of snapshot.docs) {
+                    batch.delete(doc.ref);
+                    count++;
+                }
+                await batch.commit();
+                await logAdminAction('clear_all');
+                showToast(`🗑️ Deleted ${count} reports`, 'info');
+            } catch (error) {
+                showToast('❌ Error clearing reports: ' + error.message, 'error');
+            }
+        };
+
+        // ================================================================
+        // EXPOSE FUNCTIONS
+        // ================================================================
+
+        window.filterByPriority = filterByPriority;
+        window.sortReports = sortReports;
+        window.applyFiltersAndSort = applyFiltersAndSort;
+        window.updateStatus = updateStatus;
+        window.deleteReport = deleteReport;
+        window.refreshReports = refreshReports;
+        window.exportExcel = exportExcel;
+        window.clearAllReports = clearAllReports;
+        window.logout = logout;
+        window.toggleSelectReport = toggleSelectReport;
+        window.bulkUpdateStatus = bulkUpdateStatus;
+        window.clearBulkSelection = clearBulkSelection;
+
+        console.log('👑 FixMyBlock Nepal - Admin Dashboard with Emergency Highlighting & Login Alert Loaded');
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,2182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FixMyBlock Nepal</title>
+
+    <!-- ===== PWA CONFIG ===== -->
+    <link rel="manifest" href="manifest.json" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16.png" />
+
+    <!-- ===== FONTS & ICONS ===== -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <!-- ===== STYLES ===== -->
+    <style>
+        /* Fix: Keep "Report an Issue" button above bottom nav */
+#screen-home {
+    padding-bottom: 100px;
+}
+
+/* Alternative: add margin to the button container */
+.text-center.mt-16 {
+    margin-bottom: 80px;
+}
+/* ================================================================
+   FIX: CONTENT NOT HIDDEN BEHIND BOTTOM NAV
+   ================================================================ */
+
+/* Add extra bottom padding to all screens that have scrollable content */
+#screen-home,
+#screen-report,
+#screen-detail {
+    padding-bottom: 100px;
+}
+
+/* On small phones, more space is needed */
+@media (max-width: 480px) {
+    #screen-home,
+    #screen-report,
+    #screen-detail {
+        padding-bottom: 130px;
+    }
+}
+
+/* On landscape, less space */
+@media (orientation: landscape) and (max-height: 500px) {
+    #screen-home,
+    #screen-report,
+    #screen-detail {
+        padding-bottom: 70px;
+    }
+}
+
+/* Ensure the submit button has breathing room */
+#submitReportBtn {
+    margin-bottom: 20px;
+}
+
+/* For the "Report an Issue" button on home */
+.text-center.mt-16 {
+    margin-bottom: 20px;
+}
+        /* ================================================================
+           FIXMYBLOCK NEPAL – COMPLETE MODERN UI (Phase 3)
+           ================================================================ */
+
+        /* ----- CSS Variables ----- */
+        :root {
+            --primary: #1a73e8;
+            --primary-dark: #0d47a1;
+            --primary-light: #e8f0fe;
+            --secondary: #dc143c;
+            --secondary-light: #fce4ec;
+            --gold: #fbbc04;
+            --success: #34a853;
+            --danger: #ea4335;
+            --gray: #5f6b7a;
+            --gray-light: #f0f2f5;
+            --gray-border: #e8ecf2;
+            --card-bg: #ffffff;
+            --bg: #f8f9fc;
+            --text: #1a1a2e;
+            --text-muted: #6b7280;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.1);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            --max-width: 480px;
+        }
+
+        /* ----- Dark Theme ----- */
+        body.dark-theme {
+            --card-bg: #1e1e2e;
+            --bg: #121212;
+            --text: #e0e0e0;
+            --gray-light: #1a1a2a;
+            --gray-border: #2a2a3e;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.4);
+            --primary-light: #1a2a4a;
+            --secondary-light: #3a1a2a;
+        }
+
+        /* ----- Base ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+            max-width: 100vw;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            padding-bottom: 80px;
+            min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+            line-height: 1.6;
+        }
+
+        /* ----- Glass Background ----- */
+        body.has-glass-bg {
+            background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTf9wMS1VZNluak-Y2e9pHdYvTevRfEHYj4CJi7tdvIgQ&s=10');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+        }
+
+        body.has-glass-bg::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: -1;
+        }
+
+        body.dark-theme.has-glass-bg::before {
+            background: rgba(0, 0, 0, 0.65);
+        }
+
+        /* ----- Container ----- */
+        .app-container {
+            max-width: var(--max-width);
+            margin: 16px auto;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            padding: 0 0 20px 0;
+            transition: var(--transition);
+            width: calc(100% - 24px);
+        }
+
+        body.has-glass-bg .app-container {
+            background: rgba(255, 255, 255, 0.88);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        body.dark-theme.has-glass-bg .app-container {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        /* ----- Splash Screen ----- */
+        #splash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            color: #fff;
+        }
+        #splash.hidden {
+            opacity: 0;
+            transform: scale(1.05);
+            pointer-events: none;
+        }
+        #splash img {
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
+            margin-bottom: 12px;
+        }
+        #splash h1 {
+            font-size: 28px;
+            font-weight: 800;
+        }
+        #splash p {
+            opacity: 0.7;
+            margin-top: 4px;
+            font-size: 14px;
+        }
+        #splash .loader {
+            width: 48px;
+            height: 48px;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-top: 20px;
+        }
+        @keyframes spin {
+            0% {
+                transform: rotate(0);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ----- Offline Banner ----- */
+        .offline-banner {
+            background: var(--secondary);
+            color: #fff;
+            padding: 6px 12px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+            display: none;
+        }
+        .offline-banner.active {
+            display: block;
+        }
+
+        /* ----- Header ----- */
+        .app-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        .app-header .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        .app-header .logo img {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+        }
+        .app-header .logo .subtitle {
+            font-size: 11px;
+            font-weight: 400;
+            opacity: 0.8;
+            margin-left: -4px;
+        }
+        .app-header .badge {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            display: none;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        .theme-toggle,
+        .lang-toggle,
+        .admin-toggle {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+        .theme-toggle:hover,
+        .lang-toggle:hover,
+        .admin-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .admin-toggle {
+            font-size: 14px;
+            padding: 3px 8px;
+        }
+
+        /* ----- Screens ----- */
+        .screen {
+            display: none;
+            padding: 16px 14px 20px;
+            animation: fadeSlide 0.4s ease;
+        }
+        .screen.active {
+            display: block;
+        }
+        @keyframes fadeSlide {
+            0% {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ----- Stats Cards ----- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .stat-card {
+            background: var(--gray-light);
+            border-radius: var(--radius-sm);
+            padding: 12px 4px;
+            text-align: center;
+            border: 1px solid var(--gray-border);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+        .stat-card .number {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1.2;
+        }
+        .stat-card .label {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        .stat-card.resolved .number {
+            color: var(--success);
+        }
+        .stat-card.pending .number {
+            color: var(--secondary);
+        }
+        .stat-card .stat-icon {
+            display: none;
+        }
+
+        /* ----- Category Grid ----- */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 4px;
+            margin-bottom: 16px;
+        }
+        .category-btn {
+            background: var(--gray-light);
+            border: 2px solid transparent;
+            border-radius: var(--radius-sm);
+            padding: 10px 2px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+            font-weight: 500;
+            font-size: 10px;
+            color: var(--text);
+            position: relative;
+            min-height: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .category-btn i,
+        .category-btn .category-emoji {
+            font-size: 20px;
+            display: block;
+            margin-bottom: 2px;
+        }
+        .category-btn:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        .category-btn.selected {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* ----- Emergency Button ----- */
+        .emergency-btn {
+            background: linear-gradient(135deg, var(--secondary), #b71c1c);
+            color: #fff;
+            border: none;
+            padding: 12px 16px;
+            border-radius: var(--radius);
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 16px rgba(220, 20, 60, 0.3);
+            margin-bottom: 16px;
+        }
+        .emergency-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(220, 20, 60, 0.4);
+        }
+        .emergency-btn i {
+            font-size: 18px;
+            animation: pulseIcon 1s infinite;
+        }
+        @keyframes pulseIcon {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        /* ----- Report Card ----- */
+        .report-card {
+            background: var(--card-bg);
+            border: 1px solid var(--gray-border);
+            border-radius: var(--radius-sm);
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            word-break: break-word;
+        }
+        .report-card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+        }
+        .report-card .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .report-card .category-icon {
+            font-size: 18px;
+            margin-right: 8px;
+        }
+        .report-card .title {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .report-card .location {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin: 2px 0 4px;
+        }
+        .report-card .location i {
+            margin-right: 4px;
+        }
+        .report-card .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 6px;
+            font-size: 11px;
+            color: var(--text-muted);
+            flex-wrap: wrap;
+        }
+        .report-card .badge-emergency {
+            background: var(--secondary);
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 9px;
+            font-weight: 700;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.4;
+            }
+        }
+
+        /* ----- Status Badge ----- */
+        .status-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+            white-space: nowrap;
+            color: #fff;
+        }
+        .status-submitted {
+            background: #0d47a1;
+        }
+        .status-reviewing {
+            background: #e65100;
+        }
+        .status-progress {
+            background: #b71c1c;
+        }
+        .status-resolved {
+            background: #1b5e20;
+        }
+        .status-rejected {
+            background: #616161;
+        }
+
+        /* ----- Section Title ----- */
+        .section-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* ----- Form ----- */
+        .form-group {
+            margin-bottom: 14px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 4px;
+            color: var(--text);
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid var(--gray-border);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-family: inherit;
+            transition: var(--transition);
+            background: var(--gray-light);
+            color: var(--text);
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--card-bg);
+            box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.1);
+        }
+        .form-group textarea {
+            min-height: 70px;
+            resize: vertical;
+        }
+
+        /* ----- Bulk Entry ----- */
+        .report-entry {
+            background: var(--gray-light);
+            border: 1px solid var(--gray-border);
+            border-radius: var(--radius-sm);
+            padding: 10px 12px;
+            margin-bottom: 10px;
+            position: relative;
+            transition: var(--transition);
+        }
+        .report-entry .remove-entry {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: var(--secondary);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        .report-entry .remove-entry:hover {
+            transform: scale(1.1);
+        }
+        .report-entry .entry-number {
+            font-weight: 600;
+            font-size: 12px;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+        .report-entry .entry-photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+            margin-top: 4px;
+        }
+        .report-entry .entry-photo-gallery img {
+            width: 100%;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid var(--gray-border);
+        }
+        .add-entry-btn {
+            background: var(--primary-light);
+            color: var(--primary);
+            border: 2px dashed var(--primary);
+            border-radius: var(--radius-sm);
+            padding: 8px;
+            width: 100%;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            font-family: inherit;
+            font-size: 13px;
+        }
+        .add-entry-btn:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        /* ----- Photo Gallery (main) ----- */
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+            margin-top: 6px;
+        }
+        .photo-gallery img {
+            width: 100%;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 2px solid var(--gray-border);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .photo-gallery img:hover {
+            transform: scale(1.05);
+        }
+        .photo-gallery .add-photo {
+            border: 2px dashed var(--gray-border);
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 60px;
+            color: var(--text-muted);
+            font-size: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--gray-light);
+        }
+        .photo-gallery .add-photo:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+        .photo-gallery .add-photo i {
+            font-size: 20px;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        /* ----- Map ----- */
+        #mapPicker {
+            width: 100% !important;
+            height: 200px;
+            border-radius: var(--radius-sm);
+            margin-top: 6px;
+            border: 2px solid var(--gray-border);
+            overflow: hidden;
+            background: var(--gray-light);
+        }
+        .map-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-muted);
+            background: var(--gray-light);
+            font-size: 14px;
+        }
+        .map-loading i {
+            margin-right: 8px;
+        }
+        .map-hint {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* ----- Buttons ----- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            font-family: inherit;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(26, 115, 232, 0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(26, 115, 232, 0.4);
+        }
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary), #b71c1c);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(220, 20, 60, 0.3);
+        }
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(220, 20, 60, 0.4);
+        }
+        .btn-success {
+            background: var(--success);
+            color: #fff;
+        }
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(52, 168, 83, 0.3);
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        .btn-outline:hover {
+            background: var(--primary-light);
+        }
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+            width: auto;
+        }
+
+        /* ----- Back Button ----- */
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 16px;
+            cursor: pointer;
+            padding: 4px 6px;
+            font-family: inherit;
+            transition: var(--transition);
+        }
+        .back-btn:hover {
+            color: var(--primary);
+        }
+
+        /* ----- Utility ----- */
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .mb-16 {
+            margin-bottom: 16px;
+        }
+        .mt-16 {
+            margin-top: 16px;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .text-muted {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-top: 3px solid #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        /* ----- Toast ----- */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 90%;
+            width: 90%;
+            background: var(--card-bg);
+            color: var(--text);
+            padding: 12px 16px;
+            border-radius: var(--radius);
+            text-align: center;
+            font-weight: 500;
+            font-size: 14px;
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--gray-border);
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .toast.success {
+            background: var(--success);
+            color: #fff;
+        }
+        .toast.error {
+            background: var(--danger);
+            color: #fff;
+        }
+        .toast.info {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        /* ----- Bottom Nav ----- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-top: 1px solid var(--gray-border);
+            display: flex;
+            justify-content: space-around;
+            padding: 6px 0 env(safe-area-inset-bottom, 6px) 0;
+            z-index: 200;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
+            flex-wrap: nowrap;
+            overflow-x: auto;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1px;
+            font-size: 10px;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 2px 12px;
+            transition: var(--transition);
+            background: none;
+            border: none;
+            font-family: inherit;
+            flex-shrink: 0;
+        }
+        .nav-item i {
+            font-size: 18px;
+        }
+        .nav-item.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .nav-item .fab-wrapper {
+            position: relative;
+            top: -10px;
+        }
+        .nav-item .fab {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 4px 16px rgba(26, 115, 232, 0.35);
+            transition: var(--transition);
+        }
+        .nav-item .fab:active {
+            transform: scale(0.92);
+        }
+
+        /* ----- Loading / Empty States ----- */
+        .empty-state,
+        .loading-state,
+        .error-state {
+            text-align: center;
+            padding: 30px 16px;
+            color: var(--text-muted);
+        }
+        .empty-state i,
+        .error-state i {
+            font-size: 40px;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 8px;
+        }
+        .empty-state h3 {
+            color: var(--text);
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        .error-state {
+            color: var(--danger);
+        }
+        .error-state i {
+            color: var(--danger);
+        }
+        .loading-state i {
+            font-size: 28px;
+            color: var(--primary);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        /* ================================================================
+           RESPONSIVE – SMALL PHONES (360px and below)
+           ================================================================ */
+        @media (max-width: 360px) {
+            .app-container {
+                margin: 8px 6px;
+                width: calc(100% - 12px);
+                border-radius: 12px;
+            }
+            .app-header {
+                padding: 10px 12px;
+            }
+            .app-header .logo {
+                font-size: 15px;
+            }
+            .app-header .logo img {
+                width: 24px;
+                height: 24px;
+            }
+
+            .stats-grid {
+                gap: 4px;
+            }
+            .stat-card {
+                padding: 8px 2px;
+                min-height: 50px;
+            }
+            .stat-card .number {
+                font-size: 16px;
+            }
+            .stat-card .label {
+                font-size: 9px;
+            }
+
+            .category-grid {
+                gap: 3px;
+            }
+            .category-btn {
+                padding: 6px 2px;
+                font-size: 9px;
+                min-height: 40px;
+            }
+            .category-btn i,
+            .category-btn .category-emoji {
+                font-size: 16px;
+            }
+
+            .report-card {
+                padding: 10px 12px;
+            }
+            .report-card .title {
+                font-size: 13px;
+            }
+
+            .bottom-nav {
+                padding: 4px 0 env(safe-area-inset-bottom, 4px) 0;
+            }
+            .nav-item {
+                padding: 2px 6px;
+                font-size: 9px;
+            }
+            .nav-item i {
+                font-size: 16px;
+            }
+            .nav-item .fab {
+                width: 38px;
+                height: 38px;
+                font-size: 18px;
+            }
+
+            #mapPicker {
+                height: 160px;
+            }
+
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                font-size: 13px;
+                padding: 8px 10px;
+            }
+
+            .btn {
+                padding: 10px 16px;
+                font-size: 13px;
+            }
+
+            .emergency-btn {
+                font-size: 12px;
+                padding: 10px 12px;
+            }
+
+            .toast {
+                font-size: 13px;
+                padding: 10px 14px;
+                bottom: 70px;
+            }
+
+            .photo-gallery img,
+            .photo-gallery .add-photo {
+                height: 50px;
+            }
+            .report-entry .entry-photo-gallery img {
+                height: 40px;
+            }
+        }
+
+        /* ================================================================
+           MEDIUM PHONES (361px – 480px)
+           ================================================================ */
+        @media (min-width: 361px) and (max-width: 480px) {
+            .app-container {
+                margin: 10px 12px;
+                width: calc(100% - 24px);
+            }
+            .stats-grid {
+                gap: 6px;
+            }
+            .stat-card .number {
+                font-size: 20px;
+            }
+            .category-grid {
+                gap: 4px;
+            }
+            #mapPicker {
+                height: 180px;
+            }
+            .report-entry .entry-photo-gallery img {
+                height: 50px;
+            }
+        }
+
+        /* ================================================================
+           TABLETS (481px – 768px)
+           ================================================================ */
+        @media (min-width: 481px) and (max-width: 768px) {
+            .app-container {
+                max-width: 100%;
+                margin: 16px 20px;
+                width: calc(100% - 40px);
+            }
+            .stats-grid {
+                gap: 12px;
+            }
+            .stat-card .number {
+                font-size: 26px;
+            }
+            .category-grid {
+                gap: 6px;
+            }
+            #mapPicker {
+                height: 280px;
+            }
+            .bottom-nav {
+                max-width: 100%;
+            }
+            .photo-gallery img,
+            .photo-gallery .add-photo {
+                height: 80px;
+            }
+            .report-entry .entry-photo-gallery img {
+                height: 70px;
+            }
+        }
+
+        /* ================================================================
+           DESKTOPS (769px and above)
+           ================================================================ */
+        @media (min-width: 769px) {
+            .app-container {
+                max-width: 480px;
+                margin: 24px auto;
+                width: 100%;
+            }
+            .stats-grid {
+                gap: 12px;
+            }
+            .stat-card .number {
+                font-size: 28px;
+            }
+            .category-grid {
+                gap: 8px;
+            }
+            #mapPicker {
+                height: 280px;
+            }
+            .bottom-nav {
+                max-width: 480px;
+            }
+        }
+
+        /* ================================================================
+           SAFE AREA FOR NOTCH PHONES
+           ================================================================ */
+        @supports (padding: max(0px)) {
+            .bottom-nav {
+                padding-bottom: max(6px, env(safe-area-inset-bottom));
+            }
+            .app-header {
+                padding-top: max(10px, env(safe-area-inset-top));
+            }
+        }
+
+        /* ================================================================
+           LANDSCAPE MODE FIXES
+           ================================================================ */
+        @media (orientation: landscape) and (max-height: 500px) {
+            .app-container {
+                margin: 6px 10px;
+                border-radius: 12px;
+            }
+            .app-header {
+                padding: 6px 12px;
+            }
+            .app-header .logo {
+                font-size: 14px;
+            }
+            .app-header .logo img {
+                width: 20px;
+                height: 20px;
+            }
+            .stats-grid {
+                gap: 4px;
+            }
+            .stat-card {
+                padding: 6px 4px;
+                min-height: 40px;
+            }
+            .stat-card .number {
+                font-size: 16px;
+            }
+            .category-btn {
+                padding: 4px 2px;
+                font-size: 8px;
+                min-height: 30px;
+            }
+            .category-btn i {
+                font-size: 14px;
+            }
+            .report-card {
+                padding: 6px 10px;
+                margin-bottom: 4px;
+            }
+            #mapPicker {
+                height: 120px;
+            }
+            .bottom-nav {
+                padding: 2px 0;
+            }
+            .nav-item .fab {
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+            }
+            .screen {
+                padding: 6px 10px 10px;
+            }
+            .form-group {
+                margin-bottom: 6px;
+            }
+            .form-group input,
+            .form-group textarea {
+                padding: 4px 8px;
+                font-size: 12px;
+            }
+            .btn {
+                padding: 6px 12px;
+                font-size: 13px;
+            }
+            .emergency-btn {
+                font-size: 11px;
+                padding: 6px 10px;
+                margin-bottom: 8px;
+            }
+            .photo-gallery img,
+            .photo-gallery .add-photo {
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body class="has-glass-bg">
+
+    <!-- ===== SPLASH SCREEN ===== -->
+    <div id="splash">
+        <img src="assets/icons/icon-192.png" alt="FixMyBlock Nepal" />
+        <h1>FixMyBlock</h1>
+        <p>Nepal</p>
+        <div class="loader"></div>
+    </div>
+
+    <!-- ===== OFFLINE BANNER ===== -->
+    <div class="offline-banner" id="offlineBanner">
+        <i class="fas fa-wifi-slash"></i> Offline. Reports saved locally.
+    </div>
+
+    <!-- ===== TOAST ===== -->
+    <div id="toast" class="toast"></div>
+
+    <!-- ===== APP ===== -->
+    <div class="app-container" id="app">
+
+        <!-- ===== HEADER ===== -->
+        <header class="app-header">
+            <div class="logo">
+                <img src="assets/icons/icon-32.png" alt="FixMyBlock" />
+                <span id="appName">FixMyBlock</span>
+                <span class="subtitle" id="appSubtitle">Nepal</span>
+            </div>
+            <div class="header-right">
+                <button class="theme-toggle" id="themeToggle" title="Toggle Theme"><i class="fas fa-moon"></i></button>
+                <button class="lang-toggle" id="langToggle">🇳🇵 नेपाली</button>
+                <span class="badge" id="onlineStatus">● LIVE</span>
+                <button class="admin-toggle" onclick="window.location.href='login.html'" title="Admin Login">
+                    <i class="fas fa-user-shield"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- ===== HOME SCREEN ===== -->
+        <div class="screen active" id="screen-home">
+
+            <!-- Emergency Button -->
+            <button class="emergency-btn" onclick="openEmergency()">
+                <i class="fas fa-triangle-exclamation"></i> 🚨 Emergency Report
+            </button>
+
+            <!-- Stats -->
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-flag"></i></div>
+                    <div class="number" id="statTotal">0</div>
+                    <div class="label" data-key="totalReports">Total Reports</div>
+                </div>
+                <div class="stat-card resolved">
+                    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="number" id="statResolved">0</div>
+                    <div class="label" data-key="resolved">Resolved</div>
+                </div>
+                <div class="stat-card pending">
+                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                    <div class="number" id="statPending">0</div>
+                    <div class="label" data-key="pending">Pending</div>
+                </div>
+            </div>
+
+            <!-- Categories -->
+            <div class="category-grid" id="categoryGrid">
+                <button class="category-btn" data-category="pothole" onclick="quickReport('pothole')">
+                    <span class="category-emoji">🕳️</span>
+                    <span data-key="pothole">Pothole</span>
+                </button>
+                <button class="category-btn" data-category="streetlight" onclick="quickReport('streetlight')">
+                    <span class="category-emoji">💡</span>
+                    <span data-key="streetlight">Streetlight</span>
+                </button>
+                <button class="category-btn" data-category="drainage" onclick="quickReport('drainage')">
+                    <span class="category-emoji">🚰</span>
+                    <span data-key="drainage">Drainage</span>
+                </button>
+                <button class="category-btn" data-category="garbage" onclick="quickReport('garbage')">
+                    <span class="category-emoji">🗑️</span>
+                    <span data-key="garbage">Garbage</span>
+                </button>
+                <button class="category-btn" data-category="landslide" onclick="quickReport('landslide')">
+                    <span class="category-emoji">⛰️</span>
+                    <span data-key="landslide">Landslide</span>
+                </button>
+            </div>
+
+            <!-- Recent Reports -->
+            <div class="section-title">
+                <span>📋 <span data-key="recentReports">Recent Reports</span></span>
+                <span class="report-count" id="reportCount">0 reports</span>
+            </div>
+            <div id="reportList">
+                <div class="loading-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span data-key="loading">Loading reports...</span>
+                </div>
+            </div>
+
+            <div class="text-center mt-16">
+                <button class="btn btn-primary" onclick="showScreen('report')">
+                    <i class="fas fa-plus-circle"></i> <span data-key="report">Report an Issue</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ===== REPORT FORM ===== -->
+        <div class="screen" id="screen-report">
+            <div class="flex-between mb-16">
+                <button class="back-btn" onclick="showScreen('home')">
+                    <i class="fas fa-arrow-left"></i> <span data-key="back">Back</span>
+                </button>
+                <span class="screen-heading" data-key="report">Report Issues</span>
+                <span class="screen-heading-spacer"></span>
+            </div>
+
+            <!-- Emergency Toggle -->
+            <div class="emergency-toggle">
+                <input type="checkbox" id="emergencyCheckbox" />
+                <label for="emergencyCheckbox">
+                    <i class="fas fa-triangle-exclamation"></i> This is an Emergency
+                </label>
+            </div>
+
+            <!-- Map -->
+            <div class="form-group">
+                <label data-key="selectLocation">Select Location <span class="required-mark">*</span></label>
+                <div id="mapPicker"></div>
+                <div class="location-actions">
+                    <button class="btn btn-outline btn-sm location-action-btn" onclick="getCurrentLocation()">
+                        <i class="fas fa-location-dot"></i> My Location
+                    </button>
+                    <button class="btn btn-outline btn-sm location-action-btn" onclick="getRoute()">
+                        <i class="fas fa-directions"></i> Get Directions
+                    </button>
+                </div>
+                <input class="address-input" type="text" id="addressInput" placeholder="Search address..." />
+                <input type="hidden" id="selectedLat" value="27.7172" />
+                <input type="hidden" id="selectedLng" value="85.3240" />
+                <div class="location-status" id="locationStatus">
+                    📍 <span data-key="locationWaiting">Click on the map to select location</span>
+                </div>
+            </div>
+
+            <!-- Bulk Entries Container -->
+            <div id="entriesContainer"></div>
+
+            <button class="add-entry-btn" id="addEntryBtn">
+                <i class="fas fa-plus"></i> Add More Issue
+            </button>
+
+            <!-- Name -->
+            <div class="form-group name-form-group">
+                <label data-key="yourName">Your Name (optional)</label>
+                <input type="text" id="nameInput" placeholder="e.g. Ram Sharma" />
+            </div>
+
+            <button class="btn btn-success" id="submitReportBtn">
+                <i class="fas fa-paper-plane"></i> <span data-key="submit">Submit All Reports</span>
+            </button>
+        </div>
+
+        <!-- ===== DETAIL SCREEN ===== -->
+        <div class="screen" id="screen-detail">
+            <div class="flex-between mb-16">
+                <button class="back-btn" onclick="showScreen('home')">
+                    <i class="fas fa-arrow-left"></i> <span data-key="back">Back</span>
+                </button>
+                <span class="screen-heading">Report Details</span>
+                <span class="screen-heading-spacer"></span>
+            </div>
+            <div id="detailContent"></div>
+        </div>
+
+        <!-- ===== BOTTOM NAV ===== -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-screen="home" onclick="showScreen('home')">
+                <i class="fas fa-home"></i> <span data-key="home">Home</span>
+            </button>
+            <button class="nav-item" data-screen="report" onclick="showScreen('report')">
+                <div class="fab-wrapper"><div class="fab"><i class="fas fa-plus"></i></div></div>
+                <span data-key="report">Report</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ===== JAVASCRIPT (MODULE) ===== -->
+    <!-- ============================================================ -->
+
+    <script type="module">
+        // ================================================================
+        // 🔴🔴🔴 CONFIGURATION (Replace with your own)
+        // ================================================================
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBVvWlYUCOfALhtWdR53_ZcP5spTYhDyu8",
+  authDomain: "fixmyblock-nepal.firebaseapp.com",
+  projectId: "fixmyblock-nepal",
+  storageBucket: "fixmyblock-nepal.firebasestorage.app",
+  messagingSenderId: "742804276117",
+  appId: "1:742804276117:web:ddab9eeff9a357c1112c9c",
+  measurementId: "G-C3RQER0PC1"
+        };
+
+        const IMGBB_API_KEY = '2d59a842482977b8aa645a353ecbaafc';
+
+        // ================================================================
+        // IMPORTS
+        // ================================================================
+
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+        import {
+            getFirestore,
+            collection,
+            query,
+            orderBy,
+            limit,
+            getDocs,
+            addDoc,
+            serverTimestamp,
+            onSnapshot,
+            doc,
+            updateDoc,
+            deleteDoc,
+            getDoc
+        } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+
+        import { getTranslation, setLanguage, loadSavedLanguage } from './js/translations.js';
+        import { initMapPicker, getMapPosition, setMapPosition, destroyMap } from './js/map-utils.js';
+
+        // ================================================================
+        // INIT FIREBASE
+        // ================================================================
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        console.log('✅ Firebase initialized!');
+
+        // ================================================================
+        // SPLASH SCREEN
+        // ================================================================
+
+        setTimeout(() => document.getElementById('splash').classList.add('hidden'), 1200);
+
+        // ================================================================
+        // OFFLINE SUPPORT
+        // ================================================================
+
+        const offlineBanner = document.getElementById('offlineBanner');
+        const onlineStatus = document.getElementById('onlineStatus');
+
+        function updateOnlineStatus() {
+            if (navigator.onLine) {
+                offlineBanner.classList.remove('active');
+                onlineStatus.textContent = '● LIVE';
+                onlineStatus.style.color = '#34a853';
+            } else {
+                offlineBanner.classList.add('active');
+                onlineStatus.textContent = '● OFFLINE';
+                onlineStatus.style.color = '#ea4335';
+            }
+        }
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+        updateOnlineStatus();
+
+        // ================================================================
+        // THEME TOGGLE
+        // ================================================================
+
+        const themeToggle = document.getElementById('themeToggle');
+        let isDark = localStorage.getItem('fixmyblock_theme') === 'dark';
+
+        function applyTheme() {
+            if (isDark) {
+                document.body.classList.add('dark-theme');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                document.body.classList.remove('dark-theme');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+            localStorage.setItem('fixmyblock_theme', isDark ? 'dark' : 'light');
+        }
+        themeToggle.addEventListener('click', () => {
+            isDark = !isDark;
+            applyTheme();
+        });
+        applyTheme();
+
+        // ================================================================
+        // LANGUAGE
+        // ================================================================
+
+        let currentLang = loadSavedLanguage() || 'en';
+        const langToggle = document.getElementById('langToggle');
+
+        function applyTranslations() {
+            document.querySelectorAll('[data-key]').forEach(el => {
+                el.textContent = getTranslation(el.dataset.key);
+            });
+        }
+
+        function toggleLanguage() {
+            const newLang = currentLang === 'en' ? 'ne' : 'en';
+            setLanguage(newLang);
+            currentLang = newLang;
+            langToggle.textContent = newLang === 'en' ? '🇳🇵 नेपाली' : '🇬🇧 English';
+            applyTranslations();
+            if (typeof renderReports === 'function') renderReports(reportsData);
+        }
+        langToggle.addEventListener('click', toggleLanguage);
+        if (currentLang === 'ne') langToggle.textContent = '🇬🇧 English';
+        else langToggle.textContent = '🇳🇵 नेपाली';
+        applyTranslations();
+
+        // ================================================================
+        // HELPERS
+        // ================================================================
+
+        const CATEGORIES = {
+            pothole: { label: getTranslation('pothole'), icon: 'fa-circle-exclamation' },
+            streetlight: { label: getTranslation('streetlight'), icon: 'fa-lightbulb' },
+            drainage: { label: getTranslation('drainage'), icon: 'fa-water' },
+            garbage: { label: getTranslation('garbage'), icon: 'fa-trash' },
+            landslide: { label: getTranslation('landslide'), icon: 'fa-mountain' }
+        };
+
+        const STATUSES = {
+            submitted: { label: getTranslation('statusSubmitted'), class: 'status-submitted' },
+            reviewing: { label: getTranslation('statusReviewing'), class: 'status-reviewing' },
+            in_progress: { label: getTranslation('statusProgress'), class: 'status-progress' },
+            resolved: { label: getTranslation('statusResolved'), class: 'status-resolved' },
+            rejected: { label: getTranslation('statusRejected'), class: 'status-rejected' }
+        };
+
+        function getCategoryLabel(cat) {
+            const key = CATEGORIES[cat]?.label || cat;
+            return getTranslation(key) || key;
+        }
+
+        function getCategoryIcon(cat) {
+            return CATEGORIES[cat]?.icon || 'fa-question';
+        }
+
+        function getStatusLabel(status) {
+            const key = STATUSES[status]?.label || status;
+            return getTranslation(key) || key;
+        }
+
+        function getStatusClass(status) {
+            return STATUSES[status]?.class || '';
+        }
+
+        function formatTimestamp(ts) {
+            if (!ts) return getTranslation('recently') || 'Recently';
+            try {
+                const diff = Date.now() - ts.toMillis();
+                if (diff < 60000) return getTranslation('justNow') || 'Just now';
+                if (diff < 3600000) return Math.floor(diff / 60000) + ' min ago';
+                if (diff < 86400000) return Math.floor(diff / 3600000) + ' hours ago';
+                return Math.floor(diff / 86400000) + ' days ago';
+            } catch {
+                return getTranslation('recently') || 'Recently';
+            }
+        }
+
+        function showToast(msg, type = '') {
+            const el = document.getElementById('toast');
+            el.textContent = msg;
+            el.className = 'toast ' + type;
+            void el.offsetWidth;
+            el.classList.add('show');
+            clearTimeout(el._timer);
+            el._timer = setTimeout(() => el.classList.remove('show'), 3500);
+        }
+
+        let reportsData = [];
+        let selectedCategory = null;
+        let selectedPhotos = [];
+
+        // ================================================================
+        // SCREEN NAV
+        // ================================================================
+
+        window.showScreen = function(screenId) {
+            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+            const target = document.getElementById('screen-' + screenId);
+            if (target) target.classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            const navBtn = document.querySelector(`.nav-item[data-screen="${screenId}"]`);
+            if (navBtn) navBtn.classList.add('active');
+
+            if (screenId === 'report' && !window._mapInitialized) {
+                setTimeout(() => {
+                    initMapPicker('mapPicker', 27.7172, 85.3240, (lat, lng) => {
+                        document.getElementById('selectedLat').value = lat;
+                        document.getElementById('selectedLng').value = lng;
+                        document.getElementById('locationStatus').innerHTML =
+                            `📍 ${getTranslation('locationReady')} ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+                    });
+                    window._mapInitialized = true;
+                }, 200);
+                if (document.querySelectorAll('.report-entry').length === 0) {
+                    addReportEntry();
+                }
+            }
+        };
+
+        // ================================================================
+        // ROUTE
+        // ================================================================
+
+        window.getRoute = function() {
+            const pos = getMapPosition();
+            if (pos) {
+                window.open(`https://www.google.com/maps/dir/?api=1&destination=${pos.lat},${pos.lng}`, '_blank');
+                showToast('Opening directions...', 'info');
+            } else {
+                showToast('Please select a location first.', 'error');
+            }
+        };
+
+        // ================================================================
+        // EMERGENCY
+        // ================================================================
+
+        window.openEmergency = function() {
+            showScreen('report');
+            document.getElementById('emergencyCheckbox').checked = true;
+            showToast('⚠️ Emergency mode activated.', 'info');
+        };
+
+        // ================================================================
+        // LOCATION
+        // ================================================================
+
+        window.getCurrentLocation = function() {
+            const status = document.getElementById('locationStatus');
+            status.innerHTML = '📍 Getting your location...';
+            if (!navigator.geolocation) {
+                status.innerHTML = '❌ Geolocation not supported';
+                showToast('Geolocation not supported', 'error');
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    const lat = pos.coords.latitude,
+                        lng = pos.coords.longitude;
+                    setMapPosition(lat, lng);
+                    document.getElementById('selectedLat').value = lat;
+                    document.getElementById('selectedLng').value = lng;
+                    status.innerHTML = `📍 Location: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                    showToast('✅ Location captured!', 'success');
+                },
+                () => {
+                    status.innerHTML = '❌ Could not get location. Select on map.';
+                    showToast('Could not get location.', 'error');
+                }, { enableHighAccuracy: true, timeout: 15000 }
+            );
+        };
+
+        // ================================================================
+        // BULK ENTRIES
+        // ================================================================
+
+        let entryCount = 0;
+
+        function createEntryHTML(index) {
+            const num = index + 1;
+            return `
+                <div class="report-entry" data-index="${index}">
+                    <button class="remove-entry" onclick="removeEntry(${index})" ${index === 0 ? 'style="display:none;"' : ''}>
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="entry-number">Issue #${num}</div>
+                    <div class="form-group" style="margin-bottom:6px;">
+                        <label>Category <span style="color:red;">*</span></label>
+                        <select class="entry-category" style="width:100%;padding:8px 10px;border:2px solid var(--gray-border);border-radius:8px;font-size:13px;background:var(--gray-light);color:var(--text);">
+                            <option value="pothole">${getTranslation('pothole')}</option>
+                            <option value="streetlight">${getTranslation('streetlight')}</option>
+                            <option value="drainage">${getTranslation('drainage')}</option>
+                            <option value="garbage">${getTranslation('garbage')}</option>
+                            <option value="landslide">${getTranslation('landslide')}</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom:6px;">
+                        <label>Description (optional)</label>
+                        <textarea class="entry-description" placeholder="Describe this specific issue..." style="width:100%;padding:8px 10px;border:2px solid var(--gray-border);border-radius:8px;font-size:13px;font-family:inherit;background:var(--gray-light);color:var(--text);min-height:45px;"></textarea>
+                    </div>
+                    <div class="form-group" style="margin-bottom:4px;">
+                        <label>Photos (up to 5)</label>
+                        <input type="file" class="entry-photo-input" accept="image/*" multiple style="display:none;" />
+                        <button class="btn btn-outline btn-sm" onclick="triggerPhoto(${index})" style="width:auto;padding:4px 10px;font-size:11px;">
+                            <i class="fas fa-camera"></i> Upload Photos
+                        </button>
+                        <div class="entry-photo-gallery" id="entryGallery${index}"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function addReportEntry() {
+            const container = document.getElementById('entriesContainer');
+            const index = entryCount;
+            const entryDiv = document.createElement('div');
+            entryDiv.innerHTML = createEntryHTML(index);
+            container.appendChild(entryDiv.firstElementChild);
+            const entry = document.querySelector(`.report-entry[data-index="${index}"]`);
+            const fileInput = entry.querySelector('.entry-photo-input');
+            fileInput.addEventListener('change', function(e) {
+                handleEntryPhotos(index, e);
+            });
+            entryCount++;
+            updateRemoveButtons();
+        }
+
+        function handleEntryPhotos(index, event) {
+            const files = event.target.files;
+            const gallery = document.getElementById(`entryGallery${index}`);
+            if (!gallery) return;
+            gallery.innerHTML = '';
+            const entry = document.querySelector(`.report-entry[data-index="${index}"]`);
+            if (!entry) return;
+            const fileArray = [];
+            for (let i = 0; i < Math.min(files.length, 5); i++) {
+                const file = files[i];
+                fileArray.push(file);
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    const img = document.createElement('img');
+                    img.src = ev.target.result;
+                    img.alt = 'Photo';
+                    gallery.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            }
+            entry._photos = fileArray;
+        }
+
+        window.removeEntry = function(index) {
+            if (document.querySelectorAll('.report-entry').length <= 1) {
+                showToast('You need at least one issue.', 'error');
+                return;
+            }
+            const entry = document.querySelector(`.report-entry[data-index="${index}"]`);
+            if (entry) {
+                entry.remove();
+                delete entry._photos;
+            }
+            reindexEntries();
+            updateRemoveButtons();
+        };
+
+        function reindexEntries() {
+            const entries = document.querySelectorAll('.report-entry');
+            entries.forEach((el, i) => {
+                el.dataset.index = i;
+                const numSpan = el.querySelector('.entry-number');
+                if (numSpan) numSpan.textContent = `Issue #${i+1}`;
+                const removeBtn = el.querySelector('.remove-entry');
+                if (removeBtn) removeBtn.onclick = () => removeEntry(i);
+                const fileInput = el.querySelector('.entry-photo-input');
+                if (fileInput) {
+                    fileInput.onchange = function(e) { handleEntryPhotos(i, e); };
+                }
+                const photoBtn = el.querySelector('.btn-outline');
+                if (photoBtn) photoBtn.onclick = () => triggerPhoto(i);
+                const gallery = el.querySelector('.entry-photo-gallery');
+                if (gallery) gallery.id = `entryGallery${i}`;
+            });
+        }
+
+        function updateRemoveButtons() {
+            const entries = document.querySelectorAll('.report-entry');
+            entries.forEach((el, i) => {
+                const btn = el.querySelector('.remove-entry');
+                if (btn) {
+                    if (entries.length === 1) btn.style.display = 'none';
+                    else btn.style.display = 'flex';
+                }
+            });
+        }
+
+        window.triggerPhoto = function(index) {
+            const entry = document.querySelector(`.report-entry[data-index="${index}"]`);
+            if (entry) {
+                const fileInput = entry.querySelector('.entry-photo-input');
+                if (fileInput) fileInput.click();
+            }
+        };
+
+        setTimeout(() => {
+            if (document.querySelectorAll('.report-entry').length === 0) {
+                addReportEntry();
+            }
+        }, 100);
+
+        document.getElementById('addEntryBtn').addEventListener('click', function() {
+            if (document.querySelectorAll('.report-entry').length >= 10) {
+                showToast('Maximum 10 issues per submission.', 'error');
+                return;
+            }
+            addReportEntry();
+            reindexEntries();
+            updateRemoveButtons();
+        });
+
+        // ================================================================
+        // SUBMIT (BULK WITH PHOTOS + EMERGENCY)
+        // ================================================================
+
+        document.getElementById('submitReportBtn').addEventListener('click', async function() {
+            const btn = this;
+            if (btn.disabled) return;
+
+            const pos = getMapPosition();
+            const lat = pos ? pos.lat : parseFloat(document.getElementById('selectedLat').value) || 27.7172;
+            const lng = pos ? pos.lng : parseFloat(document.getElementById('selectedLng').value) || 85.3240;
+            const locationName = `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
+            const name = document.getElementById('nameInput').value.trim() || 'Anonymous';
+            const isEmergency = document.getElementById('emergencyCheckbox').checked;
+
+            const entries = document.querySelectorAll('.report-entry');
+            const reportData = [];
+            let valid = true;
+
+            entries.forEach((entry, idx) => {
+                const category = entry.querySelector('.entry-category')?.value;
+                const description = entry.querySelector('.entry-description')?.value.trim();
+                const photoFiles = entry._photos || [];
+                if (!category) {
+                    showToast(`Issue #${idx+1} missing category.`, 'error');
+                    valid = false;
+                    return;
+                }
+                reportData.push({ category, description: description || 'No description provided', photoFiles });
+            });
+
+            if (!valid) return;
+            if (reportData.length === 0) {
+                showToast('Please add at least one issue.', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner"></span> Submitting ${reportData.length} reports...`;
+
+            try {
+                const uploadPromises = reportData.map(async (data) => {
+                    const photoUrls = [];
+                    const filesToUpload = data.photoFiles.slice(0, 5);
+                    for (const file of filesToUpload) {
+                        try {
+                            const fd = new FormData();
+                            fd.append('key', IMGBB_API_KEY);
+                            fd.append('image', file);
+                            const res = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: fd });
+                            const imgData = await res.json();
+                            if (imgData.success) photoUrls.push(imgData.data.url);
+                        } catch (e) { console.error('ImgBB error:', e); }
+                    }
+                    return {
+                        category: data.category,
+                        description: data.description,
+                        location: locationName,
+                        latitude: lat,
+                        longitude: lng,
+                        photoUrls: photoUrls,
+                        status: 'submitted',
+                        submittedBy: name,
+                        isEmergency: isEmergency,
+                        affectedCount: 0,
+                        supportedBy: [],
+                        priority: 'LOW',
+                        rating: 0,
+                        ratingCount: 0,
+                        createdAt: serverTimestamp()
+                    };
+                });
+
+                const allData = await Promise.all(uploadPromises);
+                const addOps = allData.map(data => addDoc(collection(db, 'reports'), data));
+                await Promise.all(addOps);
+
+                const count = allData.length;
+                if (isEmergency) {
+                    console.log(`🚨 ${count} emergency reports submitted!`);
+                    showToast(`🚨 ${count} emergency reports sent to authorities!`, 'info');
+                }
+                showToast(`✅ ${count} reports submitted successfully!`, 'success');
+
+                document.getElementById('emergencyCheckbox').checked = false;
+                document.getElementById('nameInput').value = '';
+                document.querySelectorAll('.report-entry').forEach(el => el.remove());
+                entryCount = 0;
+                addReportEntry();
+                reindexEntries();
+                updateRemoveButtons();
+                setMapPosition(27.7172, 85.3240);
+                document.getElementById('selectedLat').value = '27.7172';
+                document.getElementById('selectedLng').value = '85.3240';
+                document.getElementById('locationStatus').innerHTML = `📍 ${getTranslation('locationWaiting')}`;
+                showScreen('home');
+
+            } catch (error) {
+                console.error('Bulk submit error:', error);
+                showToast(`❌ Error: ${error.message}`, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fas fa-paper-plane"></i> Submit All Reports`;
+            }
+        });
+
+        // ================================================================
+        // REPORT LISTENER
+        // ================================================================
+
+        function listenToReports() {
+            const q = query(collection(db, 'reports'), orderBy('createdAt', 'desc'), limit(50));
+            onSnapshot(q, (snapshot) => {
+                reportsData = [];
+                snapshot.forEach(doc => reportsData.push({ id: doc.id, ...doc.data() }));
+                renderReports(reportsData);
+                updateStats(reportsData);
+            }, (error) => {
+                console.error('Listener error:', error);
+                document.getElementById('reportList').innerHTML = `
+                    <div class="error-state">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <h3>Error Loading Reports</h3>
+                        <p>${error.message}</p>
+                        <button onclick="location.reload()" class="btn btn-sm btn-primary" style="margin-top:10px;padding:8px 20px;background:#1a73e8;color:#fff;border:none;border-radius:8px;cursor:pointer;">Retry</button>
+                    </div>
+                `;
+            });
+        }
+
+        function renderReports(reports) {
+            const container = document.getElementById('reportList');
+            document.getElementById('reportCount').textContent = reports.length + ' ' + getTranslation('reports');
+            if (reports.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h3>${getTranslation('noReports')}</h3>
+                        <p>${getTranslation('beFirst')}</p>
+                    </div>
+                `;
+                return;
+            }
+            container.innerHTML = reports.map(r => `
+                <div class="report-card" onclick="showReportDetail('${r.id}')">
+                    <div class="top-row">
+                        <div>
+                            <span class="category-icon"><i class="fas ${getCategoryIcon(r.category)}"></i></span>
+                            <span class="title">${getCategoryLabel(r.category)}</span>
+                            ${r.isEmergency ? '<span class="badge-emergency">🚨 EMERGENCY</span>' : ''}
+                        </div>
+                        <span class="status-badge ${getStatusClass(r.status || 'submitted')}">${getStatusLabel(r.status || 'submitted')}</span>
+                    </div>
+                    <div class="location"><i class="fas fa-location-dot"></i> ${r.location || 'Unknown location'}</div>
+                    <div style="font-size:13px;color:var(--text-muted);margin:4px 0;">${r.description ? r.description.substring(0,80)+(r.description.length>80?'...':'') : 'No description'}</div>
+                    <div class="footer">
+                        <span>${formatTimestamp(r.createdAt)}</span>
+                        ${r.photoUrls && r.photoUrls.length > 0 ? `<span><i class="fas fa-image"></i> ${r.photoUrls.length} photos</span>` : ''}
+                        ${r.rating > 0 ? `<span><i class="fas fa-star" style="color:#fbbc04;"></i> ${r.rating.toFixed(1)}</span>` : ''}
+                        <span><i class="fas fa-chevron-right" style="font-size:12px;"></i></span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateStats(reports) {
+            const total = reports.length;
+            const resolved = reports.filter(r => r.status === 'resolved').length;
+            const pending = reports.filter(r => r.status !== 'resolved' && r.status !== 'rejected').length;
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statResolved').textContent = resolved;
+            document.getElementById('statPending').textContent = pending;
+        }
+
+        // ================================================================
+        // REPORT DETAIL
+        // ================================================================
+
+        window.showReportDetail = async function(reportId) {
+            showScreen('detail');
+            const container = document.getElementById('detailContent');
+            try {
+                const snap = await getDoc(doc(db, 'reports', reportId));
+                if (!snap.exists()) {
+                    container.innerHTML = '<div class="error-state"><i class="fas fa-exclamation-circle"></i><p>Report not found</p></div>';
+                    return;
+                }
+                const r = { id: snap.id, ...snap.data() };
+                const photoHtml = r.photoUrls && r.photoUrls.length > 0 ?
+                    `<div class="photo-gallery" style="grid-template-columns:repeat(${Math.min(r.photoUrls.length,3)},1fr);">
+                        ${r.photoUrls.map(url => `<img src="${url}" alt="Report photo" onclick="window.open('${url}','_blank')" />`).join('')}
+                    </div>` :
+                    '<div style="color:var(--text-muted);font-size:13px;">No photos</div>';
+                const ratingHtml = r.status === 'resolved' ?
+                    `<div style="margin-top:16px;padding:16px;background:var(--gray-light);border-radius:12px;">
+                        <p style="font-weight:600;margin-bottom:4px;">Rate this resolution</p>
+                        <div class="stars" id="ratingStars">
+                            ${[1,2,3,4,5].map(i => `<span class="star" onclick="submitRating('${r.id}', ${i})" data-value="${i}">★</span>`).join('')}
+                        </div>
+                        <div id="ratingMessage" style="font-size:13px;color:var(--text-muted);margin-top:4px;"></div>
+                    </div>` :
+                    '';
+                container.innerHTML = `
+                    <div style="background:var(--gray-light);border-radius:12px;padding:16px;">
+                        <h3 style="font-size:18px;"><i class="fas ${getCategoryIcon(r.category)}" style="color:var(--primary);"></i> ${getCategoryLabel(r.category)}</h3>
+                        ${r.isEmergency ? '<span style="background:var(--secondary);color:#fff;padding:4px 12px;border-radius:4px;font-size:12px;font-weight:700;display:inline-block;margin:4px 0;">🚨 EMERGENCY</span>' : ''}
+                        <div style="margin:6px 0;"><i class="fas fa-location-dot"></i> ${r.location || 'Unknown location'}</div>
+                        <div style="margin:6px 0;"><i class="fas fa-user"></i> ${r.submittedBy || 'Anonymous'}</div>
+                        <div style="margin:6px 0;"><i class="fas fa-clock"></i> ${formatTimestamp(r.createdAt)}</div>
+                        <div style="margin:6px 0;"><span class="status-badge ${getStatusClass(r.status || 'submitted')}">${getStatusLabel(r.status || 'submitted')}</span></div>
+                        ${r.description ? `<div style="margin:10px 0;padding:10px;background:var(--card-bg);border-radius:8px;">📝 ${r.description}</div>` : ''}
+                        <div style="margin:10px 0;"><strong>${getTranslation('affected')}:</strong> ${r.affectedCount || 0}</div>
+                        <div style="margin:10px 0;"><strong>Photos:</strong> ${photoHtml}</div>
+                        ${r.rating > 0 ? `<div style="margin:10px 0;color:#fbbc04;"><i class="fas fa-star"></i> ${r.rating.toFixed(1)} (${r.ratingCount} reviews)</div>` : ''}
+                        ${ratingHtml}
+                        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+                            <button class="btn btn-sm btn-primary" onclick="getRoute()" style="width:auto;padding:8px 16px;"><i class="fas fa-directions"></i> Directions</button>
+                            <button class="btn btn-sm btn-outline" onclick="window.open('https://www.google.com/maps?q=${r.latitude},${r.longitude}','_blank')" style="width:auto;padding:8px 16px;"><i class="fas fa-map"></i> Open Map</button>
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error loading detail:', error);
+                container.innerHTML = '<div class="error-state"><i class="fas fa-exclamation-circle"></i><p>Error loading report</p></div>';
+            }
+        };
+
+        // ================================================================
+        // SUBMIT RATING
+        // ================================================================
+
+        window.submitRating = async function(reportId, rating) {
+            try {
+                const ref = doc(db, 'reports', reportId);
+                const snap = await getDoc(ref);
+                if (!snap.exists()) return;
+                const data = snap.data();
+                const oldTotal = (data.rating || 0) * (data.ratingCount || 0);
+                const newCount = (data.ratingCount || 0) + 1;
+                const newRating = (oldTotal + rating) / newCount;
+                await updateDoc(ref, { rating: newRating, ratingCount: newCount });
+                document.querySelectorAll('#ratingStars .star').forEach(el => {
+                    const val = parseInt(el.dataset.value);
+                    el.classList.toggle('active', val <= rating);
+                });
+                document.getElementById('ratingMessage').textContent = '✅ Thank you for your feedback!';
+                showToast('✅ Rating submitted!', 'success');
+            } catch (error) {
+                console.error('Rating error:', error);
+                showToast('Error submitting rating', 'error');
+            }
+        };
+
+        // ================================================================
+        // SELECT CATEGORY
+        // ================================================================
+
+        window.selectFormCategory = function(el) {
+            document.querySelectorAll('#formCategoryGrid .category-btn').forEach(b => b.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedCategory = el.dataset.category;
+            document.getElementById('formCategoryError').style.display = 'none';
+        };
+
+        window.quickReport = function(category) {
+            showScreen('report');
+            document.querySelectorAll('#formCategoryGrid .category-btn').forEach(b => {
+                b.classList.remove('selected');
+                if (b.dataset.category === category) {
+                    b.classList.add('selected');
+                    selectedCategory = category;
+                }
+            });
+            document.getElementById('formCategoryError').style.display = 'none';
+        };
+
+        // ================================================================
+        // INIT
+        // ================================================================
+
+        async function testConnection() {
+            try {
+                await getDocs(collection(db, 'reports'));
+                console.log('✅ Firestore connected!');
+                listenToReports();
+            } catch (error) {
+                console.error('Firestore connection failed:', error);
+                document.getElementById('reportList').innerHTML =
+                    `<div class="error-state"><i class="fas fa-exclamation-circle"></i><h3>Connection Error</h3><p>${error.message}</p><button onclick="location.reload()" class="btn btn-sm btn-primary" style="margin-top:10px;">Retry</button></div>`;
+            }
+        }
+        testConnection();
+
+        window.addEventListener('beforeunload', destroyMap);
+
+        window.showScreen = showScreen;
+        window.showReportDetail = showReportDetail;
+        window.submitRating = submitRating;
+        window.quickReport = quickReport;
+        window.selectFormCategory = selectFormCategory;
+        window.getRoute = getRoute;
+        window.getCurrentLocation = getCurrentLocation;
+        window.openEmergency = openEmergency;
+        window.removeEntry = removeEntry;
+        window.triggerPhoto = triggerPhoto;
+
+        console.log('🏗️ FixMyBlock Nepal - Phase 3 UI/UX Loaded!');
+        console.log('🇳🇵 Nepal-themed modern design with full mobile responsiveness.');
+    </script>
+
+</body>
+</html>

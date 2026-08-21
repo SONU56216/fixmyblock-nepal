@@ -1,0 +1,422 @@
+/* ================================================================
+   FIXMYBLOCK NEPAL – COMPLETE MOBILE RESPONSIVENESS
+   ================================================================ */
+
+/* ----- Base Mobile (All devices) ----- */
+* {
+    box-sizing: border-box;
+}
+html, body {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+}
+
+/* ----- App Container ----- */
+.app-container {
+    max-width: 100%;
+    margin: 12px 10px;
+    width: calc(100% - 20px);
+}
+
+/* ----- Header ----- */
+.app-header {
+    padding: 12px 16px;
+    flex-wrap: wrap;
+}
+.app-header .logo {
+    font-size: 17px;
+}
+.app-header .logo img {
+    width: 28px;
+    height: 28px;
+}
+.header-right {
+    gap: 4px;
+}
+.theme-toggle, .lang-toggle, .admin-toggle {
+    font-size: 11px;
+    padding: 3px 8px;
+}
+.app-header .badge {
+    font-size: 9px;
+    padding: 2px 8px;
+}
+
+/* ----- Stats Grid (2 columns on small screens) ----- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+.stat-card {
+    padding: 12px 4px;
+}
+.stat-card .number {
+    font-size: 20px;
+}
+.stat-card .label {
+    font-size: 10px;
+}
+.stat-card .stat-icon {
+    display: none;
+}
+
+/* ----- Category Grid ----- */
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+}
+.category-btn {
+    padding: 10px 2px;
+    font-size: 10px;
+}
+.category-btn i,
+.category-btn .category-emoji {
+    font-size: 20px;
+}
+
+/* ----- Report Cards ----- */
+.report-card {
+    padding: 12px 14px;
+    margin-bottom: 10px;
+}
+.report-card .title {
+    font-size: 14px;
+}
+.report-card .location {
+    font-size: 12px;
+}
+.report-card .footer {
+    font-size: 11px;
+    flex-wrap: wrap;
+}
+
+/* ----- Form Elements ----- */
+.form-group {
+    margin-bottom: 14px;
+}
+.form-group label {
+    font-size: 13px;
+}
+.form-group input,
+.form-group textarea,
+.form-group select {
+    padding: 10px 12px;
+    font-size: 14px;
+}
+#mapPicker {
+    height: 200px;
+}
+.photo-gallery {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+}
+.photo-gallery img,
+.photo-gallery .add-photo {
+    height: 60px;
+}
+
+/* ----- Buttons ----- */
+.btn {
+    padding: 12px 20px;
+    font-size: 15px;
+}
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+/* ----- Bottom Nav ----- */
+.bottom-nav {
+    padding: 6px 0 env(safe-area-inset-bottom, 6px) 0;
+    justify-content: space-around;
+}
+.nav-item {
+    padding: 2px 8px;
+    font-size: 10px;
+}
+.nav-item i {
+    font-size: 18px;
+}
+.nav-item .fab {
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+}
+
+/* ----- Toast ----- */
+.toast {
+    bottom: 80px;
+    max-width: 90%;
+    padding: 12px 16px;
+    font-size: 14px;
+}
+
+/* ================================================================
+   SMALL PHONES (360px and below)
+   ================================================================ */
+@media (max-width: 360px) {
+    .app-container {
+        margin: 8px 6px;
+        width: calc(100% - 12px);
+        border-radius: 12px;
+    }
+    .app-header {
+        padding: 10px 12px;
+    }
+    .app-header .logo {
+        font-size: 15px;
+    }
+    .app-header .logo img {
+        width: 24px;
+        height: 24px;
+    }
+
+    .stats-grid {
+        gap: 4px;
+    }
+    .stat-card {
+        padding: 8px 2px;
+    }
+    .stat-card .number {
+        font-size: 16px;
+    }
+    .stat-card .label {
+        font-size: 9px;
+    }
+
+    .category-grid {
+        gap: 3px;
+    }
+    .category-btn {
+        padding: 6px 2px;
+        font-size: 9px;
+    }
+    .category-btn i,
+    .category-btn .category-emoji {
+        font-size: 16px;
+    }
+
+    .report-card {
+        padding: 10px 12px;
+    }
+    .report-card .title {
+        font-size: 13px;
+    }
+
+    .bottom-nav {
+        padding: 4px 0 env(safe-area-inset-bottom, 4px) 0;
+    }
+    .nav-item {
+        padding: 2px 4px;
+        font-size: 9px;
+    }
+    .nav-item i {
+        font-size: 16px;
+    }
+    .nav-item .fab {
+        width: 38px;
+        height: 38px;
+        font-size: 18px;
+    }
+
+    #mapPicker {
+        height: 160px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        font-size: 13px;
+        padding: 8px 10px;
+    }
+}
+
+/* ================================================================
+   MEDIUM PHONES (361px – 480px)
+   ================================================================ */
+@media (min-width: 361px) and (max-width: 480px) {
+    .app-container {
+        margin: 10px 12px;
+        width: calc(100% - 24px);
+    }
+    .stats-grid {
+        gap: 6px;
+    }
+    .stat-card .number {
+        font-size: 22px;
+    }
+
+    .category-grid {
+        gap: 4px;
+    }
+
+    #mapPicker {
+        height: 180px;
+    }
+}
+
+/* ================================================================
+   TABLETS (481px – 768px)
+   ================================================================ */
+@media (min-width: 481px) and (max-width: 768px) {
+    .app-container {
+        max-width: 100%;
+        margin: 16px 20px;
+        width: calc(100% - 40px);
+    }
+
+    .stats-grid {
+        gap: 12px;
+    }
+    .stat-card .number {
+        font-size: 26px;
+    }
+
+    .category-grid {
+        gap: 6px;
+    }
+
+    #mapPicker {
+        height: 280px;
+    }
+
+    .bottom-nav {
+        max-width: 100%;
+    }
+
+    .photo-gallery {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .photo-gallery img,
+    .photo-gallery .add-photo {
+        height: 80px;
+    }
+}
+
+/* ================================================================
+   DESKTOPS (769px and above)
+   ================================================================ */
+@media (min-width: 769px) {
+    .app-container {
+        max-width: 480px;
+        margin: 24px auto;
+    }
+
+    .stats-grid {
+        gap: 12px;
+    }
+    .stat-card .number {
+        font-size: 28px;
+    }
+
+    .category-grid {
+        gap: 8px;
+    }
+
+    #mapPicker {
+        height: 280px;
+    }
+
+    .bottom-nav {
+        max-width: 480px;
+    }
+}
+
+/* ================================================================
+   SAFE AREA FOR NOTCH PHONES
+   ================================================================ */
+@supports (padding: max(0px)) {
+    .bottom-nav {
+        padding-bottom: max(8px, env(safe-area-inset-bottom));
+    }
+    .app-header {
+        padding-top: max(12px, env(safe-area-inset-top));
+    }
+}
+
+/* ================================================================
+   LANDSCAPE MODE FIXES
+   ================================================================ */
+@media (orientation: landscape) and (max-height: 500px) {
+    .app-container {
+        margin: 6px 10px;
+        border-radius: 12px;
+    }
+    .app-header {
+        padding: 6px 12px;
+    }
+    .app-header .logo {
+        font-size: 14px;
+    }
+    .app-header .logo img {
+        width: 20px;
+        height: 20px;
+    }
+    .stats-grid {
+        gap: 4px;
+    }
+    .stat-card {
+        padding: 6px 4px;
+    }
+    .stat-card .number {
+        font-size: 16px;
+    }
+    .category-btn {
+        padding: 4px 2px;
+        font-size: 8px;
+    }
+    .category-btn i {
+        font-size: 14px;
+    }
+    .report-card {
+        padding: 6px 10px;
+        margin-bottom: 4px;
+    }
+    #mapPicker {
+        height: 120px;
+    }
+    .bottom-nav {
+        padding: 2px 0;
+    }
+    .nav-item .fab {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+    .screen {
+        padding: 6px 10px 10px;
+    }
+    .form-group {
+        margin-bottom: 6px;
+    }
+    .form-group input,
+    .form-group textarea {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+    .btn {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+}
+
+/* ================================================================
+   PRINT STYLES
+   ================================================================ */
+@media print {
+    .bottom-nav,
+    .app-header,
+    .btn {
+        display: none !important;
+    }
+    .app-container {
+        margin: 0 !important;
+        width: 100% !important;
+        border: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+    }
+}
