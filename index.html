@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FixMyBlock Nepal</title>
-
     <!-- ===== PWA CONFIG ===== -->
     <link rel="manifest" href="manifest.json" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -72,19 +71,45 @@
            ================================================================ */
 
         /* ----- CSS Variables ----- */
+=======
+    
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<!-- PWA Manifest -->
+<link rel="manifest" href="manifest.json" />
+
+<!-- Apple Touch Icon -->
+<link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
+
+<!-- Theme Color -->
+<meta name="theme-color" content="#1a73e8" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <style>
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         :root {
             --primary: #1a73e8;
             --primary-dark: #0d47a1;
             --primary-light: #e8f0fe;
+<<<<<<< HEAD
             --secondary: #dc143c;
             --secondary-light: #fce4ec;
             --gold: #fbbc04;
             --success: #34a853;
             --danger: #ea4335;
+=======
+            --success: #34a853;
+            --warning: #fbbc04;
+            --danger: #ea4335;
+            --danger-dark: #c62828;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             --gray: #5f6b7a;
             --gray-light: #f0f2f5;
             --gray-border: #e8ecf2;
             --card-bg: #ffffff;
+<<<<<<< HEAD
             --bg: #f8f9fc;
             --text: #1a1a2e;
             --text-muted: #6b7280;
@@ -110,11 +135,37 @@
         }
 
         /* ----- Base ----- */
+=======
+            --bg: #f0f2f5;
+            --text: #1a1a2e;
+            --text-muted: #888;
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.10);
+            --radius: 14px;
+            --radius-sm: 10px;
+            --max-width: 480px;
+            --transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        body.dark-theme {
+            --bg: #121212;
+            --card-bg: #1e1e2e;
+            --text: #e0e0e0;
+            --gray-border: #2a2a3e;
+            --gray-light: #1a1a2a;
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.4);
+            --primary-light: #1a2a4a;
+            --text-muted: #888;
+        }
+
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+<<<<<<< HEAD
 
         html,
         body {
@@ -125,11 +176,16 @@
 
         body {
             font-family: 'Inter', -apple-system, system-ui, sans-serif;
+=======
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             background: var(--bg);
             color: var(--text);
             padding-bottom: 80px;
             min-height: 100vh;
             transition: background 0.3s, color 0.3s;
+<<<<<<< HEAD
             line-height: 1.6;
         }
 
@@ -181,13 +237,31 @@
         }
 
         /* ----- Splash Screen ----- */
+=======
+        }
+        .app-container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            background: var(--card-bg);
+            min-height: 100vh;
+            box-shadow: var(--shadow);
+            position: relative;
+            transition: background 0.3s;
+        }
+
+        /* ===== SPLASH ===== */
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         #splash {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+<<<<<<< HEAD
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+=======
+            background: linear-gradient(135deg, #0d47a1, #1a73e8);
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -201,11 +275,18 @@
             transform: scale(1.05);
             pointer-events: none;
         }
+<<<<<<< HEAD
         #splash img {
             width: 80px;
             height: 80px;
             border-radius: 16px;
             margin-bottom: 12px;
+=======
+        #splash .logo {
+            font-size: 48px;
+            margin-bottom: 12px;
+            animation: pulseLogo 1.5s infinite;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         }
         #splash h1 {
             font-size: 28px;
@@ -233,10 +314,26 @@
                 transform: rotate(360deg);
             }
         }
+<<<<<<< HEAD
 
         /* ----- Offline Banner ----- */
         .offline-banner {
             background: var(--secondary);
+=======
+        @keyframes pulseLogo {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        /* ===== OFFLINE BANNER ===== */
+        .offline-banner {
+            background: var(--danger);
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             color: #fff;
             padding: 6px 12px;
             text-align: center;
@@ -248,6 +345,7 @@
             display: block;
         }
 
+<<<<<<< HEAD
         /* ----- Header ----- */
         .app-header {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
@@ -262,10 +360,25 @@
             box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
             flex-wrap: wrap;
             gap: 4px;
+=======
+        /* ===== HEADER ===== */
+        .app-header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: #fff;
+            padding: 18px 20px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 12px rgba(26, 115, 232, 0.25);
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         }
         .app-header .logo {
             display: flex;
             align-items: center;
+<<<<<<< HEAD
             gap: 8px;
             font-weight: 700;
             font-size: 18px;
@@ -274,6 +387,14 @@
             width: 28px;
             height: 28px;
             border-radius: 8px;
+=======
+            gap: 10px;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .app-header .logo i {
+            font-size: 26px;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         }
         .app-header .logo .subtitle {
             font-size: 11px;
@@ -283,28 +404,48 @@
         }
         .app-header .badge {
             background: rgba(255, 255, 255, 0.15);
+<<<<<<< HEAD
             padding: 2px 8px;
             border-radius: 20px;
             font-size: 9px;
             font-weight: 600;
             letter-spacing: 0.3px;
             display: none;
+=======
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         }
         .header-right {
             display: flex;
             align-items: center;
+<<<<<<< HEAD
             gap: 4px;
+=======
+            gap: 8px;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             flex-wrap: wrap;
         }
         .theme-toggle,
         .lang-toggle,
         .admin-toggle {
+<<<<<<< HEAD
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: #fff;
             padding: 3px 8px;
             border-radius: 20px;
             font-size: 11px;
+=======
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             cursor: pointer;
             transition: var(--transition);
             font-family: inherit;
@@ -315,6 +456,7 @@
             background: rgba(255, 255, 255, 0.2);
         }
         .admin-toggle {
+<<<<<<< HEAD
             font-size: 14px;
             padding: 3px 8px;
         }
@@ -324,31 +466,60 @@
             display: none;
             padding: 16px 14px 20px;
             animation: fadeSlide 0.4s ease;
+=======
+            font-size: 16px;
+            padding: 4px 10px;
+        }
+
+        /* ===== SCREENS ===== */
+        .screen {
+            display: none;
+            padding: 16px 18px 30px;
+            animation: fadeIn 0.3s ease;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         }
         .screen.active {
             display: block;
         }
+<<<<<<< HEAD
         @keyframes fadeSlide {
             0% {
                 opacity: 0;
                 transform: translateY(12px);
             }
             100% {
+=======
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
                 opacity: 1;
                 transform: translateY(0);
             }
         }
 
+<<<<<<< HEAD
         /* ----- Stats Cards ----- */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 8px;
+=======
+        /* ===== STATS ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             margin-bottom: 16px;
         }
         .stat-card {
             background: var(--gray-light);
             border-radius: var(--radius-sm);
+<<<<<<< HEAD
             padding: 12px 4px;
             text-align: center;
             border: 1px solid var(--gray-border);
@@ -360,12 +531,19 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+=======
+            padding: 14px 8px;
+            text-align: center;
+            border: 1px solid var(--gray-border);
+            transition: var(--transition);
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         }
         .stat-card:hover {
             transform: translateY(-2px);
             box-shadow: var(--shadow-hover);
         }
         .stat-card .number {
+<<<<<<< HEAD
             font-size: 22px;
             font-weight: 800;
             color: var(--primary);
@@ -375,11 +553,22 @@
             font-size: 10px;
             color: var(--text-muted);
             margin-top: 2px;
+=======
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .stat-card .label {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         }
         .stat-card.resolved .number {
             color: var(--success);
         }
         .stat-card.pending .number {
+<<<<<<< HEAD
             color: var(--secondary);
         }
         .stat-card .stat-icon {
@@ -391,11 +580,22 @@
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 4px;
+=======
+            color: var(--danger);
+        }
+
+        /* ===== CATEGORIES ===== */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             margin-bottom: 16px;
         }
         .category-btn {
             background: var(--gray-light);
             border: 2px solid transparent;
+<<<<<<< HEAD
             border-radius: var(--radius-sm);
             padding: 10px 2px;
             text-align: center;
@@ -417,6 +617,22 @@
             font-size: 20px;
             display: block;
             margin-bottom: 2px;
+=======
+            border-radius: var(--radius);
+            padding: 14px 4px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text);
+            font-family: inherit;
+        }
+        .category-btn i {
+            font-size: 26px;
+            display: block;
+            margin-bottom: 4px;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         }
         .category-btn:hover {
             background: var(--primary-light);
@@ -429,6 +645,7 @@
             color: var(--primary);
         }
 
+<<<<<<< HEAD
         /* ----- Emergency Button ----- */
         .emergency-btn {
             background: linear-gradient(135deg, var(--secondary), #b71c1c);
@@ -438,6 +655,17 @@
             border-radius: var(--radius);
             font-weight: 700;
             font-size: 14px;
+=======
+        /* ===== EMERGENCY BUTTON ===== */
+        .emergency-btn {
+            background: linear-gradient(135deg, var(--danger), var(--danger-dark));
+            color: #fff;
+            border: none;
+            padding: 14px 20px;
+            border-radius: var(--radius);
+            font-weight: 700;
+            font-size: 16px;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             cursor: pointer;
             transition: var(--transition);
             width: 100%;
@@ -445,15 +673,26 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
+<<<<<<< HEAD
             box-shadow: 0 4px 16px rgba(220, 20, 60, 0.3);
+=======
+            box-shadow: 0 4px 16px rgba(234, 67, 53, 0.35);
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             margin-bottom: 16px;
         }
         .emergency-btn:hover {
             transform: translateY(-2px);
+<<<<<<< HEAD
             box-shadow: 0 8px 24px rgba(220, 20, 60, 0.4);
         }
         .emergency-btn i {
             font-size: 18px;
+=======
+            box-shadow: 0 6px 24px rgba(234, 67, 53, 0.45);
+        }
+        .emergency-btn i {
+            font-size: 20px;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             animation: pulseIcon 1s infinite;
         }
         @keyframes pulseIcon {
@@ -466,17 +705,29 @@
             }
         }
 
+<<<<<<< HEAD
         /* ----- Report Card ----- */
         .report-card {
             background: var(--card-bg);
             border: 1px solid var(--gray-border);
             border-radius: var(--radius-sm);
             padding: 12px 14px;
+=======
+        /* ===== REPORT CARD ===== */
+        .report-card {
+            background: var(--card-bg);
+            border: 1px solid var(--gray-border);
+            border-radius: var(--radius);
+            padding: 14px 16px;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             margin-bottom: 10px;
             transition: var(--transition);
             box-shadow: var(--shadow);
             cursor: pointer;
+<<<<<<< HEAD
             word-break: break-word;
+=======
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         }
         .report-card:hover {
             border-color: var(--primary);
@@ -489,6 +740,7 @@
             align-items: flex-start;
         }
         .report-card .category-icon {
+<<<<<<< HEAD
             font-size: 18px;
             margin-right: 8px;
         }
@@ -503,11 +755,29 @@
         }
         .report-card .location i {
             margin-right: 4px;
+=======
+            font-size: 20px;
+            margin-right: 10px;
+        }
+        .report-card .title {
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .report-card .location {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin: 2px 0 6px;
+        }
+        .report-card .location i {
+            margin-right: 4px;
+            font-size: 12px;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         }
         .report-card .footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
+<<<<<<< HEAD
             margin-top: 6px;
             font-size: 11px;
             color: var(--text-muted);
@@ -608,17 +878,81 @@
         }
 
         /* ----- Bulk Entry ----- */
+=======
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* ===== STATUS BADGES ===== */
+        .status-badge {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .status-submitted {
+            background: #e3f2fd;
+            color: #0d47a1;
+        }
+        .status-reviewing {
+            background: #fff3e0;
+            color: #e65100;
+        }
+        .status-progress {
+            background: #fce4ec;
+            color: #b71c1c;
+        }
+        .status-resolved {
+            background: #e8f5e9;
+            color: #1b5e20;
+        }
+        .status-rejected {
+            background: #fafafa;
+            color: #616161;
+        }
+        body.dark-theme .status-submitted {
+            background: #1a2a4a;
+            color: #4a9aff;
+        }
+        body.dark-theme .status-reviewing {
+            background: #3a2a1a;
+            color: #ffaa4a;
+        }
+        body.dark-theme .status-progress {
+            background: #4a1a1a;
+            color: #ff6b6b;
+        }
+        body.dark-theme .status-resolved {
+            background: #1a3a2a;
+            color: #4aff8a;
+        }
+        body.dark-theme .status-rejected {
+            background: #2a2a2a;
+            color: #888;
+        }
+
+        /* ===== BULK ENTRY ===== */
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         .report-entry {
             background: var(--gray-light);
             border: 1px solid var(--gray-border);
             border-radius: var(--radius-sm);
+<<<<<<< HEAD
             padding: 10px 12px;
             margin-bottom: 10px;
+=======
+            padding: 12px;
+            margin-bottom: 12px;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             position: relative;
             transition: var(--transition);
         }
         .report-entry .remove-entry {
             position: absolute;
+<<<<<<< HEAD
             top: 4px;
             right: 4px;
             background: var(--secondary);
@@ -629,6 +963,18 @@
             height: 22px;
             cursor: pointer;
             font-size: 12px;
+=======
+            top: 6px;
+            right: 6px;
+            background: var(--danger);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 14px;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             display: flex;
             align-items: center;
             justify-content: center;
@@ -639,9 +985,15 @@
         }
         .report-entry .entry-number {
             font-weight: 600;
+<<<<<<< HEAD
             font-size: 12px;
             color: var(--primary);
             margin-bottom: 4px;
+=======
+            font-size: 13px;
+            color: var(--primary);
+            margin-bottom: 6px;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         }
         .report-entry .entry-photo-gallery {
             display: grid;
@@ -651,7 +1003,11 @@
         }
         .report-entry .entry-photo-gallery img {
             width: 100%;
+<<<<<<< HEAD
             height: 50px;
+=======
+            height: 60px;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             object-fit: cover;
             border-radius: 6px;
             border: 1px solid var(--gray-border);
@@ -661,19 +1017,28 @@
             color: var(--primary);
             border: 2px dashed var(--primary);
             border-radius: var(--radius-sm);
+<<<<<<< HEAD
             padding: 8px;
+=======
+            padding: 10px;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             width: 100%;
             cursor: pointer;
             font-weight: 600;
             transition: var(--transition);
             font-family: inherit;
+<<<<<<< HEAD
             font-size: 13px;
+=======
+            font-size: 14px;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         }
         .add-entry-btn:hover {
             background: var(--primary);
             color: #fff;
         }
 
+<<<<<<< HEAD
         /* ----- Photo Gallery (main) ----- */
         .photo-gallery {
             display: grid;
@@ -721,6 +1086,48 @@
         #mapPicker {
             width: 100% !important;
             height: 200px;
+=======
+        /* ===== FORM ===== */
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+        .form-group textarea,
+        .form-group input[type="text"],
+        .form-group input[type="email"] {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid var(--gray-border);
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            font-family: inherit;
+            transition: var(--transition);
+            background: var(--gray-light);
+            color: var(--text);
+        }
+        .form-group textarea:focus,
+        .form-group input[type="text"]:focus,
+        .form-group input[type="email"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--card-bg);
+            box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.1);
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        /* ===== MAP ===== */
+        #mapPicker {
+            width: 100%;
+            height: 280px;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             border-radius: var(--radius-sm);
             margin-top: 6px;
             border: 2px solid var(--gray-border);
@@ -738,30 +1145,70 @@
         }
         .map-loading i {
             margin-right: 8px;
+<<<<<<< HEAD
         }
         .map-hint {
             font-size: 11px;
+=======
+            font-size: 20px;
+            color: var(--primary);
+        }
+        .map-hint {
+            font-size: 12px;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             color: var(--text-muted);
             margin-top: 4px;
         }
 
+<<<<<<< HEAD
         /* ----- Buttons ----- */
+=======
+        /* ===== STARS ===== */
+        .stars {
+            display: flex;
+            gap: 6px;
+            margin: 8px 0;
+        }
+        .stars .star {
+            font-size: 28px;
+            cursor: pointer;
+            color: #ddd;
+            transition: color 0.2s, transform 0.2s;
+        }
+        .stars .star.active {
+            color: var(--warning);
+        }
+        .stars .star:hover {
+            transform: scale(1.15);
+        }
+
+        /* ===== BUTTONS ===== */
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
+<<<<<<< HEAD
             padding: 12px 20px;
             border: none;
             border-radius: var(--radius);
             font-weight: 600;
             font-size: 15px;
+=======
+            padding: 14px 28px;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 16px;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             cursor: pointer;
             transition: var(--transition);
             width: 100%;
             font-family: inherit;
         }
         .btn-primary {
+<<<<<<< HEAD
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: #fff;
             box-shadow: 0 4px 16px rgba(26, 115, 232, 0.3);
@@ -778,12 +1225,25 @@
         .btn-secondary:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 30px rgba(220, 20, 60, 0.4);
+=======
+            background: var(--primary);
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(26, 115, 232, 0.3);
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         }
         .btn-success {
             background: var(--success);
             color: #fff;
         }
         .btn-success:hover {
+<<<<<<< HEAD
+=======
+            background: #2d9248;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(52, 168, 83, 0.3);
         }
@@ -796,27 +1256,151 @@
             background: var(--primary-light);
         }
         .btn-sm {
+<<<<<<< HEAD
             padding: 6px 12px;
             font-size: 12px;
             width: auto;
         }
 
         /* ----- Back Button ----- */
+=======
+            padding: 8px 16px;
+            font-size: 13px;
+            width: auto;
+        }
+        .btn-danger {
+            background: var(--danger);
+            color: #fff;
+        }
+        .btn-danger:hover {
+            background: var(--danger-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(234, 67, 53, 0.3);
+        }
+
+        /* ===== BOTTOM NAV ===== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-top: 1px solid var(--gray-border);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0 env(safe-area-inset-bottom, 8px) 0;
+            z-index: 200;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
+            transition: background 0.3s;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            font-size: 11px;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px 16px;
+            transition: var(--transition);
+            background: none;
+            border: none;
+            font-family: inherit;
+        }
+        .nav-item i {
+            font-size: 22px;
+        }
+        .nav-item.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .nav-item .fab-wrapper {
+            position: relative;
+            top: -12px;
+        }
+        .nav-item .fab {
+            background: var(--primary);
+            color: #fff;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            box-shadow: 0 4px 16px rgba(26, 115, 232, 0.35);
+            transition: var(--transition);
+        }
+        .nav-item .fab:active {
+            transform: scale(0.92);
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 400px;
+            width: 90%;
+            background: var(--card-bg);
+            color: var(--text);
+            padding: 14px 20px;
+            border-radius: var(--radius);
+            text-align: center;
+            font-weight: 500;
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--gray-border);
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .toast.success {
+            background: var(--success);
+            color: #fff;
+        }
+        .toast.error {
+            background: var(--danger);
+            color: #fff;
+        }
+        .toast.info {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        /* ===== UTILITY ===== */
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         .back-btn {
             background: none;
             border: none;
             color: var(--text);
+<<<<<<< HEAD
             font-size: 16px;
             cursor: pointer;
             padding: 4px 6px;
+=======
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px 8px;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             font-family: inherit;
             transition: var(--transition);
         }
         .back-btn:hover {
             color: var(--primary);
         }
+<<<<<<< HEAD
 
         /* ----- Utility ----- */
+=======
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         .flex-between {
             display: flex;
             justify-content: space-between;
@@ -844,6 +1428,7 @@
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
+<<<<<<< HEAD
 
         /* ----- Toast ----- */
         .toast {
@@ -946,15 +1531,22 @@
         }
 
         /* ----- Loading / Empty States ----- */
+=======
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         .empty-state,
         .loading-state,
         .error-state {
             text-align: center;
+<<<<<<< HEAD
             padding: 30px 16px;
+=======
+            padding: 40px 20px;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             color: var(--text-muted);
         }
         .empty-state i,
         .error-state i {
+<<<<<<< HEAD
             font-size: 40px;
             color: var(--text-muted);
             display: block;
@@ -963,6 +1555,15 @@
         .empty-state h3 {
             color: var(--text);
             font-size: 16px;
+=======
+            font-size: 48px;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 12px;
+        }
+        .empty-state h3 {
+            color: var(--text);
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             margin-bottom: 4px;
         }
         .error-state {
@@ -972,6 +1573,7 @@
             color: var(--danger);
         }
         .loading-state i {
+<<<<<<< HEAD
             font-size: 28px;
             color: var(--primary);
             display: block;
@@ -1091,10 +1693,22 @@
             .app-container {
                 margin: 10px 12px;
                 width: calc(100% - 24px);
+=======
+            font-size: 32px;
+            color: var(--primary);
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        @media (max-width: 480px) {
+            .app-container {
+                box-shadow: none;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             }
             .stats-grid {
                 gap: 6px;
             }
+<<<<<<< HEAD
             .stat-card .number {
                 font-size: 20px;
             }
@@ -1263,6 +1877,123 @@
     <!-- ===== SPLASH SCREEN ===== -->
     <div id="splash">
         <img src="assets/icons/icon-192.png" alt="FixMyBlock Nepal" />
+=======
+            .category-grid {
+                gap: 6px;
+            }
+            .category-btn {
+                font-size: 10px;
+                padding: 10px 2px;
+            }
+            .category-btn i {
+                font-size: 20px;
+            }
+            #mapPicker {
+                height: 200px;
+            }
+            .report-entry .entry-photo-gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .report-entry .entry-photo-gallery img {
+                height: 50px;
+            }
+            .app-header .logo {
+                font-size: 17px;
+            }
+            .header-right .badge {
+                display: none;
+            }
+        }
+        /* ===== SIMPLE BACKGROUND – CLEAR PHOTO ===== */
+body {
+    background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTf9wMS1VZNluak-Y2e9pHdYvTevRfEHYj4CJi7tdvIgQ&s=10') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+    font-family: 'Inter', system-ui, sans-serif;
+    padding-bottom: 80px;
+}
+
+/* No dark overlay – the image is fully visible */
+
+.app-container {
+    max-width: 480px;
+    margin: 20px auto;
+    background: rgba(255, 255, 255, 0.75);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+    border-radius: 20px;
+    padding: 0 0 20px 0;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* Light text on dark background areas – we'll keep text dark for readability */
+.app-container,
+.app-header .logo,
+.app-header .badge,
+.section-title,
+.stat-card .number,
+.stat-card .label,
+.report-card .title,
+.report-card .location,
+.report-card .footer,
+.category-btn,
+.nav-item,
+.form-group label,
+.form-group input,
+.form-group textarea,
+.toast,
+.back-btn {
+    color: #1a1a2e !important;
+}
+
+/* Cards: transparent but with white background */
+.stat-card,
+.report-card,
+.category-btn {
+    background: rgba(255, 255, 255, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* Dark theme – use dark semi-transparent */
+body.dark-theme .app-container {
+    background: rgba(0, 0, 0, 0.7) !important;
+}
+body.dark-theme .stat-card,
+body.dark-theme .report-card,
+body.dark-theme .category-btn {
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+body.dark-theme .app-container,
+body.dark-theme .stat-card .number,
+body.dark-theme .stat-card .label,
+body.dark-theme .report-card .title,
+body.dark-theme .report-card .location,
+body.dark-theme .report-card .footer,
+body.dark-theme .category-btn,
+body.dark-theme .nav-item,
+body.dark-theme .form-group label,
+body.dark-theme .form-group input,
+body.dark-theme .form-group textarea {
+    color: #e0e0e0 !important;
+}
+    </style>
+</head>
+<body>
+    <script>
+  // Register Service Worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/Fixmyblock-nepal/sw.js')
+      .then(reg => console.log('✅ SW registered'))
+      .catch(err => console.error('❌ SW registration failed:', err));
+  }
+</script>
+
+    <!-- ===== SPLASH ===== -->
+    <div id="splash">
+        <div class="logo"><i class="fas fa-road"></i></div>
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         <h1>FixMyBlock</h1>
         <p>Nepal</p>
         <div class="loader"></div>
@@ -1270,7 +2001,11 @@
 
     <!-- ===== OFFLINE BANNER ===== -->
     <div class="offline-banner" id="offlineBanner">
+<<<<<<< HEAD
         <i class="fas fa-wifi-slash"></i> Offline. Reports saved locally.
+=======
+        <i class="fas fa-wifi-slash"></i> You are offline. Reports will be saved locally and synced when online.
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
     </div>
 
     <!-- ===== TOAST ===== -->
@@ -1282,7 +2017,11 @@
         <!-- ===== HEADER ===== -->
         <header class="app-header">
             <div class="logo">
+<<<<<<< HEAD
                 <img src="assets/icons/icon-32.png" alt="FixMyBlock" />
+=======
+                <i class="fas fa-road"></i>
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
                 <span id="appName">FixMyBlock</span>
                 <span class="subtitle" id="appSubtitle">Nepal</span>
             </div>
@@ -1290,6 +2029,7 @@
                 <button class="theme-toggle" id="themeToggle" title="Toggle Theme"><i class="fas fa-moon"></i></button>
                 <button class="lang-toggle" id="langToggle">🇳🇵 नेपाली</button>
                 <span class="badge" id="onlineStatus">● LIVE</span>
+<<<<<<< HEAD
                 <button class="admin-toggle" onclick="window.location.href='login.html'" title="Admin Login">
                     <i class="fas fa-user-shield"></i>
                 </button>
@@ -1300,10 +2040,19 @@
         <div class="screen active" id="screen-home">
 
             <!-- Emergency Button -->
+=======
+                <button class="admin-toggle" onclick="window.location.href='login.html'" title="Admin Login"><i class="fas fa-user-shield"></i></button>
+            </div>
+        </header>
+
+        <!-- ===== HOME ===== -->
+        <div class="screen active" id="screen-home">
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             <button class="emergency-btn" onclick="openEmergency()">
                 <i class="fas fa-triangle-exclamation"></i> 🚨 Emergency Report
             </button>
 
+<<<<<<< HEAD
             <!-- Stats -->
             <div class="stats-grid" id="statsGrid">
                 <div class="stat-card">
@@ -1348,16 +2097,46 @@
             </div>
 
             <!-- Recent Reports -->
+=======
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card"><div class="number" id="statTotal">0</div><div class="label" data-key="totalReports">Total Reports</div></div>
+                <div class="stat-card resolved"><div class="number" id="statResolved">0</div><div class="label" data-key="resolved">Resolved</div></div>
+                <div class="stat-card pending"><div class="number" id="statPending">0</div><div class="label" data-key="pending">Pending</div></div>
+            </div>
+
+            <div class="category-grid" id="categoryGrid">
+                <button class="category-btn" data-category="pothole" onclick="quickReport('pothole')">
+                    <i class="fas fa-circle-exclamation"></i> <span data-key="pothole">Pothole</span>
+                </button>
+                <button class="category-btn" data-category="streetlight" onclick="quickReport('streetlight')">
+                    <i class="fas fa-lightbulb"></i> <span data-key="streetlight">Streetlight</span>
+                </button>
+                <button class="category-btn" data-category="drainage" onclick="quickReport('drainage')">
+                    <i class="fas fa-water"></i> <span data-key="drainage">Drainage</span>
+                </button>
+                <button class="category-btn" data-category="garbage" onclick="quickReport('garbage')">
+                    <i class="fas fa-trash"></i> <span data-key="garbage">Garbage</span>
+                </button>
+                <button class="category-btn" data-category="landslide" onclick="quickReport('landslide')">
+                    <i class="fas fa-mountain"></i> <span data-key="landslide">Landslide</span>
+                </button>
+            </div>
+
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             <div class="section-title">
                 <span>📋 <span data-key="recentReports">Recent Reports</span></span>
                 <span class="report-count" id="reportCount">0 reports</span>
             </div>
+<<<<<<< HEAD
             <div id="reportList">
                 <div class="loading-state">
                     <i class="fas fa-spinner fa-spin"></i>
                     <span data-key="loading">Loading reports...</span>
                 </div>
             </div>
+=======
+            <div id="reportList"><div class="loading-state"><i class="fas fa-spinner fa-spin"></i> <span data-key="loading">Loading reports...</span></div></div>
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
 
             <div class="text-center mt-16">
                 <button class="btn btn-primary" onclick="showScreen('report')">
@@ -1366,6 +2145,7 @@
             </div>
         </div>
 
+<<<<<<< HEAD
         <!-- ===== REPORT FORM ===== -->
         <div class="screen" id="screen-report">
             <div class="flex-between mb-16">
@@ -1400,24 +2180,73 @@
                 <input type="hidden" id="selectedLat" value="27.7172" />
                 <input type="hidden" id="selectedLng" value="85.3240" />
                 <div class="location-status" id="locationStatus">
+=======
+        <!-- ===== REPORT FORM (BULK) ===== -->
+        <div class="screen" id="screen-report">
+            <div class="flex-between mb-16">
+                <button class="back-btn" onclick="showScreen('home')"><i class="fas fa-arrow-left"></i> <span data-key="back">Back</span></button>
+                <span class="screen-header-title" data-key="report">Report Issues</span>
+                <span class="screen-header-spacer"></span>
+            </div>
+
+            <!-- Emergency Toggle (global) -->
+            <div class="emergency-row">
+                <input type="checkbox" id="emergencyCheckbox" />
+                <label for="emergencyCheckbox" class="emergency-label">
+                    <i class="fas fa-triangle-exclamation"></i> This is an Emergency (applies to all reports)
+                </label>
+            </div>
+
+            <!-- Map (shared) -->
+            <div class="form-group">
+                <label data-key="selectLocation">Select Location <span class="required-star">*</span></label>
+                <div id="mapPicker"></div>
+                <div class="location-actions">
+                    <button class="btn btn-outline btn-sm" onclick="getCurrentLocation()">
+                        <i class="fas fa-location-dot"></i> My Location
+                    </button>
+                    <button class="btn btn-outline btn-sm" onclick="getRoute()">
+                        <i class="fas fa-directions"></i> Get Directions
+                    </button>
+                </div>
+                <input type="text" id="addressInputBulk" placeholder="Search address..." />
+                <input type="hidden" id="selectedLat" value="27.7172" />
+                <input type="hidden" id="selectedLng" value="85.3240" />
+                <div id="locationStatus">
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
                     📍 <span data-key="locationWaiting">Click on the map to select location</span>
                 </div>
             </div>
 
+<<<<<<< HEAD
             <!-- Bulk Entries Container -->
             <div id="entriesContainer"></div>
 
+=======
+            <!-- ===== BULK ENTRIES CONTAINER ===== -->
+            <div id="entriesContainer">
+                <!-- First entry will be added by JavaScript -->
+            </div>
+
+            <!-- Add More Button -->
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             <button class="add-entry-btn" id="addEntryBtn">
                 <i class="fas fa-plus"></i> Add More Issue
             </button>
 
+<<<<<<< HEAD
             <!-- Name -->
             <div class="form-group name-form-group">
+=======
+            <!-- Name (shared) -->
+            <div class="form-group top-gap">
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
                 <label data-key="yourName">Your Name (optional)</label>
                 <input type="text" id="nameInput" placeholder="e.g. Ram Sharma" />
             </div>
 
             <button class="btn btn-success" id="submitReportBtn">
+<<<<<<< HEAD
                 <i class="fas fa-paper-plane"></i> <span data-key="submit">Submit All Reports</span>
             </button>
         </div>
@@ -1430,6 +2259,18 @@
                 </button>
                 <span class="screen-heading">Report Details</span>
                 <span class="screen-heading-spacer"></span>
+=======
+                <i class="fas fa-paper-plane"></i> Submit All Reports
+            </button>
+        </div>
+
+        <!-- ===== REPORT DETAIL ===== -->
+        <div class="screen" id="screen-detail">
+            <div class="flex-between mb-16">
+                <button class="back-btn" onclick="showScreen('home')"><i class="fas fa-arrow-left"></i> <span data-key="back">Back</span></button>
+                <span class="screen-title">Report Details</span>
+                <span class="screen-header-spacer"></span>
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             </div>
             <div id="detailContent"></div>
         </div>
@@ -1447,7 +2288,11 @@
     </div>
 
     <!-- ============================================================ -->
+<<<<<<< HEAD
     <!-- ===== JAVASCRIPT (MODULE) ===== -->
+=======
+    <!-- ===== JAVASCRIPT ===== -->
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
     <!-- ============================================================ -->
 
     <script type="module">
@@ -1473,6 +2318,7 @@
 
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
         import {
+<<<<<<< HEAD
             getFirestore,
             collection,
             query,
@@ -1486,6 +2332,10 @@
             updateDoc,
             deleteDoc,
             getDoc
+=======
+            getFirestore, collection, query, orderBy, limit, getDocs, addDoc,
+            serverTimestamp, onSnapshot, doc, updateDoc, deleteDoc, getDoc
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 
         import { getTranslation, setLanguage, loadSavedLanguage } from './js/translations.js';
@@ -1500,15 +2350,22 @@
         console.log('✅ Firebase initialized!');
 
         // ================================================================
+<<<<<<< HEAD
         // SPLASH SCREEN
+=======
+        // SPLASH, OFFLINE, THEME, LANGUAGE
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         // ================================================================
 
         setTimeout(() => document.getElementById('splash').classList.add('hidden'), 1200);
 
+<<<<<<< HEAD
         // ================================================================
         // OFFLINE SUPPORT
         // ================================================================
 
+=======
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         const offlineBanner = document.getElementById('offlineBanner');
         const onlineStatus = document.getElementById('onlineStatus');
 
@@ -1527,14 +2384,18 @@
         window.addEventListener('offline', updateOnlineStatus);
         updateOnlineStatus();
 
+<<<<<<< HEAD
         // ================================================================
         // THEME TOGGLE
         // ================================================================
 
+=======
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         const themeToggle = document.getElementById('themeToggle');
         let isDark = localStorage.getItem('fixmyblock_theme') === 'dark';
 
         function applyTheme() {
+<<<<<<< HEAD
             if (isDark) {
                 document.body.classList.add('dark-theme');
                 themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
@@ -1554,13 +2415,28 @@
         // LANGUAGE
         // ================================================================
 
+=======
+            if (isDark) { document.body.classList.add('dark-theme');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>'; } else { document.body.classList.remove('dark-theme');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>'; }
+            localStorage.setItem('fixmyblock_theme', isDark ? 'dark' : 'light');
+        }
+        themeToggle.addEventListener('click', () => { isDark = !isDark;
+            applyTheme(); });
+        applyTheme();
+
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         let currentLang = loadSavedLanguage() || 'en';
         const langToggle = document.getElementById('langToggle');
 
         function applyTranslations() {
+<<<<<<< HEAD
             document.querySelectorAll('[data-key]').forEach(el => {
                 el.textContent = getTranslation(el.dataset.key);
             });
+=======
+            document.querySelectorAll('[data-key]').forEach(el => el.textContent = getTranslation(el.dataset.key));
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         }
 
         function toggleLanguage() {
@@ -1587,7 +2463,10 @@
             garbage: { label: getTranslation('garbage'), icon: 'fa-trash' },
             landslide: { label: getTranslation('landslide'), icon: 'fa-mountain' }
         };
+<<<<<<< HEAD
 
+=======
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         const STATUSES = {
             submitted: { label: getTranslation('statusSubmitted'), class: 'status-submitted' },
             reviewing: { label: getTranslation('statusReviewing'), class: 'status-reviewing' },
@@ -1596,6 +2475,7 @@
             rejected: { label: getTranslation('statusRejected'), class: 'status-rejected' }
         };
 
+<<<<<<< HEAD
         function getCategoryLabel(cat) {
             const key = CATEGORIES[cat]?.label || cat;
             return getTranslation(key) || key;
@@ -1613,6 +2493,15 @@
         function getStatusClass(status) {
             return STATUSES[status]?.class || '';
         }
+=======
+        function getCategoryLabel(cat) { const key = CATEGORIES[cat]?.label || cat; return getTranslation(key) || key; }
+
+        function getCategoryIcon(cat) { return CATEGORIES[cat]?.icon || 'fa-question'; }
+
+        function getStatusLabel(status) { const key = STATUSES[status]?.label || status; return getTranslation(key) || key; }
+
+        function getStatusClass(status) { return STATUSES[status]?.class || ''; }
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
 
         function formatTimestamp(ts) {
             if (!ts) return getTranslation('recently') || 'Recently';
@@ -1622,9 +2511,13 @@
                 if (diff < 3600000) return Math.floor(diff / 60000) + ' min ago';
                 if (diff < 86400000) return Math.floor(diff / 3600000) + ' hours ago';
                 return Math.floor(diff / 86400000) + ' days ago';
+<<<<<<< HEAD
             } catch {
                 return getTranslation('recently') || 'Recently';
             }
+=======
+            } catch { return getTranslation('recently') || 'Recently'; }
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         }
 
         function showToast(msg, type = '') {
@@ -1638,8 +2531,11 @@
         }
 
         let reportsData = [];
+<<<<<<< HEAD
         let selectedCategory = null;
         let selectedPhotos = [];
+=======
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
 
         // ================================================================
         // SCREEN NAV
@@ -1652,7 +2548,10 @@
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             const navBtn = document.querySelector(`.nav-item[data-screen="${screenId}"]`);
             if (navBtn) navBtn.classList.add('active');
+<<<<<<< HEAD
 
+=======
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             if (screenId === 'report' && !window._mapInitialized) {
                 setTimeout(() => {
                     initMapPicker('mapPicker', 27.7172, 85.3240, (lat, lng) => {
@@ -1663,12 +2562,17 @@
                     });
                     window._mapInitialized = true;
                 }, 200);
+<<<<<<< HEAD
+=======
+                // Render initial entry if not already
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
                 if (document.querySelectorAll('.report-entry').length === 0) {
                     addReportEntry();
                 }
             }
         };
 
+<<<<<<< HEAD
         // ================================================================
         // ROUTE
         // ================================================================
@@ -1687,16 +2591,27 @@
         // EMERGENCY
         // ================================================================
 
+=======
+        window.getRoute = function() {
+            const pos = getMapPosition();
+            if (pos) { window.open(`https://www.google.com/maps/dir/?api=1&destination=${pos.lat},${pos.lng}`, '_blank');
+                showToast('Opening directions...', 'info'); } else showToast('Please select a location first.', 'error');
+        };
+
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         window.openEmergency = function() {
             showScreen('report');
             document.getElementById('emergencyCheckbox').checked = true;
             showToast('⚠️ Emergency mode activated.', 'info');
         };
 
+<<<<<<< HEAD
         // ================================================================
         // LOCATION
         // ================================================================
 
+=======
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         window.getCurrentLocation = function() {
             const status = document.getElementById('locationStatus');
             status.innerHTML = '📍 Getting your location...';
@@ -1723,7 +2638,11 @@
         };
 
         // ================================================================
+<<<<<<< HEAD
         // BULK ENTRIES
+=======
+        // BULK ENTRIES – MULTIPLE PHOTOS PER ENTRY
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         // ================================================================
 
         let entryCount = 0;
@@ -1732,6 +2651,7 @@
             const num = index + 1;
             return `
                 <div class="report-entry" data-index="${index}">
+<<<<<<< HEAD
                     <button class="remove-entry" onclick="removeEntry(${index})" ${index === 0 ? 'style="display:none;"' : ''}>
                         <i class="fas fa-times"></i>
                     </button>
@@ -1739,6 +2659,13 @@
                     <div class="form-group" style="margin-bottom:6px;">
                         <label>Category <span style="color:red;">*</span></label>
                         <select class="entry-category" style="width:100%;padding:8px 10px;border:2px solid var(--gray-border);border-radius:8px;font-size:13px;background:var(--gray-light);color:var(--text);">
+=======
+                    <button class="remove-entry" onclick="removeEntry(${index})" ${index === 0 ? 'style="display:none;"' : ''}><i class="fas fa-times"></i></button>
+                    <div class="entry-number">Issue #${num}</div>
+                    <div class="form-group" style="margin-bottom:8px;">
+                        <label>Category <span style="color:red;">*</span></label>
+                        <select class="entry-category" style="width:100%;padding:8px 10px;border:2px solid var(--gray-border);border-radius:8px;font-size:14px;background:var(--gray-light);color:var(--text);">
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
                             <option value="pothole">${getTranslation('pothole')}</option>
                             <option value="streetlight">${getTranslation('streetlight')}</option>
                             <option value="drainage">${getTranslation('drainage')}</option>
@@ -1746,14 +2673,24 @@
                             <option value="landslide">${getTranslation('landslide')}</option>
                         </select>
                     </div>
+<<<<<<< HEAD
                     <div class="form-group" style="margin-bottom:6px;">
                         <label>Description (optional)</label>
                         <textarea class="entry-description" placeholder="Describe this specific issue..." style="width:100%;padding:8px 10px;border:2px solid var(--gray-border);border-radius:8px;font-size:13px;font-family:inherit;background:var(--gray-light);color:var(--text);min-height:45px;"></textarea>
+=======
+                    <div class="form-group" style="margin-bottom:8px;">
+                        <label>Description (optional)</label>
+                        <textarea class="entry-description" placeholder="Describe this specific issue..." style="width:100%;padding:8px 10px;border:2px solid var(--gray-border);border-radius:8px;font-size:14px;font-family:inherit;background:var(--gray-light);color:var(--text);min-height:50px;"></textarea>
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
                     </div>
                     <div class="form-group" style="margin-bottom:4px;">
                         <label>Photos (up to 5)</label>
                         <input type="file" class="entry-photo-input" accept="image/*" multiple style="display:none;" />
+<<<<<<< HEAD
                         <button class="btn btn-outline btn-sm" onclick="triggerPhoto(${index})" style="width:auto;padding:4px 10px;font-size:11px;">
+=======
+                        <button class="btn btn-outline btn-sm" onclick="triggerPhoto(${index})" style="width:auto;padding:4px 12px;font-size:12px;">
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
                             <i class="fas fa-camera"></i> Upload Photos
                         </button>
                         <div class="entry-photo-gallery" id="entryGallery${index}"></div>
@@ -1793,6 +2730,14 @@
                     const img = document.createElement('img');
                     img.src = ev.target.result;
                     img.alt = 'Photo';
+<<<<<<< HEAD
+=======
+                    img.style.width = '100%';
+                    img.style.height = '60px';
+                    img.style.objectFit = 'cover';
+                    img.style.borderRadius = '6px';
+                    img.style.border = '1px solid var(--gray-border)';
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
                     gallery.appendChild(img);
                 };
                 reader.readAsDataURL(file);
@@ -1869,7 +2814,11 @@
         });
 
         // ================================================================
+<<<<<<< HEAD
         // SUBMIT (BULK WITH PHOTOS + EMERGENCY)
+=======
+        // SUBMIT ALL REPORTS (with multiple photos per entry + emergency)
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         // ================================================================
 
         document.getElementById('submitReportBtn').addEventListener('click', async function() {
@@ -1909,6 +2858,10 @@
             btn.innerHTML = `<span class="spinner"></span> Submitting ${reportData.length} reports...`;
 
             try {
+<<<<<<< HEAD
+=======
+                // Upload photos for each entry
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
                 const uploadPromises = reportData.map(async (data) => {
                     const photoUrls = [];
                     const filesToUpload = data.photoFiles.slice(0, 5);
@@ -1947,11 +2900,19 @@
 
                 const count = allData.length;
                 if (isEmergency) {
+<<<<<<< HEAD
                     console.log(`🚨 ${count} emergency reports submitted!`);
+=======
+                    console.log(`🚨 ${count} emergency reports submitted! Notifying authorities...`);
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
                     showToast(`🚨 ${count} emergency reports sent to authorities!`, 'info');
                 }
                 showToast(`✅ ${count} reports submitted successfully!`, 'success');
 
+<<<<<<< HEAD
+=======
+                // Reset form
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
                 document.getElementById('emergencyCheckbox').checked = false;
                 document.getElementById('nameInput').value = '';
                 document.querySelectorAll('.report-entry').forEach(el => el.remove());
@@ -1988,6 +2949,7 @@
             }, (error) => {
                 console.error('Listener error:', error);
                 document.getElementById('reportList').innerHTML = `
+<<<<<<< HEAD
                     <div class="error-state">
                         <i class="fas fa-exclamation-circle"></i>
                         <h3>Error Loading Reports</h3>
@@ -1995,6 +2957,11 @@
                         <button onclick="location.reload()" class="btn btn-sm btn-primary" style="margin-top:10px;padding:8px 20px;background:#1a73e8;color:#fff;border:none;border-radius:8px;cursor:pointer;">Retry</button>
                     </div>
                 `;
+=======
+                    <div class="error-state"><i class="fas fa-exclamation-circle"></i>
+                    <h3>Error Loading Reports</h3><p>${error.message}</p>
+                    <button onclick="location.reload()" class="btn btn-sm btn-primary" style="margin-top:10px;padding:8px 20px;background:#1a73e8;color:#fff;border:none;border-radius:8px;cursor:pointer;">Retry</button></div>`;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
             });
         }
 
@@ -2002,6 +2969,7 @@
             const container = document.getElementById('reportList');
             document.getElementById('reportCount').textContent = reports.length + ' ' + getTranslation('reports');
             if (reports.length === 0) {
+<<<<<<< HEAD
                 container.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-inbox"></i>
@@ -2009,6 +2977,9 @@
                         <p>${getTranslation('beFirst')}</p>
                     </div>
                 `;
+=======
+                container.innerHTML = `<div class="empty-state"><i class="fas fa-inbox"></i><h3>${getTranslation('noReports')}</h3><p>${getTranslation('beFirst')}</p></div>`;
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
                 return;
             }
             container.innerHTML = reports.map(r => `
@@ -2017,12 +2988,20 @@
                         <div>
                             <span class="category-icon"><i class="fas ${getCategoryIcon(r.category)}"></i></span>
                             <span class="title">${getCategoryLabel(r.category)}</span>
+<<<<<<< HEAD
                             ${r.isEmergency ? '<span class="badge-emergency">🚨 EMERGENCY</span>' : ''}
+=======
+                            ${r.isEmergency ? '<span style="background:#ea4335;color:#fff;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;">🚨 EMERGENCY</span>' : ''}
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
                         </div>
                         <span class="status-badge ${getStatusClass(r.status || 'submitted')}">${getStatusLabel(r.status || 'submitted')}</span>
                     </div>
                     <div class="location"><i class="fas fa-location-dot"></i> ${r.location || 'Unknown location'}</div>
+<<<<<<< HEAD
                     <div style="font-size:13px;color:var(--text-muted);margin:4px 0;">${r.description ? r.description.substring(0,80)+(r.description.length>80?'...':'') : 'No description'}</div>
+=======
+                    <div style="font-size:13px;color:#555;margin:4px 0 6px;">${r.description ? r.description.substring(0,80)+(r.description.length>80?'...':'') : 'No description'}</div>
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
                     <div class="footer">
                         <span>${formatTimestamp(r.createdAt)}</span>
                         ${r.photoUrls && r.photoUrls.length > 0 ? `<span><i class="fas fa-image"></i> ${r.photoUrls.length} photos</span>` : ''}
@@ -2043,7 +3022,11 @@
         }
 
         // ================================================================
+<<<<<<< HEAD
         // REPORT DETAIL
+=======
+        // REPORT DETAIL (unchanged)
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         // ================================================================
 
         window.showReportDetail = async function(reportId) {
@@ -2051,16 +3034,24 @@
             const container = document.getElementById('detailContent');
             try {
                 const snap = await getDoc(doc(db, 'reports', reportId));
+<<<<<<< HEAD
                 if (!snap.exists()) {
                     container.innerHTML = '<div class="error-state"><i class="fas fa-exclamation-circle"></i><p>Report not found</p></div>';
                     return;
                 }
+=======
+                if (!snap.exists()) { container.innerHTML = '<div class="error-state"><i class="fas fa-exclamation-circle"></i><p>Report not found</p></div>'; return; }
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
                 const r = { id: snap.id, ...snap.data() };
                 const photoHtml = r.photoUrls && r.photoUrls.length > 0 ?
                     `<div class="photo-gallery" style="grid-template-columns:repeat(${Math.min(r.photoUrls.length,3)},1fr);">
                         ${r.photoUrls.map(url => `<img src="${url}" alt="Report photo" onclick="window.open('${url}','_blank')" />`).join('')}
                     </div>` :
+<<<<<<< HEAD
                     '<div style="color:var(--text-muted);font-size:13px;">No photos</div>';
+=======
+                    '<div style="color:#888;font-size:13px;">No photos</div>';
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
                 const ratingHtml = r.status === 'resolved' ?
                     `<div style="margin-top:16px;padding:16px;background:var(--gray-light);border-radius:12px;">
                         <p style="font-weight:600;margin-bottom:4px;">Rate this resolution</p>
@@ -2072,8 +3063,13 @@
                     '';
                 container.innerHTML = `
                     <div style="background:var(--gray-light);border-radius:12px;padding:16px;">
+<<<<<<< HEAD
                         <h3 style="font-size:18px;"><i class="fas ${getCategoryIcon(r.category)}" style="color:var(--primary);"></i> ${getCategoryLabel(r.category)}</h3>
                         ${r.isEmergency ? '<span style="background:var(--secondary);color:#fff;padding:4px 12px;border-radius:4px;font-size:12px;font-weight:700;display:inline-block;margin:4px 0;">🚨 EMERGENCY</span>' : ''}
+=======
+                        <h3 style="font-size:18px;"><i class="fas ${getCategoryIcon(r.category)}" style="color:#1a73e8;"></i> ${getCategoryLabel(r.category)}</h3>
+                        ${r.isEmergency ? '<span style="background:#ea4335;color:#fff;padding:4px 12px;border-radius:4px;font-size:12px;font-weight:700;display:inline-block;margin:4px 0;">🚨 EMERGENCY</span>' : ''}
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
                         <div style="margin:6px 0;"><i class="fas fa-location-dot"></i> ${r.location || 'Unknown location'}</div>
                         <div style="margin:6px 0;"><i class="fas fa-user"></i> ${r.submittedBy || 'Anonymous'}</div>
                         <div style="margin:6px 0;"><i class="fas fa-clock"></i> ${formatTimestamp(r.createdAt)}</div>
@@ -2087,6 +3083,7 @@
                             <button class="btn btn-sm btn-primary" onclick="getRoute()" style="width:auto;padding:8px 16px;"><i class="fas fa-directions"></i> Directions</button>
                             <button class="btn btn-sm btn-outline" onclick="window.open('https://www.google.com/maps?q=${r.latitude},${r.longitude}','_blank')" style="width:auto;padding:8px 16px;"><i class="fas fa-map"></i> Open Map</button>
                         </div>
+<<<<<<< HEAD
                     </div>
                 `;
             } catch (error) {
@@ -2099,6 +3096,13 @@
         // SUBMIT RATING
         // ================================================================
 
+=======
+                    </div>`;
+            } catch (error) { console.error('Error loading detail:', error);
+                container.innerHTML = '<div class="error-state"><i class="fas fa-exclamation-circle"></i><p>Error loading report</p></div>'; }
+        };
+
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         window.submitRating = async function(reportId, rating) {
             try {
                 const ref = doc(db, 'reports', reportId);
@@ -2115,6 +3119,7 @@
                 });
                 document.getElementById('ratingMessage').textContent = '✅ Thank you for your feedback!';
                 showToast('✅ Rating submitted!', 'success');
+<<<<<<< HEAD
             } catch (error) {
                 console.error('Rating error:', error);
                 showToast('Error submitting rating', 'error');
@@ -2142,6 +3147,10 @@
                 }
             });
             document.getElementById('formCategoryError').style.display = 'none';
+=======
+            } catch (error) { console.error('Rating error:', error);
+                showToast('Error submitting rating', 'error'); }
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         };
 
         // ================================================================
@@ -2149,6 +3158,7 @@
         // ================================================================
 
         async function testConnection() {
+<<<<<<< HEAD
             try {
                 await getDocs(collection(db, 'reports'));
                 console.log('✅ Firestore connected!');
@@ -2158,6 +3168,13 @@
                 document.getElementById('reportList').innerHTML =
                     `<div class="error-state"><i class="fas fa-exclamation-circle"></i><h3>Connection Error</h3><p>${error.message}</p><button onclick="location.reload()" class="btn btn-sm btn-primary" style="margin-top:10px;">Retry</button></div>`;
             }
+=======
+            try { await getDocs(collection(db, 'reports'));
+                console.log('✅ Firestore connected!');
+                listenToReports(); } catch (error) { console.error('Firestore connection failed:', error);
+                document.getElementById('reportList').innerHTML =
+                `<div class="error-state"><i class="fas fa-exclamation-circle"></i><h3>Connection Error</h3><p>${error.message}</p><button onclick="location.reload()" class="btn btn-sm btn-primary" style="margin-top:10px;">Retry</button></div>`; }
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         }
         testConnection();
 
@@ -2166,16 +3183,31 @@
         window.showScreen = showScreen;
         window.showReportDetail = showReportDetail;
         window.submitRating = submitRating;
+<<<<<<< HEAD
         window.quickReport = quickReport;
         window.selectFormCategory = selectFormCategory;
+=======
+        window.quickReport = function(category) {
+            showScreen('report');
+            const entries = document.querySelectorAll('.report-entry');
+            if (entries.length) {
+                const sel = entries[0].querySelector('.entry-category');
+                if (sel) sel.value = category;
+            }
+        };
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
         window.getRoute = getRoute;
         window.getCurrentLocation = getCurrentLocation;
         window.openEmergency = openEmergency;
         window.removeEntry = removeEntry;
         window.triggerPhoto = triggerPhoto;
 
+<<<<<<< HEAD
         console.log('🏗️ FixMyBlock Nepal - Phase 3 UI/UX Loaded!');
         console.log('🇳🇵 Nepal-themed modern design with full mobile responsiveness.');
+=======
+        console.log('🏗️ FixMyBlock Nepal - Bulk Reporting with Multiple Photos per Entry Loaded!');
+>>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
     </script>
 
 </body>
