@@ -1,5 +1,4 @@
 /* ================================================================
-<<<<<<< HEAD
    FIXMYBLOCK NEPAL – COMPLETE MOBILE RESPONSIVENESS
    ================================================================ */
 
@@ -420,7 +419,8 @@ html, body {
         box-shadow: none !important;
         border-radius: 0 !important;
     }
-=======
+}
+
    FIXMYBLOCK NEPAL - RESPONSIVE STYLES
    ================================================================ */
 
@@ -545,5 +545,4 @@ html, body {
 /* ===== DARK MODE (future) ===== */
 @media (prefers-color-scheme: dark) {
     /* Will be implemented in future */
->>>>>>> 25f6b602a867101dc2c96226c6752420d98429ec
 }
