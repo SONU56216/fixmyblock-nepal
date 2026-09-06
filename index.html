@@ -4,73 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FixMyBlock Nepal</title>
-    <!-- ===== PWA CONFIG ===== -->
+
     <link rel="manifest" href="manifest.json" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16.png" />
 
-    <!-- ===== FONTS & ICONS ===== -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-    <!-- ===== STYLES ===== -->
     <style>
-        /* Fix: Keep "Report an Issue" button above bottom nav */
-#screen-home {
-    padding-bottom: 100px;
-}
-
-/* Alternative: add margin to the button container */
-.text-center.mt-16 {
-    margin-bottom: 80px;
-}
-/* ================================================================
-   FIX: CONTENT NOT HIDDEN BEHIND BOTTOM NAV
-   ================================================================ */
-
-/* Add extra bottom padding to all screens that have scrollable content */
-#screen-home,
-#screen-report,
-#screen-detail {
-    padding-bottom: 100px;
-}
-
-/* On small phones, more space is needed */
-@media (max-width: 480px) {
-    #screen-home,
-    #screen-report,
-    #screen-detail {
-        padding-bottom: 130px;
-    }
-}
-
-/* On landscape, less space */
-@media (orientation: landscape) and (max-height: 500px) {
-    #screen-home,
-    #screen-report,
-    #screen-detail {
-        padding-bottom: 70px;
-    }
-}
-
-/* Ensure the submit button has breathing room */
-#submitReportBtn {
-    margin-bottom: 20px;
-}
-
-/* For the "Report an Issue" button on home */
-.text-center.mt-16 {
-    margin-bottom: 20px;
-}
         /* ================================================================
-           FIXMYBLOCK NEPAL – COMPLETE MODERN UI (Phase 3)
+           FIXMYBLOCK NEPAL – COMPLETE MODERN UI (with Mobile Fix)
            ================================================================ */
 
-        /* ----- CSS Variables ----- */
         :root {
             --primary: #1a73e8;
             --primary-dark: #0d47a1;
@@ -95,7 +43,6 @@
             --max-width: 480px;
         }
 
-        /* ----- Dark Theme ----- */
         body.dark-theme {
             --card-bg: #1e1e2e;
             --bg: #121212;
@@ -108,7 +55,6 @@
             --secondary-light: #3a1a2a;
         }
 
-        /* ----- Base ----- */
         * {
             margin: 0;
             padding: 0;
@@ -132,7 +78,7 @@
             line-height: 1.6;
         }
 
-        /* ----- Glass Background ----- */
+        /* Glass Background */
         body.has-glass-bg {
             background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTf9wMS1VZNluak-Y2e9pHdYvTevRfEHYj4CJi7tdvIgQ&s=10');
             background-size: cover;
@@ -155,31 +101,7 @@
             background: rgba(0, 0, 0, 0.65);
         }
 
-        /* ----- Container ----- */
-        .app-container {
-            max-width: var(--max-width);
-            margin: 16px auto;
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            padding: 0 0 20px 0;
-            transition: var(--transition);
-            width: calc(100% - 24px);
-        }
-
-        body.has-glass-bg .app-container {
-            background: rgba(255, 255, 255, 0.88);
-            -webkit-backdrop-filter: blur(12px);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-
-        body.dark-theme.has-glass-bg .app-container {
-            background: rgba(0, 0, 0, 0.7);
-        }
-
-        /* ----- Splash Screen ----- */
+        /* ===== SPLASH ===== */
         #splash {
             position: fixed;
             top: 0;
@@ -233,7 +155,7 @@
             }
         }
 
-        /* ----- Offline Banner ----- */
+        /* ===== OFFLINE BANNER ===== */
         .offline-banner {
             background: var(--secondary);
             color: #fff;
@@ -247,7 +169,31 @@
             display: block;
         }
 
-        /* ----- Header ----- */
+        /* ===== APP CONTAINER ===== */
+        .app-container {
+            max-width: var(--max-width);
+            margin: 16px auto;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            padding: 0 0 20px 0;
+            transition: var(--transition);
+            width: calc(100% - 24px);
+        }
+
+        body.has-glass-bg .app-container {
+            background: rgba(255, 255, 255, 0.88);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        body.dark-theme.has-glass-bg .app-container {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        /* ===== HEADER ===== */
         .app-header {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             padding: 14px 16px;
@@ -280,13 +226,60 @@
             opacity: 0.8;
             margin-left: -4px;
         }
+        .report-count,
+        .location-status {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .screen-title {
+            font-weight: 600;
+            font-size: 17px;
+        }
+        .screen-title-spacer {
+            width: 40px;
+        }
+        .emergency-toggle-row,
+        .location-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .emergency-toggle-row {
+            margin-bottom: 14px;
+        }
+        .emergency-label {
+            font-weight: 600;
+            color: var(--secondary);
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .required-mark {
+            color: red;
+        }
+        .location-actions {
+            gap: 8px;
+            margin-top: 6px;
+        }
+        .address-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid var(--gray-border);
+            border-radius: 10px;
+            margin-top: 6px;
+            font-size: 14px;
+            background: var(--gray-light);
+            color: var(--text);
+        }
+        .form-group-name {
+            margin-top: 16px;
+        }
         .app-header .badge {
             background: rgba(255, 255, 255, 0.15);
             padding: 2px 8px;
             border-radius: 20px;
             font-size: 9px;
             font-weight: 600;
-            letter-spacing: 0.3px;
             display: none;
         }
         .header-right {
@@ -318,7 +311,7 @@
             padding: 3px 8px;
         }
 
-        /* ----- Screens ----- */
+        /* ===== SCREENS ===== */
         .screen {
             display: none;
             padding: 16px 14px 20px;
@@ -338,7 +331,7 @@
             }
         }
 
-        /* ----- Stats Cards ----- */
+        /* ===== STATS ===== */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -352,8 +345,6 @@
             text-align: center;
             border: 1px solid var(--gray-border);
             transition: var(--transition);
-            position: relative;
-            overflow: hidden;
             min-height: 60px;
             display: flex;
             flex-direction: column;
@@ -381,11 +372,8 @@
         .stat-card.pending .number {
             color: var(--secondary);
         }
-        .stat-card .stat-icon {
-            display: none;
-        }
 
-        /* ----- Category Grid ----- */
+        /* ===== CATEGORIES ===== */
         .category-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -404,14 +392,12 @@
             font-weight: 500;
             font-size: 10px;
             color: var(--text);
-            position: relative;
             min-height: 50px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
         }
-        .category-btn i,
         .category-btn .category-emoji {
             font-size: 20px;
             display: block;
@@ -428,7 +414,7 @@
             color: var(--primary);
         }
 
-        /* ----- Emergency Button ----- */
+        /* ===== EMERGENCY ===== */
         .emergency-btn {
             background: linear-gradient(135deg, var(--secondary), #b71c1c);
             color: #fff;
@@ -465,7 +451,7 @@
             }
         }
 
-        /* ----- Report Card ----- */
+        /* ===== REPORT CARD ===== */
         .report-card {
             background: var(--card-bg);
             border: 1px solid var(--gray-border);
@@ -500,9 +486,6 @@
             color: var(--text-muted);
             margin: 2px 0 4px;
         }
-        .report-card .location i {
-            margin-right: 4px;
-        }
         .report-card .footer {
             display: flex;
             justify-content: space-between;
@@ -531,7 +514,7 @@
             }
         }
 
-        /* ----- Status Badge ----- */
+        /* ===== STATUS BADGE ===== */
         .status-badge {
             display: inline-block;
             padding: 2px 10px;
@@ -557,7 +540,7 @@
             background: #616161;
         }
 
-        /* ----- Section Title ----- */
+        /* ===== SECTION TITLE ===== */
         .section-title {
             font-size: 15px;
             font-weight: 600;
@@ -567,7 +550,7 @@
             align-items: center;
         }
 
-        /* ----- Form ----- */
+        /* ===== FORM ===== */
         .form-group {
             margin-bottom: 14px;
         }
@@ -606,7 +589,7 @@
             resize: vertical;
         }
 
-        /* ----- Bulk Entry ----- */
+        /* ===== BULK ENTRY ===== */
         .report-entry {
             background: var(--gray-light);
             border: 1px solid var(--gray-border);
@@ -673,7 +656,7 @@
             color: #fff;
         }
 
-        /* ----- Photo Gallery (main) ----- */
+        /* ===== PHOTO GALLERY ===== */
         .photo-gallery {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -716,7 +699,7 @@
             margin-bottom: 2px;
         }
 
-        /* ----- Map ----- */
+        /* ===== MAP ===== */
         #mapPicker {
             width: 100% !important;
             height: 200px;
@@ -744,7 +727,126 @@
             margin-top: 4px;
         }
 
-        /* ----- Buttons ----- */
+        /* ===== CHAT ===== */
+        .chat-container {
+            max-height: 350px;
+            overflow-y: auto;
+            padding: 12px;
+            background: var(--gray-light);
+            border-radius: var(--radius-sm);
+            margin-top: 12px;
+            border: 1px solid var(--gray-border);
+        }
+
+        .chat-message {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 8px;
+            max-width: 85%;
+        }
+
+        .chat-message.sent {
+            align-items: flex-end;
+            margin-left: auto;
+        }
+
+        .chat-message.received {
+            align-items: flex-start;
+            margin-right: auto;
+        }
+
+        .chat-bubble {
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            word-wrap: break-word;
+            max-width: 100%;
+        }
+
+        .chat-message.sent .chat-bubble {
+            background: var(--primary);
+            color: #fff;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-message.received .chat-bubble {
+            background: var(--card-bg);
+            color: var(--text);
+            border: 1px solid var(--gray-border);
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-message .chat-time {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .chat-message .chat-photo {
+            max-width: 180px;
+            border-radius: 8px;
+            margin-top: 4px;
+            cursor: pointer;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .chat-input-area input[type="text"] {
+            flex: 1;
+            padding: 10px 14px;
+            border: 2px solid var(--gray-border);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            background: var(--card-bg);
+            color: var(--text);
+            min-width: 120px;
+        }
+
+        .chat-input-area input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .chat-input-area .btn {
+            width: auto;
+            padding: 10px 16px;
+            border-radius: var(--radius-sm);
+        }
+
+        .chat-input-area .btn-chat-send {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+        }
+
+        .chat-input-area .btn-chat-send:hover {
+            background: var(--primary-dark);
+        }
+
+        .chat-input-area .btn-chat-photo {
+            background: var(--gray-light);
+            color: var(--text);
+            border: 2px solid var(--gray-border);
+        }
+
+        .chat-input-area .btn-chat-photo:hover {
+            background: var(--gray-border);
+        }
+
+        .chat-empty {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 13px;
+            padding: 16px;
+        }
+
+        /* ===== BUTTONS ===== */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -800,7 +902,7 @@
             width: auto;
         }
 
-        /* ----- Back Button ----- */
+        /* ===== BACK BUTTON ===== */
         .back-btn {
             background: none;
             border: none;
@@ -815,7 +917,7 @@
             color: var(--primary);
         }
 
-        /* ----- Utility ----- */
+        /* ===== UTILITY ===== */
         .flex-between {
             display: flex;
             justify-content: space-between;
@@ -844,7 +946,7 @@
             animation: spin 0.8s linear infinite;
         }
 
-        /* ----- Toast ----- */
+        /* ===== TOAST ===== */
         .toast {
             position: fixed;
             bottom: 80px;
@@ -883,7 +985,7 @@
             color: #fff;
         }
 
-        /* ----- Bottom Nav ----- */
+        /* ===== BOTTOM NAV ===== */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -944,7 +1046,7 @@
             transform: scale(0.92);
         }
 
-        /* ----- Loading / Empty States ----- */
+        /* ===== STATES ===== */
         .empty-state,
         .loading-state,
         .error-state {
@@ -978,115 +1080,66 @@
         }
 
         /* ================================================================
-           RESPONSIVE – SMALL PHONES (360px and below)
+           MOBILE FIX – Report Button Always Visible
            ================================================================ */
-        @media (max-width: 360px) {
-            .app-container {
-                margin: 8px 6px;
-                width: calc(100% - 12px);
-                border-radius: 12px;
-            }
-            .app-header {
-                padding: 10px 12px;
-            }
-            .app-header .logo {
-                font-size: 15px;
-            }
-            .app-header .logo img {
-                width: 24px;
-                height: 24px;
-            }
 
-            .stats-grid {
-                gap: 4px;
-            }
-            .stat-card {
-                padding: 8px 2px;
-                min-height: 50px;
-            }
-            .stat-card .number {
-                font-size: 16px;
-            }
-            .stat-card .label {
-                font-size: 9px;
-            }
+        /* Add extra bottom padding to home screen */
+        #screen-home {
+            padding-bottom: 120px;
+        }
 
-            .category-grid {
-                gap: 3px;
+        /* On small phones, more padding */
+        @media (max-width: 480px) {
+            #screen-home {
+                padding-bottom: 140px;
             }
-            .category-btn {
-                padding: 6px 2px;
-                font-size: 9px;
-                min-height: 40px;
+            .text-center.mt-16 {
+                margin-bottom: 30px;
             }
-            .category-btn i,
-            .category-btn .category-emoji {
-                font-size: 16px;
-            }
-
-            .report-card {
-                padding: 10px 12px;
-            }
-            .report-card .title {
-                font-size: 13px;
-            }
-
-            .bottom-nav {
-                padding: 4px 0 env(safe-area-inset-bottom, 4px) 0;
-            }
-            .nav-item {
-                padding: 2px 6px;
-                font-size: 9px;
-            }
-            .nav-item i {
-                font-size: 16px;
-            }
-            .nav-item .fab {
-                width: 38px;
-                height: 38px;
-                font-size: 18px;
-            }
-
-            #mapPicker {
-                height: 160px;
-            }
-
-            .form-group input,
-            .form-group textarea,
-            .form-group select {
-                font-size: 13px;
-                padding: 8px 10px;
-            }
-
-            .btn {
-                padding: 10px 16px;
-                font-size: 13px;
-            }
-
-            .emergency-btn {
-                font-size: 12px;
-                padding: 10px 12px;
-            }
-
-            .toast {
-                font-size: 13px;
-                padding: 10px 14px;
-                bottom: 70px;
-            }
-
-            .photo-gallery img,
-            .photo-gallery .add-photo {
-                height: 50px;
-            }
-            .report-entry .entry-photo-gallery img {
-                height: 40px;
+            #screen-report,
+            #screen-detail {
+                padding-bottom: 140px;
             }
         }
 
+        /* On extra small phones */
+        @media (max-width: 360px) {
+            #screen-home {
+                padding-bottom: 160px;
+            }
+            #screen-report,
+            #screen-detail {
+                padding-bottom: 160px;
+            }
+        }
+
+        /* On landscape mode */
+        @media (orientation: landscape) and (max-height: 500px) {
+            #screen-home {
+                padding-bottom: 80px;
+            }
+            #screen-report,
+            #screen-detail {
+                padding-bottom: 80px;
+            }
+        }
+
+        /* Ensure the button has proper spacing */
+        #screen-home .btn-primary {
+            margin-top: 8px;
+        }
+
+        /* Also fix report and detail screens */
+        #screen-report,
+        #screen-detail {
+            padding-bottom: 120px;
+        }
+
         /* ================================================================
-           MEDIUM PHONES (361px – 480px)
+           RESPONSIVE (remaining)
            ================================================================ */
-        @media (min-width: 361px) and (max-width: 480px) {
+
+        @media (max-width: 480px) {
             .app-container {
                 margin: 10px 12px;
                 width: calc(100% - 24px);
@@ -1103,85 +1156,64 @@
             #mapPicker {
                 height: 180px;
             }
-            .report-entry .entry-photo-gallery img {
-                height: 50px;
+            .chat-container {
+                max-height: 250px;
+            }
+            .chat-input-area {
+                flex-wrap: wrap;
+            }
+            .chat-input-area input[type="text"] {
+                min-width: 100%;
             }
         }
 
-        /* ================================================================
-           TABLETS (481px – 768px)
-           ================================================================ */
-        @media (min-width: 481px) and (max-width: 768px) {
+        @media (max-width: 360px) {
             .app-container {
-                max-width: 100%;
-                margin: 16px 20px;
-                width: calc(100% - 40px);
+                margin: 8px 6px;
+                width: calc(100% - 12px);
+                border-radius: 12px;
+            }
+            .app-header .logo {
+                font-size: 15px;
             }
             .stats-grid {
-                gap: 12px;
+                gap: 4px;
+            }
+            .stat-card {
+                padding: 8px 2px;
+                min-height: 50px;
             }
             .stat-card .number {
-                font-size: 26px;
+                font-size: 16px;
             }
-            .category-grid {
-                gap: 6px;
+            .category-btn {
+                font-size: 9px;
+                padding: 6px 2px;
+                min-height: 40px;
             }
-            #mapPicker {
-                height: 280px;
-            }
-            .bottom-nav {
-                max-width: 100%;
-            }
-            .photo-gallery img,
-            .photo-gallery .add-photo {
-                height: 80px;
-            }
-            .report-entry .entry-photo-gallery img {
-                height: 70px;
-            }
-        }
-
-        /* ================================================================
-           DESKTOPS (769px and above)
-           ================================================================ */
-        @media (min-width: 769px) {
-            .app-container {
-                max-width: 480px;
-                margin: 24px auto;
-                width: 100%;
-            }
-            .stats-grid {
-                gap: 12px;
-            }
-            .stat-card .number {
-                font-size: 28px;
-            }
-            .category-grid {
-                gap: 8px;
+            .category-btn .category-emoji {
+                font-size: 16px;
             }
             #mapPicker {
-                height: 280px;
+                height: 160px;
             }
-            .bottom-nav {
-                max-width: 480px;
+            .bottom-nav .nav-item {
+                padding: 2px 6px;
+                font-size: 9px;
+            }
+            .bottom-nav .nav-item i {
+                font-size: 16px;
+            }
+            .bottom-nav .nav-item .fab {
+                width: 38px;
+                height: 38px;
+                font-size: 18px;
+            }
+            .chat-container {
+                max-height: 200px;
             }
         }
 
-        /* ================================================================
-           SAFE AREA FOR NOTCH PHONES
-           ================================================================ */
-        @supports (padding: max(0px)) {
-            .bottom-nav {
-                padding-bottom: max(6px, env(safe-area-inset-bottom));
-            }
-            .app-header {
-                padding-top: max(10px, env(safe-area-inset-top));
-            }
-        }
-
-        /* ================================================================
-           LANDSCAPE MODE FIXES
-           ================================================================ */
         @media (orientation: landscape) and (max-height: 500px) {
             .app-container {
                 margin: 6px 10px;
@@ -1192,10 +1224,6 @@
             }
             .app-header .logo {
                 font-size: 14px;
-            }
-            .app-header .logo img {
-                width: 20px;
-                height: 20px;
             }
             .stats-grid {
                 gap: 4px;
@@ -1212,20 +1240,20 @@
                 font-size: 8px;
                 min-height: 30px;
             }
-            .category-btn i {
+            .category-btn .category-emoji {
                 font-size: 14px;
+            }
+            #mapPicker {
+                height: 120px;
             }
             .report-card {
                 padding: 6px 10px;
                 margin-bottom: 4px;
             }
-            #mapPicker {
-                height: 120px;
-            }
             .bottom-nav {
                 padding: 2px 0;
             }
-            .nav-item .fab {
+            .bottom-nav .nav-item .fab {
                 width: 32px;
                 height: 32px;
                 font-size: 16px;
@@ -1254,12 +1282,15 @@
             .photo-gallery .add-photo {
                 height: 40px;
             }
+            .chat-container {
+                max-height: 150px;
+            }
         }
     </style>
 </head>
 <body class="has-glass-bg">
 
-    <!-- ===== SPLASH SCREEN ===== -->
+    <!-- ===== SPLASH ===== -->
     <div id="splash">
         <img src="assets/icons/icon-192.png" alt="FixMyBlock Nepal" />
         <h1>FixMyBlock</h1>
@@ -1295,34 +1326,28 @@
             </div>
         </header>
 
-        <!-- ===== HOME SCREEN ===== -->
+        <!-- ===== HOME ===== -->
         <div class="screen active" id="screen-home">
 
-            <!-- Emergency Button -->
             <button class="emergency-btn" onclick="openEmergency()">
                 <i class="fas fa-triangle-exclamation"></i> 🚨 Emergency Report
             </button>
 
-            <!-- Stats -->
             <div class="stats-grid" id="statsGrid">
                 <div class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-flag"></i></div>
                     <div class="number" id="statTotal">0</div>
                     <div class="label" data-key="totalReports">Total Reports</div>
                 </div>
                 <div class="stat-card resolved">
-                    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
                     <div class="number" id="statResolved">0</div>
                     <div class="label" data-key="resolved">Resolved</div>
                 </div>
                 <div class="stat-card pending">
-                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
                     <div class="number" id="statPending">0</div>
                     <div class="label" data-key="pending">Pending</div>
                 </div>
             </div>
 
-            <!-- Categories -->
             <div class="category-grid" id="categoryGrid">
                 <button class="category-btn" data-category="pothole" onclick="quickReport('pothole')">
                     <span class="category-emoji">🕳️</span>
@@ -1346,7 +1371,6 @@
                 </button>
             </div>
 
-            <!-- Recent Reports -->
             <div class="section-title">
                 <span>📋 <span data-key="recentReports">Recent Reports</span></span>
                 <span class="report-count" id="reportCount">0 reports</span>
@@ -1371,31 +1395,29 @@
                 <button class="back-btn" onclick="showScreen('home')">
                     <i class="fas fa-arrow-left"></i> <span data-key="back">Back</span>
                 </button>
-                <span class="screen-heading" data-key="report">Report Issues</span>
-                <span class="screen-heading-spacer"></span>
+                <span class="screen-title" data-key="report">Report Issues</span>
+                <span class="screen-title-spacer"></span>
             </div>
 
-            <!-- Emergency Toggle -->
-            <div class="emergency-toggle">
+            <div class="emergency-toggle-row">
                 <input type="checkbox" id="emergencyCheckbox" />
-                <label for="emergencyCheckbox">
+                <label for="emergencyCheckbox" class="emergency-label">
                     <i class="fas fa-triangle-exclamation"></i> This is an Emergency
                 </label>
             </div>
 
-            <!-- Map -->
             <div class="form-group">
                 <label data-key="selectLocation">Select Location <span class="required-mark">*</span></label>
                 <div id="mapPicker"></div>
                 <div class="location-actions">
-                    <button class="btn btn-outline btn-sm location-action-btn" onclick="getCurrentLocation()">
+                    <button class="btn btn-outline btn-sm" onclick="getCurrentLocation()">
                         <i class="fas fa-location-dot"></i> My Location
                     </button>
-                    <button class="btn btn-outline btn-sm location-action-btn" onclick="getRoute()">
+                    <button class="btn btn-outline btn-sm" onclick="getRoute()">
                         <i class="fas fa-directions"></i> Get Directions
                     </button>
                 </div>
-                <input class="address-input" type="text" id="addressInput" placeholder="Search address..." />
+                <input type="text" id="addressInput" class="address-input" placeholder="Search address..." />
                 <input type="hidden" id="selectedLat" value="27.7172" />
                 <input type="hidden" id="selectedLng" value="85.3240" />
                 <div class="location-status" id="locationStatus">
@@ -1403,15 +1425,13 @@
                 </div>
             </div>
 
-            <!-- Bulk Entries Container -->
             <div id="entriesContainer"></div>
 
             <button class="add-entry-btn" id="addEntryBtn">
                 <i class="fas fa-plus"></i> Add More Issue
             </button>
 
-            <!-- Name -->
-            <div class="form-group name-form-group">
+            <div class="form-group form-group-name">
                 <label data-key="yourName">Your Name (optional)</label>
                 <input type="text" id="nameInput" placeholder="e.g. Ram Sharma" />
             </div>
@@ -1421,14 +1441,14 @@
             </button>
         </div>
 
-        <!-- ===== DETAIL SCREEN ===== -->
+        <!-- ===== DETAIL (WITH CHAT) ===== -->
         <div class="screen" id="screen-detail">
             <div class="flex-between mb-16">
                 <button class="back-btn" onclick="showScreen('home')">
                     <i class="fas fa-arrow-left"></i> <span data-key="back">Back</span>
                 </button>
-                <span class="screen-heading">Report Details</span>
-                <span class="screen-heading-spacer"></span>
+                <span class="screen-title">Report Details</span>
+                <span class="screen-title-spacer"></span>
             </div>
             <div id="detailContent"></div>
         </div>
@@ -1446,16 +1466,16 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- ===== JAVASCRIPT (MODULE) ===== -->
+    <!-- ===== JAVASCRIPT ===== -->
     <!-- ============================================================ -->
 
     <script type="module">
         // ================================================================
-        // 🔴🔴🔴 CONFIGURATION (Replace with your own)
+        // 🔴🔴🔴 CONFIGURATION – UPDATE WITH YOUR OWN VALUES
         // ================================================================
 
         const firebaseConfig = {
-            apiKey: "AIzaSyBVvWlYUCOfALhtWdR53_ZcP5spTYhDyu8",
+             apiKey: "AIzaSyBVvWlYUCOfALhtWdR53_ZcP5spTYhDyu8",
   authDomain: "fixmyblock-nepal.firebaseapp.com",
   projectId: "fixmyblock-nepal",
   storageBucket: "fixmyblock-nepal.firebasestorage.app",
@@ -1464,7 +1484,7 @@
   measurementId: "G-C3RQER0PC1"
         };
 
-        const IMGBB_API_KEY = '2d59a842482977b8aa645a353ecbaafc';
+        const IMGBB_API_KEY = '2d59a842482977b8aa645a353ecbaafc'; // Replace with your ImgBB API key
 
         // ================================================================
         // IMPORTS
@@ -1472,19 +1492,8 @@
 
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
         import {
-            getFirestore,
-            collection,
-            query,
-            orderBy,
-            limit,
-            getDocs,
-            addDoc,
-            serverTimestamp,
-            onSnapshot,
-            doc,
-            updateDoc,
-            deleteDoc,
-            getDoc
+            getFirestore, collection, query, orderBy, limit, getDocs, addDoc,
+            serverTimestamp, onSnapshot, doc, updateDoc, deleteDoc, getDoc
         } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 
         import { getTranslation, setLanguage, loadSavedLanguage } from './js/translations.js';
@@ -1499,14 +1508,10 @@
         console.log('✅ Firebase initialized!');
 
         // ================================================================
-        // SPLASH SCREEN
+        // SPLASH, OFFLINE, THEME, LANGUAGE
         // ================================================================
 
         setTimeout(() => document.getElementById('splash').classList.add('hidden'), 1200);
-
-        // ================================================================
-        // OFFLINE SUPPORT
-        // ================================================================
 
         const offlineBanner = document.getElementById('offlineBanner');
         const onlineStatus = document.getElementById('onlineStatus');
@@ -1526,10 +1531,6 @@
         window.addEventListener('offline', updateOnlineStatus);
         updateOnlineStatus();
 
-        // ================================================================
-        // THEME TOGGLE
-        // ================================================================
-
         const themeToggle = document.getElementById('themeToggle');
         let isDark = localStorage.getItem('fixmyblock_theme') === 'dark';
 
@@ -1548,10 +1549,6 @@
             applyTheme();
         });
         applyTheme();
-
-        // ================================================================
-        // LANGUAGE
-        // ================================================================
 
         let currentLang = loadSavedLanguage() || 'en';
         const langToggle = document.getElementById('langToggle');
@@ -1638,7 +1635,6 @@
 
         let reportsData = [];
         let selectedCategory = null;
-        let selectedPhotos = [];
 
         // ================================================================
         // SCREEN NAV
@@ -1668,10 +1664,6 @@
             }
         };
 
-        // ================================================================
-        // ROUTE
-        // ================================================================
-
         window.getRoute = function() {
             const pos = getMapPosition();
             if (pos) {
@@ -1682,19 +1674,11 @@
             }
         };
 
-        // ================================================================
-        // EMERGENCY
-        // ================================================================
-
         window.openEmergency = function() {
             showScreen('report');
             document.getElementById('emergencyCheckbox').checked = true;
             showToast('⚠️ Emergency mode activated.', 'info');
         };
-
-        // ================================================================
-        // LOCATION
-        // ================================================================
 
         window.getCurrentLocation = function() {
             const status = document.getElementById('locationStatus');
@@ -1722,7 +1706,7 @@
         };
 
         // ================================================================
-        // BULK ENTRIES
+        // BULK ENTRIES (unchanged)
         // ================================================================
 
         let entryCount = 0;
@@ -1868,7 +1852,7 @@
         });
 
         // ================================================================
-        // SUBMIT (BULK WITH PHOTOS + EMERGENCY)
+        // SUBMIT BULK (unchanged)
         // ================================================================
 
         document.getElementById('submitReportBtn').addEventListener('click', async function() {
@@ -2042,12 +2026,15 @@
         }
 
         // ================================================================
-        // REPORT DETAIL
+        // REPORT DETAIL WITH CHAT
         // ================================================================
+
+        let chatUnsubscribe = null;
 
         window.showReportDetail = async function(reportId) {
             showScreen('detail');
             const container = document.getElementById('detailContent');
+
             try {
                 const snap = await getDoc(doc(db, 'reports', reportId));
                 if (!snap.exists()) {
@@ -2055,11 +2042,13 @@
                     return;
                 }
                 const r = { id: snap.id, ...snap.data() };
+
                 const photoHtml = r.photoUrls && r.photoUrls.length > 0 ?
-                    `<div class="photo-gallery" style="grid-template-columns:repeat(${Math.min(r.photoUrls.length,3)},1fr);">
+                    `<div class="photo-gallery" style="grid-template-columns:repeat(${Math.min(r.photoUrls.length, 3)},1fr);">
                         ${r.photoUrls.map(url => `<img src="${url}" alt="Report photo" onclick="window.open('${url}','_blank')" />`).join('')}
                     </div>` :
                     '<div style="color:var(--text-muted);font-size:13px;">No photos</div>';
+
                 const ratingHtml = r.status === 'resolved' ?
                     `<div style="margin-top:16px;padding:16px;background:var(--gray-light);border-radius:12px;">
                         <p style="font-weight:600;margin-bottom:4px;">Rate this resolution</p>
@@ -2069,8 +2058,9 @@
                         <div id="ratingMessage" style="font-size:13px;color:var(--text-muted);margin-top:4px;"></div>
                     </div>` :
                     '';
+
                 container.innerHTML = `
-                    <div style="background:var(--gray-light);border-radius:12px;padding:16px;">
+                    <div style="background:var(--gray-light);border-radius:12px;padding:16px;margin-bottom:16px;">
                         <h3 style="font-size:18px;"><i class="fas ${getCategoryIcon(r.category)}" style="color:var(--primary);"></i> ${getCategoryLabel(r.category)}</h3>
                         ${r.isEmergency ? '<span style="background:var(--secondary);color:#fff;padding:4px 12px;border-radius:4px;font-size:12px;font-weight:700;display:inline-block;margin:4px 0;">🚨 EMERGENCY</span>' : ''}
                         <div style="margin:6px 0;"><i class="fas fa-location-dot"></i> ${r.location || 'Unknown location'}</div>
@@ -2087,7 +2077,39 @@
                             <button class="btn btn-sm btn-outline" onclick="window.open('https://www.google.com/maps?q=${r.latitude},${r.longitude}','_blank')" style="width:auto;padding:8px 16px;"><i class="fas fa-map"></i> Open Map</button>
                         </div>
                     </div>
+
+                    <!-- CHAT SECTION -->
+                    <div style="padding:16px;background:var(--card-bg);border-radius:12px;border:1px solid var(--gray-border);">
+                        <h4 style="font-weight:600;margin-bottom:8px;">
+                            <i class="fas fa-comments" style="color:var(--primary);"></i> Discussion
+                            <span style="font-size:12px;font-weight:400;color:var(--text-muted);"> (Ask questions or get updates)</span>
+                        </h4>
+                        <div class="chat-container" id="chatMessages">
+                            <div class="chat-empty">Loading messages...</div>
+                        </div>
+
+                        <div class="chat-input-area">
+                            <input type="text" id="chatInput" placeholder="Type a message..." />
+                            <input type="file" id="chatPhotoInput" accept="image/*" style="display:none;" />
+                            <button class="btn btn-sm btn-chat-photo" onclick="document.getElementById('chatPhotoInput').click();" title="Attach photo">
+                                <i class="fas fa-image"></i>
+                            </button>
+                            <button class="btn btn-sm btn-chat-send" onclick="sendChatMessage('${r.id}')">
+                                <i class="fas fa-paper-plane"></i> Send
+                            </button>
+                        </div>
+                    </div>
                 `;
+
+                listenToChat(r.id);
+
+                document.getElementById('chatPhotoInput').addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    window._chatPhotoFile = file;
+                    showToast('📸 Photo ready. Type a message and click Send!', 'info');
+                });
+
             } catch (error) {
                 console.error('Error loading detail:', error);
                 container.innerHTML = '<div class="error-state"><i class="fas fa-exclamation-circle"></i><p>Error loading report</p></div>';
@@ -2095,7 +2117,127 @@
         };
 
         // ================================================================
-        // SUBMIT RATING
+        // CHAT FUNCTIONS
+        // ================================================================
+
+        function listenToChat(reportId) {
+            if (chatUnsubscribe) {
+                chatUnsubscribe();
+                chatUnsubscribe = null;
+            }
+
+            const chatRef = collection(db, 'reports', reportId, 'chats');
+            const q = query(chatRef, orderBy('createdAt', 'asc'));
+
+            chatUnsubscribe = onSnapshot(q, (snapshot) => {
+                const messages = [];
+                snapshot.forEach((doc) => {
+                    messages.push({ id: doc.id, ...doc.data() });
+                });
+                renderChatMessages(messages);
+
+                const container = document.getElementById('chatMessages');
+                if (container) {
+                    setTimeout(() => {
+                        container.scrollTop = container.scrollHeight;
+                    }, 50);
+                }
+            }, (error) => {
+                console.error('Chat listener error:', error);
+            });
+        }
+
+        function renderChatMessages(messages) {
+            const container = document.getElementById('chatMessages');
+            if (!container) return;
+
+            if (messages.length === 0) {
+                container.innerHTML = `<div class="chat-empty">No messages yet. Start the conversation!</div>`;
+                return;
+            }
+
+            container.innerHTML = messages.map(msg => {
+                const isSent = msg.isAdmin === false;
+                const messageClass = isSent ? 'sent' : 'received';
+                const time = msg.createdAt ? formatTimestamp(msg.createdAt) : 'Just now';
+                const senderName = msg.senderName || (isSent ? 'You' : 'Admin');
+
+                let photoHtml = '';
+                if (msg.photoUrl) {
+                    photoHtml = `<img src="${msg.photoUrl}" alt="Chat photo" class="chat-photo" onclick="window.open('${msg.photoUrl}','_blank')" />`;
+                }
+
+                return `
+                    <div class="chat-message ${messageClass}">
+                        <div class="chat-bubble">
+                            <strong style="font-size:12px;">${senderName}</strong>
+                            ${msg.text ? `<div>${msg.text}</div>` : ''}
+                            ${photoHtml}
+                        </div>
+                        <div class="chat-time">${time}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function sendChatMessage(reportId) {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            const photoFile = window._chatPhotoFile || null;
+
+            if (!message && !photoFile) {
+                showToast('Please type a message or attach a photo.', 'error');
+                return;
+            }
+
+            try {
+                let photoUrl = '';
+                if (photoFile) {
+                    const fd = new FormData();
+                    fd.append('key', IMGBB_API_KEY);
+                    fd.append('image', photoFile);
+                    const res = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: fd });
+                    const data = await res.json();
+                    if (data.success) {
+                        photoUrl = data.data.url;
+                    }
+                    window._chatPhotoFile = null;
+                    document.getElementById('chatPhotoInput').value = '';
+                }
+
+                const user = auth.currentUser;
+                const senderName = user?.displayName || 'Citizen';
+
+                await addDoc(collection(db, 'reports', reportId, 'chats'), {
+                    text: message || '',
+                    photoUrl: photoUrl || '',
+                    senderId: user?.uid || 'anonymous',
+                    senderName: senderName,
+                    isAdmin: false,
+                    createdAt: serverTimestamp()
+                });
+
+                input.value = '';
+
+            } catch (error) {
+                console.error('Send message error:', error);
+                showToast('Failed to send message: ' + error.message, 'error');
+            }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && document.activeElement?.id === 'chatInput') {
+                e.preventDefault();
+                const detailContent = document.getElementById('detailContent');
+                const sendBtn = detailContent?.querySelector('.btn-chat-send');
+                if (sendBtn) {
+                    sendBtn.click();
+                }
+            }
+        });
+
+        // ================================================================
+        // RATING
         // ================================================================
 
         window.submitRating = async function(reportId, rating) {
@@ -2173,8 +2315,8 @@
         window.removeEntry = removeEntry;
         window.triggerPhoto = triggerPhoto;
 
-        console.log('🏗️ FixMyBlock Nepal - Phase 3 UI/UX Loaded!');
-        console.log('🇳🇵 Nepal-themed modern design with full mobile responsiveness.');
+        console.log('🏗️ FixMyBlock Nepal – Mobile-Fixed Version Loaded!');
+        console.log('📱 The "Report an Issue" button is now always visible on mobile.');
     </script>
 
 </body>

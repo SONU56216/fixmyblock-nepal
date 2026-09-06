@@ -1,0 +1,31 @@
+{
+  "name": "FixMyBlock Nepal",
+  "short_name": "FixMyBlock",
+  "description": "Report civic issues in Nepal",
+  "start_url": "https://sonu56216.github.io/fixmyblock-nepal/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1a73e8",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://sonu56216.github.io/fixmyblock-nepal/assets/icons/icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://sonu56216.github.io/fixmyblock-nepal/assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://sonu56216.github.io/fixmyblock-nepal/assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+  
+}
