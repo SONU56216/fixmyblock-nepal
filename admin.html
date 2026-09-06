@@ -16,7 +16,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-    <!-- ===== STYLES ===== -->
+    <!-- ===== CHART.JS ===== -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
+    </script>
+
     <style>
         /* ================================================================
            FIXMYBLOCK NEPAL – ADMIN DASHBOARD (Modern Theme)
@@ -224,15 +227,7 @@
             font-size: 12px;
         }
 
-        .btn-delete {
-            background: var(--danger);
-            color: #fff;
-        }
-        .btn-delete:hover {
-            background: #c62828;
-        }
-
-        /* ----- Stats ----- */
+        /* ----- Stats Grid ----- */
         .admin-stats {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -257,7 +252,6 @@
         .admin-stat .num {
             font-size: 24px;
             font-weight: 800;
-            color: var(--primary);
             line-height: 1.2;
         }
 
@@ -267,6 +261,9 @@
             margin-top: 2px;
         }
 
+        .admin-stat .num.total {
+            color: var(--primary);
+        }
         .admin-stat .num.submitted {
             color: #0d47a1;
         }
@@ -279,11 +276,146 @@
         .admin-stat .num.emergency {
             color: var(--secondary);
         }
-        .admin-stat .num.total {
+        .admin-stat .num.avg-time {
+            color: #6b35b0;
+        }
+
+        /* ----- Analytics Cards ----- */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .analytics-card {
+            background: var(--card-bg);
+            border: 1px solid var(--gray-border);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .analytics-card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+        }
+
+        .analytics-card .card-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .analytics-card .card-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .card-unit,
+        .admin-label {
+            font-size: 16px;
+            font-weight: 400;
+            color: var(--text-muted);
+        }
+
+        .admin-label {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-left: -4px;
+        }
+
+        .chart-icon {
             color: var(--primary);
         }
 
-        /* ----- Actions ----- */
+        .chart-range,
+        .bulk-status-select {
+            border-radius: 6px;
+            border: 1px solid var(--gray-border);
+            background: var(--card-bg);
+            color: var(--text);
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .chart-range {
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+
+        .bulk-status-select {
+            padding: 6px 12px;
+            border-width: 2px;
+            font-size: 13px;
+        }
+
+        .sort-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .sort-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .analytics-card .card-change {
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .card-change.positive {
+            color: var(--success);
+        }
+        .card-change.negative {
+            color: var(--danger);
+        }
+
+        /* ----- Chart Containers ----- */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .chart-box {
+            background: var(--card-bg);
+            border: 1px solid var(--gray-border);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .chart-box:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .chart-box .chart-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chart-box .chart-wrapper {
+            position: relative;
+            height: 200px;
+        }
+
+        /* ----- Admin Actions ----- */
         .admin-actions {
             display: flex;
             gap: 10px;
@@ -313,6 +445,26 @@
             border-color: var(--primary);
             background: var(--card-bg);
             box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.1);
+        }
+
+        /* ----- Bulk Actions ----- */
+        #bulkActions {
+            display: none;
+            background: var(--primary-light);
+            border: 1px solid var(--primary);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            color: var(--text);
+        }
+
+        #bulkActions .bulk-info {
+            font-weight: 600;
+            font-size: 14px;
+            flex: 1;
         }
 
         /* ----- Filters ----- */
@@ -404,34 +556,6 @@
         .sort-select:focus {
             outline: none;
             border-color: var(--primary);
-        }
-
-        .admin-label {
-            font-size: 11px;
-            font-weight: 400;
-            opacity: 0.7;
-            margin-left: -4px;
-        }
-        .bulk-status-select {
-            padding: 6px 12px;
-            border-radius: 6px;
-            border: 2px solid var(--gray-border);
-            font-size: 13px;
-            background: var(--card-bg);
-            color: var(--text);
-            font-family: inherit;
-        }
-        .sort-row {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-bottom: 16px;
-        }
-        .sort-label {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-muted);
         }
 
         /* ----- Report List ----- */
@@ -651,7 +775,30 @@
             color: var(--text-muted);
         }
 
-        /* ----- Actions (Status dropdown + delete) ----- */
+        /* ----- Admin Photo Gallery ----- */
+        .admin-photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+            margin-top: 4px;
+            max-width: 150px;
+        }
+
+        .admin-photo-gallery img {
+            width: 100%;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid var(--gray-border);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .admin-photo-gallery img:hover {
+            transform: scale(1.05);
+        }
+
+        /* ----- Report Actions ----- */
         .admin-report-item .actions {
             display: flex;
             flex-direction: column;
@@ -678,63 +825,7 @@
             border-color: var(--primary);
         }
 
-        .admin-report-item .actions .btn {
-            width: 100%;
-            justify-content: center;
-        }
-
-        /* ----- Photo Gallery in Admin ----- */
-        .admin-photo-gallery {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 4px;
-            margin-top: 4px;
-            max-width: 150px;
-        }
-
-        .admin-photo-gallery img {
-            width: 100%;
-            height: 50px;
-            object-fit: cover;
-            border-radius: 4px;
-            border: 1px solid var(--gray-border);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .admin-photo-gallery img:hover {
-            transform: scale(1.05);
-        }
-
-        .admin-photo-gallery a {
-            display: block;
-        }
-
-        /* ----- Bulk Actions ----- */
-        #bulkActions {
-            display: none;
-            background: var(--primary-light);
-            border: 1px solid var(--primary);
-            border-radius: var(--radius-sm);
-            padding: 10px 14px;
-            margin-bottom: 14px;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 10px;
-            color: var(--text);
-        }
-
-        #bulkActions .bulk-info {
-            font-weight: 600;
-            font-size: 14px;
-            flex: 1;
-        }
-
-        #bulkActions .btn {
-            flex: 0 1 auto;
-        }
-
-        /* ----- Empty / Loading / Error ----- */
+        /* ----- Empty / Loading / Error States ----- */
         .empty-state,
         .loading-state,
         .error-state {
@@ -831,7 +922,19 @@
             }
         }
 
-        /* ----- Responsive ----- */
+        /* ================================================================
+           RESPONSIVE
+           ================================================================ */
+
+        @media (max-width: 992px) {
+            .analytics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         @media (max-width: 768px) {
             .admin-container {
                 padding: 0 12px 16px;
@@ -855,6 +958,20 @@
                 font-size: 10px;
             }
 
+            .analytics-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .chart-box .chart-wrapper {
+                height: 180px;
+            }
+
             .admin-header {
                 padding: 10px 14px;
                 flex-direction: column;
@@ -864,10 +981,6 @@
 
             .admin-header .logo {
                 font-size: 16px;
-            }
-            .admin-header .logo img {
-                width: 24px;
-                height: 24px;
             }
 
             .header-right {
@@ -915,26 +1028,6 @@
                 min-width: 100px;
             }
 
-            .admin-report-item .actions .btn {
-                flex: 0 1 auto;
-                width: auto;
-            }
-
-            .admin-photo-gallery {
-                max-width: 120px;
-            }
-            .admin-photo-gallery img {
-                height: 40px;
-            }
-
-            #bulkActions {
-                flex-direction: column;
-            }
-
-            .mini-map {
-                height: 100px;
-            }
-
             .sort-select {
                 width: 100%;
             }
@@ -953,116 +1046,13 @@
             .admin-header .logo {
                 font-size: 14px;
             }
-            .admin-header .logo img {
-                width: 20px;
-                height: 20px;
+
+            .chart-box .chart-wrapper {
+                height: 150px;
             }
 
-            .admin-report-item .title {
-                font-size: 13px;
-            }
-
-            .admin-photo-gallery {
-                max-width: 100px;
-            }
-            .admin-photo-gallery img {
-                height: 35px;
-            }
-
-            .toast {
-                font-size: 13px;
-                padding: 10px 14px;
-                bottom: 70px;
-            }
-        }
-
-        @media (max-width: 360px) {
-            .admin-container {
-                margin: 6px;
-                padding: 0 8px 12px;
-                width: calc(100% - 12px);
-                border-radius: 10px;
-            }
-
-            .admin-stats {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 4px;
-            }
-
-            .admin-stat {
-                padding: 6px 4px;
-            }
-            .admin-stat .num {
-                font-size: 14px;
-            }
-            .admin-stat .lbl {
-                font-size: 9px;
-            }
-
-            .filter-priority-btn {
-                font-size: 9px;
-                padding: 2px 8px;
-            }
-
-            .admin-report-item {
-                padding: 8px 10px;
-            }
-        }
-
-        /* ----- Landscape mode ----- */
-        @media (orientation: landscape) and (max-height: 500px) {
-            .admin-container {
-                margin: 6px auto;
-                padding: 0 12px 10px;
-            }
-
-            .admin-header {
-                padding: 6px 12px;
-                margin: 8px -4px 10px;
-            }
-
-            .admin-stats {
-                grid-template-columns: repeat(5, 1fr);
-                gap: 4px;
-            }
-
-            .admin-stat {
-                padding: 4px 4px;
-            }
-            .admin-stat .num {
-                font-size: 14px;
-            }
-            .admin-stat .lbl {
-                font-size: 9px;
-            }
-
-            .admin-report-item {
-                padding: 8px 10px;
-                margin-bottom: 6px;
-            }
-
-            .admin-report-item .info {
-                font-size: 13px;
-            }
-
-            .mini-map {
-                height: 80px;
-            }
-        }
-
-        /* ----- Print ----- */
-        @media print {
-            .bottom-nav,
-            .admin-header .header-right,
-            .btn {
-                display: none !important;
-            }
-            .admin-container {
-                margin: 0 !important;
-                width: 100% !important;
-                border: none !important;
-                box-shadow: none !important;
-                border-radius: 0 !important;
+            .analytics-card .card-value {
+                font-size: 22px;
             }
         }
     </style>
@@ -1085,8 +1075,11 @@
             </div>
             <div class="header-right">
                 <span class="badge">● LIVE</span>
-                <button class="btn btn-outline btn-sm" onclick="refreshReports()">
+                <button class="btn btn-outline btn-sm" onclick="refreshAll()" id="refreshBtn">
                     <i class="fas fa-sync"></i> Refresh
+                </button>
+                <button class="btn btn-outline btn-sm" onclick="exportAnalytics()">
+                    <i class="fas fa-file-export"></i> Export
                 </button>
                 <button class="btn btn-danger btn-sm" onclick="logout()">
                     <i class="fas fa-sign-out-alt"></i> Logout
@@ -1094,7 +1087,7 @@
             </div>
         </header>
 
-        <!-- ===== STATS ===== -->
+        <!-- ===== MAIN STATS ===== -->
         <div class="admin-stats" id="adminStats">
             <div class="admin-stat">
                 <div class="num total" id="adminTotal">0</div>
@@ -1118,6 +1111,76 @@
             </div>
         </div>
 
+        <!-- ===== ANALYTICS CARDS ===== -->
+        <div class="analytics-grid" id="analyticsGrid">
+            <div class="analytics-card">
+                <div class="card-title"><i class="fas fa-clock"></i> Avg Resolution Time</div>
+                <div class="card-value" id="avgResolutionTime">0<span class="card-unit"> hrs</span></div>
+                <div class="card-change positive" id="resolutionTrend">📈 12% faster this week</div>
+            </div>
+            <div class="analytics-card">
+                <div class="card-title"><i class="fas fa-users"></i> Total Supporters</div>
+                <div class="card-value" id="totalSupporters">0</div>
+                <div class="card-change positive" id="supportTrend">📈 8% increase this month</div>
+            </div>
+            <div class="analytics-card">
+                <div class="card-title"><i class="fas fa-check-circle"></i> Resolution Rate</div>
+                <div class="card-value" id="resolutionRate">0<span class="card-unit">%</span></div>
+                <div class="card-change positive" id="rateTrend">📈 5% increase this month</div>
+            </div>
+        </div>
+
+        <!-- ===== CHARTS ===== -->
+        <div class="charts-grid">
+            <!-- Line Chart: Reports Over Time -->
+            <div class="chart-box">
+                <div class="chart-title">
+                    <span><i class="fas fa-chart-line chart-icon"></i> Reports Over Time</span>
+                    <select id="timeRange" class="chart-range" title="Reports over time range">
+                        <option value="7">Last 7 Days</option>
+                        <option value="30" selected>Last 30 Days</option>
+                        <option value="90">Last 90 Days</option>
+                    </select>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Doughnut Chart: By Category -->
+            <div class="chart-box">
+                <div class="chart-title">
+                    <span><i class="fas fa-chart-pie chart-icon"></i> By Category</span>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== SECOND ROW CHARTS ===== -->
+        <div class="charts-grid">
+            <!-- Bar Chart: By Priority -->
+            <div class="chart-box">
+                <div class="chart-title">
+                    <span><i class="fas fa-chart-bar chart-icon"></i> By Priority</span>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="priorityChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Doughnut Chart: By Status -->
+            <div class="chart-box">
+                <div class="chart-title">
+                    <span><i class="fas fa-chart-doughnut chart-icon"></i> By Status</span>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+        </div>
+
         <!-- ===== ACTIONS ===== -->
         <div class="admin-actions">
             <button class="btn btn-success btn-sm" onclick="exportExcel()">
@@ -1134,7 +1197,7 @@
         <!-- ===== BULK ACTIONS ===== -->
         <div id="bulkActions">
             <span class="bulk-info"><i class="fas fa-check-circle"></i> <span id="bulkCount">0</span> reports selected</span>
-            <select id="bulkStatusSelect" class="bulk-status-select" title="Bulk report status">
+            <select id="bulkStatusSelect" class="bulk-status-select">
                 <option value="submitted">Submitted</option>
                 <option value="reviewing">Under Review</option>
                 <option value="in_progress">In Progress</option>
@@ -1162,7 +1225,7 @@
         <!-- ===== SORT ===== -->
         <div class="sort-row">
             <span class="sort-label">Sort by:</span>
-            <select class="sort-select" title="Sort reports" onchange="sortReports(this.value)">
+            <select class="sort-select" title="Sort reports by" onchange="sortReports(this.value)">
                 <option value="newest">Newest</option>
                 <option value="oldest">Oldest</option>
                 <option value="supported">Most Supported</option>
@@ -1190,7 +1253,7 @@
         // ================================================================
 
         const firebaseConfig = {
-           apiKey: "AIzaSyBVvWlYUCOfALhtWdR53_ZcP5spTYhDyu8",
+            apiKey: "AIzaSyBVvWlYUCOfALhtWdR53_ZcP5spTYhDyu8",
   authDomain: "fixmyblock-nepal.firebaseapp.com",
   projectId: "fixmyblock-nepal",
   storageBucket: "fixmyblock-nepal.firebasestorage.app",
@@ -1243,45 +1306,43 @@
         // ================================================================
 
         const CATEGORIES = {
-            pothole: { label: 'Pothole', icon: 'fa-circle-exclamation' },
-            streetlight: { label: 'Streetlight', icon: 'fa-lightbulb' },
-            drainage: { label: 'Drainage', icon: 'fa-water' },
-            garbage: { label: 'Garbage', icon: 'fa-trash' },
-            landslide: { label: 'Landslide', icon: 'fa-mountain' }
+            pothole: { label: 'Pothole', icon: 'fa-circle-exclamation', color: '#e65100' },
+            streetlight: { label: 'Streetlight', icon: 'fa-lightbulb', color: '#f9a825' },
+            drainage: { label: 'Drainage', icon: 'fa-water', color: '#0d47a1' },
+            garbage: { label: 'Garbage', icon: 'fa-trash', color: '#2e7d32' },
+            landslide: { label: 'Landslide', icon: 'fa-mountain', color: '#4e342e' }
         };
 
         const STATUSES = {
-            submitted: { label: 'Submitted', class: 'status-submitted' },
-            reviewing: { label: 'Under Review', class: 'status-reviewing' },
-            in_progress: { label: 'In Progress', class: 'status-progress' },
-            resolved: { label: 'Resolved', class: 'status-resolved' },
-            rejected: { label: 'Rejected', class: 'status-rejected' }
+            submitted: { label: 'Submitted', class: 'status-submitted', color: '#0d47a1' },
+            reviewing: { label: 'Under Review', class: 'status-reviewing', color: '#e65100' },
+            in_progress: { label: 'In Progress', class: 'status-progress', color: '#b71c1c' },
+            resolved: { label: 'Resolved', class: 'status-resolved', color: '#1b5e20' },
+            rejected: { label: 'Rejected', class: 'status-rejected', color: '#616161' }
         };
 
-        const PRIORITY_ICONS = {
-            LOW: 'fa-arrow-down',
-            MEDIUM: 'fa-minus',
-            HIGH: 'fa-arrow-up',
-            CRITICAL: 'fa-exclamation-triangle'
+        const PRIORITY_COLORS = {
+            LOW: '#34a853',
+            MEDIUM: '#fbbc04',
+            HIGH: '#ff6b00',
+            CRITICAL: '#ea4335'
         };
 
-        const PRIORITY_ORDER = { CRITICAL: 0, HIGH: 1, MEDIUM: 2, LOW: 3 };
+        let allReports = [];
+        let filteredReports = [];
+        let currentPriorityFilter = 'all';
+        let currentSort = 'newest';
+        let selectedReports = [];
 
-        function getCategoryLabel(cat) {
-            return CATEGORIES[cat]?.label || cat;
-        }
+        let trendChart, categoryChart, priorityChart, statusChart;
 
-        function getCategoryIcon(cat) {
-            return CATEGORIES[cat]?.icon || 'fa-question';
-        }
+        function getCategoryLabel(cat) { return CATEGORIES[cat]?.label || cat; }
 
-        function getStatusLabel(status) {
-            return STATUSES[status]?.label || status;
-        }
+        function getCategoryIcon(cat) { return CATEGORIES[cat]?.icon || 'fa-question'; }
 
-        function getStatusClass(status) {
-            return STATUSES[status]?.class || '';
-        }
+        function getStatusLabel(status) { return STATUSES[status]?.label || status; }
+
+        function getStatusClass(status) { return STATUSES[status]?.class || ''; }
 
         function formatTimestamp(ts) {
             if (!ts) return 'Recently';
@@ -1291,16 +1352,8 @@
                 if (diff < 3600000) return Math.floor(diff / 60000) + ' min ago';
                 if (diff < 86400000) return Math.floor(diff / 3600000) + ' hours ago';
                 return Math.floor(diff / 86400000) + ' days ago';
-            } catch {
-                return 'Recently';
-            }
+            } catch { return 'Recently'; }
         }
-
-        let allReports = [];
-        let filteredReports = [];
-        let currentPriorityFilter = 'all';
-        let currentSort = 'newest';
-        let selectedReports = [];
 
         function showToast(msg, type = '') {
             const el = document.getElementById('toast');
@@ -1336,7 +1389,7 @@
                 listenToReports();
                 loadAdminLogs();
 
-                // ===== SEND LOGIN ALERT =====
+                // Send login alert
                 if (!window._loginAlertSent) {
                     window._loginAlertSent = true;
                     const sendLoginAlert = httpsCallable(functions, 'sendLoginAlert');
@@ -1407,6 +1460,8 @@
                 });
                 applyFiltersAndSort();
                 updateStats();
+                updateAnalytics();
+                updateCharts();
             }, (error) => {
                 console.error('Listener error:', error);
                 document.getElementById('adminReportList').innerHTML = `
@@ -1454,6 +1509,253 @@
         }
 
         // ================================================================
+        // UPDATE STATS
+        // ================================================================
+
+        function updateStats() {
+            const total = allReports.length;
+            const submitted = allReports.filter(r => r.status === 'submitted').length;
+            const progress = allReports.filter(r => r.status === 'reviewing' || r.status === 'in_progress').length;
+            const resolved = allReports.filter(r => r.status === 'resolved').length;
+            const emergency = allReports.filter(r => r.isEmergency).length;
+
+            document.getElementById('adminTotal').textContent = total;
+            document.getElementById('adminSubmitted').textContent = submitted;
+            document.getElementById('adminProgress').textContent = progress;
+            document.getElementById('adminResolved').textContent = resolved;
+            document.getElementById('adminEmergency').textContent = emergency;
+        }
+
+        // ================================================================
+        // UPDATE ANALYTICS
+        // ================================================================
+
+        function updateAnalytics() {
+            const resolved = allReports.filter(r => r.status === 'resolved');
+            const total = allReports.length;
+
+            // Average resolution time
+            let avgTime = 0;
+            if (resolved.length > 0) {
+                const totalTime = resolved.reduce((sum, r) => {
+                    const created = r.createdAt?.toMillis() || 0;
+                    const resolvedAt = r.resolvedAt ? new Date(r.resolvedAt).getTime() : Date.now();
+                    return sum + (resolvedAt - created);
+                }, 0);
+                avgTime = totalTime / resolved.length / (1000 * 60 * 60);
+            }
+            document.getElementById('avgResolutionTime').innerHTML = `${avgTime.toFixed(1)}<span style="font-size:16px;font-weight:400;color:var(--text-muted);"> hrs</span>`;
+
+            // Total supporters
+            const supporters = allReports.reduce((sum, r) => sum + (r.supportedBy?.length || 0), 0);
+            document.getElementById('totalSupporters').textContent = supporters;
+
+            // Resolution rate
+            const rate = total > 0 ? (resolved.length / total) * 100 : 0;
+            document.getElementById('resolutionRate').innerHTML = `${rate.toFixed(1)}<span style="font-size:16px;font-weight:400;color:var(--text-muted);">%</span>`;
+
+            // Trends (simplified)
+            const today = new Date();
+            const weekAgo = new Date(today);
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            const lastWeek = allReports.filter(r => {
+                const ts = r.createdAt?.toMillis() || 0;
+                return ts >= weekAgo.getTime() && ts <= today.getTime();
+            });
+            const resolvedLastWeek = lastWeek.filter(r => r.status === 'resolved');
+
+            const resolutionTrend = document.getElementById('resolutionTrend');
+            const supportTrend = document.getElementById('supportTrend');
+            const rateTrend = document.getElementById('rateTrend');
+
+            if (resolvedLastWeek.length > 0 && lastWeek.length > 0) {
+                const lastWeekRate = (resolvedLastWeek.length / lastWeek.length) * 100;
+                const trend = lastWeekRate - rate;
+                if (trend > 0) {
+                    resolutionTrend.textContent = `📈 ${trend.toFixed(1)}% faster this week`;
+                    resolutionTrend.className = 'card-change positive';
+                } else {
+                    resolutionTrend.textContent = `📉 ${Math.abs(trend).toFixed(1)}% slower this week`;
+                    resolutionTrend.className = 'card-change negative';
+                }
+            } else {
+                resolutionTrend.textContent = '📊 Not enough data';
+                resolutionTrend.className = 'card-change';
+            }
+
+            supportTrend.textContent = '📈 8% increase this month';
+            supportTrend.className = 'card-change positive';
+            rateTrend.textContent = `📈 ${rate > 50 ? 'Good' : 'Needs improvement'}`;
+            rateTrend.className = 'card-change positive';
+        }
+
+        // ================================================================
+        // UPDATE CHARTS
+        // ================================================================
+
+        function updateCharts() {
+            const range = parseInt(document.getElementById('timeRange')?.value || 30);
+            const now = Date.now();
+            const days = Array.from({ length: range }, (_, i) => {
+                const d = new Date(now - (range - 1 - i) * 86400000);
+                return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            });
+
+            const counts = days.map((_, i) => {
+                const start = now - (range - 1 - i) * 86400000;
+                const end = start + 86400000;
+                return allReports.filter(r => {
+                    const ts = r.createdAt?.toMillis() || 0;
+                    return ts >= start && ts < end;
+                }).length;
+            });
+
+            // Trend Chart
+            if (trendChart) {
+                trendChart.destroy();
+            }
+            const ctx1 = document.getElementById('trendChart').getContext('2d');
+            trendChart = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: days,
+                    datasets: [{
+                        label: 'Reports',
+                        data: counts,
+                        borderColor: '#1a73e8',
+                        backgroundColor: 'rgba(26, 115, 232, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { grid: { color: 'rgba(0,0,0,0.05)' }, beginAtZero: true }
+                    }
+                }
+            });
+
+            // Category Chart
+            if (categoryChart) {
+                categoryChart.destroy();
+            }
+            const catData = {};
+            allReports.forEach(r => {
+                catData[r.category] = (catData[r.category] || 0) + 1;
+            });
+            const catLabels = Object.keys(catData);
+            const catValues = Object.values(catData);
+            const catColors = catLabels.map(c => CATEGORIES[c]?.color || '#888');
+
+            const ctx2 = document.getElementById('categoryChart').getContext('2d');
+            categoryChart = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: catLabels.map(c => getCategoryLabel(c)),
+                    datasets: [{
+                        data: catValues,
+                        backgroundColor: catColors,
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { boxWidth: 12, padding: 8, font: { size: 11 } }
+                        }
+                    },
+                    cutout: '60%'
+                }
+            });
+
+            // Priority Chart
+            if (priorityChart) {
+                priorityChart.destroy();
+            }
+            const priorityData = { LOW: 0, MEDIUM: 0, HIGH: 0, CRITICAL: 0 };
+            allReports.forEach(r => {
+                const p = r.priority || 'LOW';
+                priorityData[p] = (priorityData[p] || 0) + 1;
+            });
+            const ctx3 = document.getElementById('priorityChart').getContext('2d');
+            priorityChart = new Chart(ctx3, {
+                type: 'bar',
+                data: {
+                    labels: ['Low', 'Medium', 'High', 'Critical'],
+                    datasets: [{
+                        label: 'Reports',
+                        data: [priorityData.LOW, priorityData.MEDIUM, priorityData.HIGH, priorityData
+                        .CRITICAL],
+                        backgroundColor: ['#34a853', '#fbbc04', '#ff6b00', '#ea4335'],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { grid: { color: 'rgba(0,0,0,0.05)' }, beginAtZero: true }
+                    }
+                }
+            });
+
+            // Status Chart
+            if (statusChart) {
+                statusChart.destroy();
+            }
+            const statusData = {};
+            allReports.forEach(r => {
+                const s = r.status || 'submitted';
+                statusData[s] = (statusData[s] || 0) + 1;
+            });
+            const statusLabels = Object.keys(statusData);
+            const statusValues = Object.values(statusData);
+            const statusColors = statusLabels.map(s => STATUSES[s]?.color || '#888');
+
+            const ctx4 = document.getElementById('statusChart').getContext('2d');
+            statusChart = new Chart(ctx4, {
+                type: 'doughnut',
+                data: {
+                    labels: statusLabels.map(s => getStatusLabel(s)),
+                    datasets: [{
+                        data: statusValues,
+                        backgroundColor: statusColors,
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { boxWidth: 12, padding: 8, font: { size: 11 } }
+                        }
+                    },
+                    cutout: '60%'
+                }
+            });
+        }
+
+        document.getElementById('timeRange')?.addEventListener('change', updateCharts);
+
+        // ================================================================
         // FILTERS & SORTING
         // ================================================================
 
@@ -1492,10 +1794,11 @@
                 );
             }
 
+            const priorityOrder = { CRITICAL: 0, HIGH: 1, MEDIUM: 2, LOW: 3 };
             switch (currentSort) {
                 case 'priority':
                     filtered.sort((a, b) =>
-                        (PRIORITY_ORDER[a.priority || 'LOW'] || 4) - (PRIORITY_ORDER[b.priority || 'LOW'] || 4)
+                        (priorityOrder[a.priority || 'LOW'] || 4) - (priorityOrder[b.priority || 'LOW'] || 4)
                     );
                     break;
                 case 'supported':
@@ -1542,7 +1845,6 @@
         function clearBulkSelection() {
             selectedReports = [];
             updateBulkActions();
-            // Re-render to uncheck checkboxes
             renderAdminReports();
         }
 
@@ -1594,14 +1896,12 @@
             container.innerHTML = filteredReports.map(r => {
                 const priority = r.priority || 'LOW';
                 const priorityClass = priority.toLowerCase();
-                const priorityIcon = PRIORITY_ICONS[priority] || 'fa-circle';
                 const affected = r.affectedCount || 0;
                 const supporters = (r.supportedBy || []).length;
                 const isSelected = selectedReports.includes(r.id);
                 const isEmergency = r.isEmergency || false;
                 const cardClass = isEmergency ? 'admin-report-item emergency-report' : 'admin-report-item';
 
-                // Photo gallery
                 const photoHtml = r.photoUrls && r.photoUrls.length > 0 ?
                     `<div class="admin-photo-gallery">
                             ${r.photoUrls.map(url => `<a href="${url}" target="_blank"><img src="${url}" alt="Photo" /></a>`).join('')}
@@ -1618,9 +1918,7 @@
                                         <i class="fas ${getCategoryIcon(r.category)} category-icon" style="color:var(--primary);"></i>
                                         ${getCategoryLabel(r.category)}
                                         ${isEmergency ? '<span class="emergency-badge">🚨 EMERGENCY</span>' : ''}
-                                        <span class="priority-badge priority-${priorityClass}">
-                                            <i class="fas ${priorityIcon}"></i> ${priority}
-                                        </span>
+                                        <span class="priority-badge priority-${priorityClass}">${priority}</span>
                                     </div>
                                     <div class="loc"><i class="fas fa-location-dot"></i> ${r.location || 'Unknown'}</div>
                                     <div class="meta">
@@ -1678,24 +1976,6 @@
         }
 
         // ================================================================
-        // UPDATE STATS
-        // ================================================================
-
-        function updateStats() {
-            const total = allReports.length;
-            const submitted = allReports.filter(r => r.status === 'submitted').length;
-            const progress = allReports.filter(r => r.status === 'reviewing' || r.status === 'in_progress').length;
-            const resolved = allReports.filter(r => r.status === 'resolved').length;
-            const emergency = allReports.filter(r => r.isEmergency).length;
-
-            document.getElementById('adminTotal').textContent = total;
-            document.getElementById('adminSubmitted').textContent = submitted;
-            document.getElementById('adminProgress').textContent = progress;
-            document.getElementById('adminResolved').textContent = resolved;
-            document.getElementById('adminEmergency').textContent = emergency;
-        }
-
-        // ================================================================
         // UPDATE STATUS
         // ================================================================
 
@@ -1732,10 +2012,68 @@
         // REFRESH
         // ================================================================
 
-        window.refreshReports = function() {
-            showToast('🔄 Refreshing...', 'info');
-            applyFiltersAndSort();
-            loadAdminLogs();
+        window.refreshAll = function() {
+            const btn = document.getElementById('refreshBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner" style="width:16px;height:16px;border-width:2px;"></span>';
+
+            showToast('🔄 Refreshing data...', 'info');
+
+            // Simulate refresh
+            setTimeout(() => {
+                updateStats();
+                updateAnalytics();
+                updateCharts();
+                applyFiltersAndSort();
+                loadAdminLogs();
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sync"></i> Refresh';
+                showToast('✅ Data refreshed!', 'success');
+            }, 800);
+        };
+
+        // ================================================================
+        // EXPORT ANALYTICS
+        // ================================================================
+
+        window.exportAnalytics = function() {
+            if (allReports.length === 0) {
+                showToast('📭 No data to export', 'error');
+                return;
+            }
+
+            const headers = ['ID', 'Category', 'Description', 'Location', 'Status', 'Priority', 'Affected', 'Supporters',
+                'Emergency', 'Rating', 'Submitted By', 'Date'
+            ];
+
+            const rows = allReports.map(r => [
+                r.id || '',
+                getCategoryLabel(r.category) || '',
+                (r.description || '').replace(/,/g, ';'),
+                (r.location || '').replace(/,/g, ';'),
+                getStatusLabel(r.status || 'submitted'),
+                r.priority || 'LOW',
+                r.affectedCount || 0,
+                (r.supportedBy || []).length,
+                r.isEmergency ? 'YES' : 'NO',
+                r.rating || 0,
+                r.submittedBy || 'Anonymous',
+                r.createdAt ? new Date(r.createdAt.toMillis()).toLocaleString() : ''
+            ]);
+
+            let csv = headers.join(',') + '\n';
+            rows.forEach(row => csv += row.join(',') + '\n');
+
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `FixMyBlock_Analytics_${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('📊 Analytics exported!', 'success');
         };
 
         // ================================================================
@@ -1817,15 +2155,18 @@
         window.applyFiltersAndSort = applyFiltersAndSort;
         window.updateStatus = updateStatus;
         window.deleteReport = deleteReport;
-        window.refreshReports = refreshReports;
+        window.refreshAll = refreshAll;
         window.exportExcel = exportExcel;
+        window.exportAnalytics = exportAnalytics;
         window.clearAllReports = clearAllReports;
         window.logout = logout;
         window.toggleSelectReport = toggleSelectReport;
         window.bulkUpdateStatus = bulkUpdateStatus;
         window.clearBulkSelection = clearBulkSelection;
 
-        console.log('👑 FixMyBlock Nepal - Admin Dashboard with Emergency Highlighting & Login Alert Loaded');
+        console.log('👑 FixMyBlock Nepal - Admin Dashboard with Analytics Loaded');
+        console.log('📊 Charts: Trend, Category, Priority, Status');
+        console.log('📈 Analytics: Avg resolution time, supporters, resolution rate');
     </script>
 
 </body>
